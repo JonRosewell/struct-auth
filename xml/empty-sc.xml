@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Item id="X_xxx" TextType="CompleteItem" SchemaVersion="2.0" PageStartNumber="1"
+    Template="Generic_A4_Unnumbered" DiscussionAlias="Discussion" SecondColour="None"
+    ThirdColour="None" FourthColour="None" Logo="colour" Rendering="VLE2 modules (learn2)">
+    <CourseCode>TM110-WS</CourseCode>
+    <CourseTitle>TM110 Workspace</CourseTitle>
+    <ItemID/>
+    <ItemTitle>Item title</ItemTitle>
+    <Unit>
+        <UnitID/>
+        <UnitTitle>Unit title</UnitTitle>
+        <ByLine>A N Author</ByLine>
+        <Session>
+            <Title>Session Title</Title>
+            <Paragraph>text here</Paragraph>
+        </Session>
+    </Unit>
+</Item>
