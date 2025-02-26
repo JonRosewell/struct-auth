@@ -106,6 +106,7 @@
 <!--            p.ITQ  { mso-style-name: ITQ; }-->
             p.KeyPoint  { mso-style-name: KeyPoint; }
 <!--            p.KeyPoints  { mso-style-name: KeyPoints; }-->
+            span.Label { mso-style-name: Label; }
             span.language  { mso-style-name: language; }
 <!--            p.LearningOutcome  { mso-style-name: LearningOutcome; }-->
 <!--            p.LearningOutcomes  { mso-style-name: LearningOutcomes; }-->
@@ -245,15 +246,18 @@
             
             span.EditorComment { color: magenta; } 
             span.AuthorComment { color: darkorange; } 
+            span.SecondVoice { color: #0070C0; } 
             span.ComputerUI { font-family: "Segoe UI", sans-serif; background: #FFFACD; mso-no-proof: yes; } 
             span.ComputerCode { font-family: "Ubuntu Mono", monospace; mso-no-proof: yes; } 
             span.GlossaryTerm { font-weight: bold; } 
             span.olink { color: blue; text-decoration: underline; mso-no-proof: yes; } 
             span.CrossRef { color: blue; text-decoration: underline; mso-no-proof: yes; }
+            span.InlineFigure { color: blue; text-decoration: underline; mso-no-proof: yes; }
             span.attribute { color: blue; background: #F2F2F2; mso-no-proof: yes; font-size: 9pt; }
             span.Number { background: #F2F2F2; font-weight: bold; mso-no-proof: yes;}
             span.SideNote, span.SideNoteHeading, span.SideNoteParagraph { background: #FFFF99; } 
             span.SideNoteHeading { font-weight: bold; } 
+            span.Label { font-weight: bold; } 
             
             p.UnitTitle { font-size: 24pt; }
             span.TeX, span.MathML, span.InlineEquation, p.Equation { font-family: "Times New Roman", serif; color: purple; mso-no-proof: yes; } 
@@ -266,6 +270,8 @@
             p.Caption { mso-style-next: SourceReference; font-weight: bold; }
             p.SourceReference { mso-style-next: Description; font-size: 9.0pt; font-style: italic; text-align: right; } 
             p.Description { mso-style-next: Normal; color: teal; } 
+            p.Alternative  { color: teal; font-style: italic; }
+            
             
             p.BoxHead, p.BoxEnd, p.CaseStudyHead, p.CaseStudyEnd, p.ExampleHead, p.ExampleEnd, p.ExtractHead, p.ExtractEnd, .InternalSectionHead, p.InternalSectionEnd, p.KeyPointsHead, p.KeyPointsEnd, p.QuoteHead, p.QuoteEnd, p.ReadingHead, p.ReadingEnd, p.StudyNoteHead, p.StudyNoteEnd { mso-style-next: Normal; } 
             p.BoxHead, p.BoxEnd  { margin: 6.0pt; background: #DEEAF6; border: solid windowtext .5pt; } 
@@ -274,7 +280,8 @@
             p.StudyNoteHead, p.StudyNoteEnd { margin: 6.0pt; background: #E2EFD9; border: solid windowtext .5pt; } 
             p.StudyNoteHead { border-bottom: none; font-weight: bold; } 
             p.StudyNoteEnd { border-top: none; } 
-            p.ExampleHead, p.ExampleEnd, p.ExtractHead, p.ExtractEnd, p.KeyPointsHead, p.KeyPointsEnd, p.ReadingHead, p.ReadingEnd, p.CaseStudyHead, p.CaseStudyEnd { margin: 6.0pt; background: #FBE4D5; border: solid windowtext .5pt; } 
+            p.ExtractHead, p.ExtractEnd, p.KeyPointsHead, p.KeyPointsEnd, p.ReadingHead, p.ReadingEnd, p.CaseStudyHead, p.CaseStudyEnd { margin: 6.0pt; background: #FBE4D5; border: solid windowtext .5pt; } 
+            p.ExampleHead, p.ExampleEnd { margin: 6.0pt; background: #D5F4F4; border: solid windowtext .5pt; } 
             p.ExampleHead, p.ExtractHead, p.KeyPointsHead, p.ReadingHead, p.CaseStudyHead { border-bottom: none;  font-weight: bold; } 
             p.ExampleEnd, p.ExtractEnd, p.KeyPointsEnd, p.ReadingEnd, p.CaseStudyEnd { border-top: none;  }
             p.InternalSectionHead, p.InternalSectionEnd { border: solid #F2F2F2 5pt; font-weight: bold; } 

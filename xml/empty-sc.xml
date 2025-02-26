@@ -2,8 +2,8 @@
 <Item id="X_xxx" TextType="CompleteItem" SchemaVersion="2.0" PageStartNumber="1"
     Template="Generic_A4_Unnumbered" DiscussionAlias="Discussion" SecondColour="None"
     ThirdColour="None" FourthColour="None" Logo="colour" Rendering="VLE2 modules (learn2)">
-    <CourseCode>TM110-WS</CourseCode>
-    <CourseTitle>TM110 Workspace</CourseTitle>
+    <CourseCode>TG089-WS</CourseCode>
+    <CourseTitle>Course title</CourseTitle>
     <ItemID/>
     <ItemTitle>Item title</ItemTitle>
     <Unit>

@@ -1,4 +1,4 @@
-# Structured Authoring – MS Word to OU Structured Content XML 
+# Structured Authoring: MS Word to OU Structured Content XML 
 
 MS Word to OU structured content conversion, designed to replace OU IT/LDS customisation for oXygen. Additional XSLT for 1) OU XML to HTML (for import into Word) and 2) Numbering OU XML documents. 
 

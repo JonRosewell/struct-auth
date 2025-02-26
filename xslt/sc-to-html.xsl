@@ -46,7 +46,7 @@
     <xsl:template match="@id">
         <span class="attribute">
             <xsl:text>{</xsl:text>
-            <xsl:value-of select="name()"/>
+            <xsl:value-of select="local-name()"/>
             <xsl:text>="</xsl:text>
             <xsl:value-of select="."/>
             <xsl:text>"}</xsl:text>
@@ -74,7 +74,7 @@
         elements that are preferable as Word character styles: TeX, MathML,...:
         Specific cases later removed when overriden.
         -->
-    <xsl:template match="AuthorComment | EditorComment | ComputerCode | GlossaryTerm | IndexTerm | InlineEquation | InlineFigure | InlineChemistry | Icon | ComputerUI | footnote | language | SecondVoice | SideNote | SideNoteParagraph | Number | Hours | Minutes | TeX">
+    <xsl:template match="AuthorComment | EditorComment | ComputerCode | GlossaryTerm | IndexTerm | InlineEquation | InlineFigure | InlineChemistry | Icon | ComputerUI | footnote | language | SecondVoice | SideNote | SideNoteParagraph | Number | Hours | Minutes | TeX | Label">
         <span class="{local-name()}">
             <xsl:apply-templates select="@* | node()"/>
         </span>
@@ -149,17 +149,34 @@
     </xsl:template>
     
     <!-- table elements -->
+    <!-- close map from Table to html <table> but use initial TableHead para instead of 
+        html <caption> since Word seems to convert that into additional table row
+        Table/@id has to be placed at end of TableHeader -->
     <xsl:template match="Table">
+        <xsl:apply-templates select="TableHead"/> 
         <table>
-            <xsl:apply-templates select="@*"/>
-            <caption><xsl:apply-templates select="TableHead/node()"/></caption>
+            <xsl:apply-templates select="@*[local-name()!='id']"/>
             <xsl:apply-templates select="tbody"/>
         </table>
         <xsl:apply-templates select="Description"/>
     </xsl:template>
-    <xsl:template match="Table/TableHead"/>
     
-    <!-- tr, td, tbody are copied -->
+    <xsl:template match="TableHead">
+        <p class="TableHead">
+            <xsl:apply-templates select="node()"/>
+            <xsl:apply-templates select="parent::Table/@id"/>
+        </p>
+    </xsl:template>
+
+    <!-- tr, th, td, tbody are copied -->
+    <!-- change td slignment to html attribs (with 'decimal' added as fudge) -->
+    <xsl:template match="td/@class">
+        <xsl:attribute name="align" 
+            select="if (. ='TableCentered') then 'center' else
+                    if (. ='TableRight') then 'right' else
+                    if (. ='TableDecimal') then 'decimal' else 'left'" />
+    </xsl:template>
+    
     
     <!-- image related -->
     <xsl:template match="Figure">
@@ -252,7 +269,7 @@
         <xsl:param name="type" select="'Box'"/>
         <!-- head para has text of heading if provided, or nbsp to stop Word losing empty lines -->
         <p class="{concat($type, 'Head')}">
-            <xsl:apply-templates select="@*[name()!='id']"/>
+            <xsl:apply-templates select="@*[local-name()!='id']"/>
             <xsl:apply-templates select="Heading/node()"/>
             <xsl:if test="not(Heading/node())">
                 <xsl:text>&#x00a0;</xsl:text>
@@ -274,9 +291,13 @@
     <!-- suppress box heading since dealt with above -->
     <xsl:template match="(Box | CaseStudy | Dialogue | Example | Extract | Quote | Reading | StudyNote | Verse | InternalSection | KeyPoints | Activity | Exercise | ITQ | SAQ )/Heading" />
     
-    <!-- Dividers that serve to separate parts of container; they have no text content of their own -->
-    <xsl:template match="Question | Interaction | Answer | Discussion">
+    <!-- Dividers that serve to separate parts of container; divider itself has fixed text -->
+    <xsl:template match="Interaction | Answer | Discussion">
         <p class="{local-name()}"><xsl:value-of select="local-name()"/></p>
+        <xsl:apply-templates/>
+    </xsl:template>
+    <!-- Question part doesn't need divider since question text always follows heading -->
+    <xsl:template match="Question" >
         <xsl:apply-templates/>
     </xsl:template>
     
