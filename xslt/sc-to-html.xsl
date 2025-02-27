@@ -2,6 +2,14 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" exclude-result-prefixes="" version="3.0">
     
+    <!-- Structured Authoring: MS Word to OU Structured Content XML
+        MS Word to OU structured content conversion, designed to replace OU IT/LDS 
+        customisation for oXygen.
+        Jon Rosewell, Jan 2025
+        https://github.com/JonRosewell/struct-auth 
+        sc-to-html.xsl: converts OU structured content XML into styled HTML for import into Word
+    -->
+    
     <!-- Namespaces: OU SC xml files have no namespace declaration
         Output in default namespace which is Word html so can be input to html-to-sc for round trip
     -->

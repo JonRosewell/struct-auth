@@ -2,6 +2,14 @@
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
     <xsl:output method="xml" encoding="UTF-8" />
     
+    <!-- Structured Authoring: MS Word to OU Structured Content XML
+        MS Word to OU structured content conversion, designed to replace OU IT/LDS 
+        customisation for oXygen.
+        Jon Rosewell, Jan 2025
+        https://github.com/JonRosewell/struct-auth 
+        number-sc.xsl: autonumbers sections, figures etc in OU structured content XML
+    -->
+    
     <!-- strip any existing numbers -->
     <xsl:template match="Number" />
     

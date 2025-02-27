@@ -2,6 +2,14 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0">
     <xsl:output method="html"/>
 
+    <!-- Structured Authoring: MS Word to OU Structured Content XML
+        MS Word to OU structured content conversion, designed to replace OU IT/LDS 
+        customisation for oXygen.
+        Jon Rosewell, Jan 2025
+        https://github.com/JonRosewell/struct-auth 
+        sc-to-html-css.xsl: include to style XML to Word conversion
+    -->
+
     <!-- This is intended for inclusion into sc-to-html.xsl. It builds a CSS style sheet 
         for the html page produced by sc-to-html which in turn builds the Word stylesheet 
         on import into Word. Every tag/style needs a minimal entry to preserve case, even 
@@ -12,80 +20,136 @@
 <!--            full list of SC tags so that case is preserved on import to Word stylesheet 
             Some not used because:
             - they are html elements (b, i,...)
-            - they are replaced by html (Session:h1, Section:h2,...)
+            - they are replaced by html (Session by h1, Section by h2,...)
             - they are box-like and are replaced by xxHead/xxEnd pairs 
             - they are meta data and not supported: front-matter details,... 
             - they are print-related: TOC,...
             A trade-off: completeness vs overload 
 -->            
-<!--            p.Acknowledgements  { mso-style-name: Acknowledgements; }-->
-<!--            p.Activity  { mso-style-name: Activity; } -->
-<!--            p.Address  { mso-style-name: Address; }-->
-<!--            p.AddressLine  { mso-style-name: AddressLine; }-->
+<!--        Following styles are not used:    
+            p.Acknowledgements  { mso-style-name: Acknowledgements; }
+            p.Activity  { mso-style-name: Activity; } 
+            p.Address  { mso-style-name: Address; }
+            p.AddressLine  { mso-style-name: AddressLine; }
+            p.Appendices  { mso-style-name: Appendices; }
+            p.Appendix  { mso-style-name: Appendix; }
+            p.AudioReaderNote  { mso-style-name: AudioReaderNote; }
+            p.b  { mso-style-name: b; } 
+            p.BackMatter  { mso-style-name: BackMatter; }
+            p.Box  { mso-style-name: Box; } 
+            p.br  { mso-style-name: br; }
+            p.BritishLibraryData  { mso-style-name: BritishLibraryData; }
+            p.CaseStudy  { mso-style-name: CaseStudy; } 
+            p.Conclusion  { mso-style-name: Conclusion; }
+            p.CoPublished  { mso-style-name: CoPublished; }
+            p.CopublisherAddress  { mso-style-name: CopublisherAddress; }
+            p.Copyright  { mso-style-name: Copyright; }
+            p.CourseTeam  { mso-style-name: CourseTeam; }
+            p.CourseTitle  { mso-style-name: CourseTitle; }
+            p.Cover  { mso-style-name: Cover; }
+            p.Covers  { mso-style-name: Covers; }
+            p.Dialogue  { mso-style-name: Dialogue; }
+            p.Edited  { mso-style-name: Edited; }
+            p.Edition  { mso-style-name: Edition; }
+            p.Example  { mso-style-name: Example; }
+            p.Exercise  { mso-style-name: Exercise; }
+            p.Extract  { mso-style-name: Extract; }
+            p.FirstPublished  { mso-style-name: FirstPublished; }
+            p.font  { mso-style-name: font; }
+            p.FrontMatter  { mso-style-name: FrontMatter; }
+            p.FurtherReading  { mso-style-name: FurtherReading; }
+            p.GeneralInfo  { mso-style-name: GeneralInfo; }
+            p.HalfTitleVerso  { mso-style-name: HalfTitleVerso; }
+            p.i  { mso-style-name: i; }
+            p.Imprint  { mso-style-name: Imprint; }
+            p.Index  { mso-style-name: Index; }
+            p.Index1  { mso-style-name: Index1; }
+            p.Index2  { mso-style-name: Index2; }
+            p.Index3  { mso-style-name: Index3; }
+            p.InternalSection  { mso-style-name: InternalSection; }
+            p.ISBN  { mso-style-name: ISBN; }
+            p.Item  { mso-style-name: Item; }
+            p.ItemAcknowledgement  { mso-style-name: ItemAcknowledgement; }
+            p.ItemID  { mso-style-name: ItemID; }
+            p.ItemRef  { mso-style-name: ItemRef; }
+            p.ItemRights  { mso-style-name: ItemRights; }
+            p.ItemTitle  { mso-style-name: ItemTitle; }
+            p.ITQ  { mso-style-name: ITQ; }
+            p.KeyPoints  { mso-style-name: KeyPoints; }
+            p.LearningOutcome  { mso-style-name: LearningOutcome; }
+            p.LearningOutcomes  { mso-style-name: LearningOutcomes; }
+            p.LibraryofCongressData  { mso-style-name: LibraryofCongressData; }
+            p.Logo  { mso-style-name: Logo; }
+            p.Matching  { mso-style-name: Matching; }
+            p.math  { mso-style-name: math; }
+            p.MediaContent  { mso-style-name: MediaContent; }
+            p.meta  { mso-style-name: meta; }
+            p.Multipart  { mso-style-name: Multipart; }
+            p.MultipleChoice  { mso-style-name: MultipleChoice; }
+            p.OUCourseInfo  { mso-style-name: OUCourseInfo; }
+            p.OUWebAddress  { mso-style-name: OUWebAddress; }
+            span.OwnerRef  { mso-style-name: OwnerRef; }
+            p.PageNumber  { mso-style-name: PageNumber; }
+            p.Parameter  { mso-style-name: Parameter; }
+            p.Parameters  { mso-style-name: Parameters; }
+            p.Part  { mso-style-name: Part; }
+            p.Preface  { mso-style-name: Preface; }
+            p.Printed  { mso-style-name: Printed; }
+            p.Promotion  { mso-style-name: Promotion; }
+            p.Quote  { mso-style-name: Quote; }
+            p.Reading  { mso-style-name: Reading; }
+            p.Rights  { mso-style-name: Rights; }
+            p.SAQ  { mso-style-name: SAQ; }
+            p.Section  { mso-style-name: Section; }
+            p.Session  { mso-style-name: Session; }
+            p.SingleChoice  { mso-style-name: SingleChoice; }
+            p.Standard  { mso-style-name: Standard; }
+            p.StudyNote  { mso-style-name: StudyNote; }
+            p.sub  { mso-style-name: sub; }
+            p.sup  { mso-style-name: sup; }
+            p.sym  { mso-style-name: sym; }
+            p.td  { mso-style-name: td; }
+            p.th  { mso-style-name: th; }
+            p.TOC  { mso-style-name: TOC; }
+            p.TOC1  { mso-style-name: TOC1; }
+            p.TOC2  { mso-style-name: TOC2; }
+            p.TOC3  { mso-style-name: TOC3; }
+            p.Total  { mso-style-name: Total; }
+            p.Typeset  { mso-style-name: Typeset; }
+            p.u  { mso-style-name: u; }
+            p.Verse  { mso-style-name: Verse; }
+-->
+            
+            <!-- following styles are used: preserve case of names in Word style sheet -->
             p.Alternative  { mso-style-name: Alternative; }
             p.Answer  { mso-style-name: Answer; }
-<!--            p.Appendices  { mso-style-name: Appendices; }-->
-<!--            p.Appendix  { mso-style-name: Appendix; }-->
-<!--            p.AudioReaderNote  { mso-style-name: AudioReaderNote; }-->
             span.AuthorComment  { mso-style-name: AuthorComment; }
-<!--            p.b  { mso-style-name: b; } -->
-<!--            p.BackMatter  { mso-style-name: BackMatter; }-->
-<!--            p.Box  { mso-style-name: Box; } -->
-<!--            p.br  { mso-style-name: br; }-->
-<!--            p.BritishLibraryData  { mso-style-name: BritishLibraryData; }-->
             p.BulletedList  { mso-style-name: BulletedList; }
             p.BulletedSubsidiaryList  { mso-style-name: BulletedSubsidiaryList; }
             p.ByLine  { mso-style-name: ByLine; }
             p.Caption  { mso-style-name: Caption; }
-<!--            p.CaseStudy  { mso-style-name: CaseStudy; } -->
             p.Chemistry  { mso-style-name: Chemistry; }
             span.ComputerCode  { mso-style-name: ComputerCode; }
             p.ComputerDisplay  { mso-style-name: ComputerDisplay; }
             span.ComputerUI  { mso-style-name: ComputerUI; }
-<!--            p.Conclusion  { mso-style-name: Conclusion; }-->
-<!--            p.CoPublished  { mso-style-name: CoPublished; }-->
-<!--            p.CopublisherAddress  { mso-style-name: CopublisherAddress; }-->
-<!--            p.Copyright  { mso-style-name: Copyright; }-->
             p.CourseCode  { mso-style-name: CourseCode; }
-<!--            p.CourseTeam  { mso-style-name: CourseTeam; }-->
-<!--            p.CourseTitle  { mso-style-name: CourseTitle; }-->
-<!--            p.Cover  { mso-style-name: Cover; }-->
-<!--            p.Covers  { mso-style-name: Covers; }-->
             span.CrossRef  { mso-style-name: CrossRef; }
             p.Definition  { mso-style-name: Definition; }
             p.Description  { mso-style-name: Description; }
-<!--            p.Dialogue  { mso-style-name: Dialogue; }-->
             p.Discussion  { mso-style-name: Discussion; }
-<!--            p.Edited  { mso-style-name: Edited; }-->
-<!--            p.Edition  { mso-style-name: Edition; }-->
             span.EditorComment  { mso-style-name: EditorComment; }
             p.Equation  { mso-style-name: Equation; }
-<!--            p.Example  { mso-style-name: Example; }-->
-<!--            p.Exercise  { mso-style-name: Exercise; }-->
-<!--            p.Extract  { mso-style-name: Extract; }-->
             p.Figure  { mso-style-name: Figure; }
-<!--            p.FirstPublished  { mso-style-name: FirstPublished; }-->
-<!--            p.font  { mso-style-name: font; }-->
             p.footnote  { mso-style-name: footnote; }
             p.FreeResponse  { mso-style-name: FreeResponse; }
             p.FreeResponseDisplay  { mso-style-name: FreeResponseDisplay; }
-<!--            p.FrontMatter  { mso-style-name: FrontMatter; }-->
-<!--            p.FurtherReading  { mso-style-name: FurtherReading; }-->
-<!--            p.GeneralInfo  { mso-style-name: GeneralInfo; }-->
             p.Glossary  { mso-style-name: Glossary; }
             p.GlossaryItem  { mso-style-name: GlossaryItem; }
             span.GlossaryTerm  { mso-style-name: GlossaryTerm; }
-<!--            p.HalfTitleVerso  { mso-style-name: HalfTitleVerso; }-->
             p.Heading  { mso-style-name: Heading; }
             span.Hours  { mso-style-name: Hours; }
-<!--            p.i  { mso-style-name: i; }-->
             p.Icon  { mso-style-name: Icon; }
             p.Image  { mso-style-name: Image; }
-<!--            p.Imprint  { mso-style-name: Imprint; }-->
-<!--            p.Index  { mso-style-name: Index; }-->
-<!--            p.Index1  { mso-style-name: Index1; }-->
-<!--            p.Index2  { mso-style-name: Index2; }-->
-<!--            p.Index3  { mso-style-name: Index3; }-->
             span.IndexTerm  { mso-style-name: IndexTerm; }
             span.InlineChemistry  { mso-style-name: InlineChemistry; }
             span.InlineEquation  { mso-style-name: InlineEquation; }
@@ -94,105 +158,53 @@
             p.InPageActivity  { mso-style-name: InPageActivity; }
             p.Instructions  { mso-style-name: Instructions; }
             p.Interaction  { mso-style-name: Interaction; }
-<!--            p.InternalSection  { mso-style-name: InternalSection; }-->
             p.Introduction  { mso-style-name: Introduction; }
-<!--            p.ISBN  { mso-style-name: ISBN; }-->
-<!--            p.Item  { mso-style-name: Item; }-->
-<!--            p.ItemAcknowledgement  { mso-style-name: ItemAcknowledgement; }-->
-<!--            p.ItemID  { mso-style-name: ItemID; }-->
-<!--            p.ItemRef  { mso-style-name: ItemRef; }-->
-<!--            p.ItemRights  { mso-style-name: ItemRights; }-->
-<!--            p.ItemTitle  { mso-style-name: ItemTitle; }-->
-<!--            p.ITQ  { mso-style-name: ITQ; }-->
             p.KeyPoint  { mso-style-name: KeyPoint; }
-<!--            p.KeyPoints  { mso-style-name: KeyPoints; }-->
             span.Label { mso-style-name: Label; }
             span.language  { mso-style-name: language; }
-<!--            p.LearningOutcome  { mso-style-name: LearningOutcome; }-->
-<!--            p.LearningOutcomes  { mso-style-name: LearningOutcomes; }-->
-<!--            p.LibraryofCongressData  { mso-style-name: LibraryofCongressData; }-->
             p.ListItem  { mso-style-name: ListItem; }
-<!--            p.Logo  { mso-style-name: Logo; }-->
-<!--            p.Matching  { mso-style-name: Matching; }-->
-<!--            p.math  { mso-style-name: math; }-->
             span.MathML  { mso-style-name: MathML; }
-<!--            p.MediaContent  { mso-style-name: MediaContent; }-->
-<!--            p.meta  { mso-style-name: meta; }-->
             span.Minutes  { mso-style-name: Minutes; }
             p.MultiColumnBody  { mso-style-name: MultiColumnBody; }
             p.MultiColumnHead  { mso-style-name: MultiColumnHead; }
             p.MultiColumnText  { mso-style-name: MultiColumnText; }
-<!--            p.Multipart  { mso-style-name: Multipart; }-->
-<!--            p.MultipleChoice  { mso-style-name: MultipleChoice; }-->
             span.Number  { mso-style-name: Number; }
             p.NumberedList  { mso-style-name: NumberedList; }
             p.NumberedSubsidiaryList  { mso-style-name: NumberedSubsidiaryList; }
             span.olink  { mso-style-name: olink; }
-<!--            p.OUCourseInfo  { mso-style-name: OUCourseInfo; }-->
-<!--            p.OUWebAddress  { mso-style-name: OUWebAddress; }-->
-<!--            span.OwnerRef  { mso-style-name: OwnerRef; }-->
-<!--            p.PageNumber  { mso-style-name: PageNumber; }-->
             p.Paragraph  { mso-style-name: Paragraph; }
-<!--            p.Parameter  { mso-style-name: Parameter; }-->
-<!--            p.Parameters  { mso-style-name: Parameters; }-->
-<!--            p.Part  { mso-style-name: Part; }-->
-<!--            p.Preface  { mso-style-name: Preface; }-->
-<!--            p.Printed  { mso-style-name: Printed; }-->
             p.ProgramListing  { mso-style-name: ProgramListing; }
-<!--            p.Promotion  { mso-style-name: Promotion; }-->
             p.Proof  { mso-style-name: Proof; }
             p.Question  { mso-style-name: Question; }
-<!--            p.Quote  { mso-style-name: Quote; }-->
-<!--            p.Reading  { mso-style-name: Reading; }-->
             p.Reference  { mso-style-name: Reference; }
             p.References  { mso-style-name: References; }
             p.Remark  { mso-style-name: Remark; }
             p.RevealMore  { mso-style-name: RevealMore; }
-<!--            p.Rights  { mso-style-name: Rights; }-->
-<!--            p.SAQ  { mso-style-name: SAQ; }-->
             span.SecondVoice  { mso-style-name: SecondVoice; }
-<!--            p.Section  { mso-style-name: Section; }-->
-<!--            p.Session  { mso-style-name: Session; }-->
             span.SideNote  { mso-style-name: SideNote; }
             span.SideNoteParagraph  { mso-style-name: SideNoteParagraph; }
-<!--            p.SingleChoice  { mso-style-name: SingleChoice; }-->
             span.smallcaps  { mso-style-name: smallCaps; }
             p.SourceReference  { mso-style-name: SourceReference; }
             p.Speaker  { mso-style-name: Speaker; }
-<!--            p.Standard  { mso-style-name: Standard; }-->
-<!--            p.StudyNote  { mso-style-name: StudyNote; }-->
-<!--            p.sub  { mso-style-name: sub; }-->
             p.SubHeading  { mso-style-name: SubHeading; }
             p.SubListItem  { mso-style-name: SubListItem; }
             p.SubSection  { mso-style-name: SubSection; }
             p.SubSubHeading  { mso-style-name: SubSubHeading; }
             p.SubSubSection  { mso-style-name: SubSubSection; }
             p.Summary  { mso-style-name: Summary; }
-<!--            p.sup  { mso-style-name: sup; }-->
-<!--            p.sym  { mso-style-name: sym; }-->
             p.Table  { mso-style-name: Table; }
             p.TableFootnote  { mso-style-name: TableFootnote; }
             p.TableHead  { mso-style-name: TableHead; }
-<!--            p.td  { mso-style-name: td; }-->
             p.Term  { mso-style-name: Term; }
             span.TeX  { mso-style-name: TeX; }
-<!--            p.th  { mso-style-name: th; }-->
             p.Timing  { mso-style-name: Timing; }
             p.Title  { mso-style-name: Title; }
-<!--            p.TOC  { mso-style-name: TOC; }-->
-<!--            p.TOC1  { mso-style-name: TOC1; }-->
-<!--            p.TOC2  { mso-style-name: TOC2; }-->
-<!--            p.TOC3  { mso-style-name: TOC3; }-->
-<!--            p.Total  { mso-style-name: Total; }-->
             p.Transcript  { mso-style-name: Transcript; }
-<!--            p.Typeset  { mso-style-name: Typeset; }-->
-<!--            p.u  { mso-style-name: u; }-->
             p.Unit  { mso-style-name: Unit; }
             p.UnitID  { mso-style-name: UnitID; }
             p.UnitTitle  { mso-style-name: UnitTitle; }
             p.UnNumberedList  { mso-style-name: UnNumberedList; }
             p.UnNumberedSubsidiaryList  { mso-style-name: UnNumberedSubsidiaryList; }
-<!--            p.Verse  { mso-style-name: Verse; }-->
             p.VoiceRecorder  { mso-style-name: VoiceRecorder; }
             
 <!--            jpr additions: some new, some split of box-like into xxHead and xxEnd pairs -->
@@ -216,6 +228,7 @@
             p.ExerciseHead  { mso-style-name: ExerciseHead; }
             p.ITQHead  { mso-style-name: ITQHead; }
             p.SAQHead  { mso-style-name: SAQHead; }
+            p.ListHead  { mso-style-name: ListHead; }
             
             p.BoxEnd  { mso-style-name: BoxEnd; }
             p.CaseStudyEnd  { mso-style-name: CaseStudyEnd; }
@@ -232,7 +245,7 @@
             p.ExerciseEnd  { mso-style-name: ExerciseEnd; }
             p.ITQEnd  { mso-style-name: ITQEnd; }
             p.SAQEnd  { mso-style-name: SAQEnd; }
-            
+            p.ListEnd  { mso-style-name: ListEnd; }            
             
 <!--            appearance -->
             p, li, div, p.MsoNormal, li.MsoNormal, div.MsoNormal { font-size:11.0pt; font-family:"Calibri",sans-serif; }
@@ -272,8 +285,7 @@
             p.Description { mso-style-next: Normal; color: teal; } 
             p.Alternative  { color: teal; font-style: italic; }
             
-            
-            p.BoxHead, p.BoxEnd, p.CaseStudyHead, p.CaseStudyEnd, p.ExampleHead, p.ExampleEnd, p.ExtractHead, p.ExtractEnd, .InternalSectionHead, p.InternalSectionEnd, p.KeyPointsHead, p.KeyPointsEnd, p.QuoteHead, p.QuoteEnd, p.ReadingHead, p.ReadingEnd, p.StudyNoteHead, p.StudyNoteEnd { mso-style-next: Normal; } 
+            p.BoxHead, p.BoxEnd, p.CaseStudyHead, p.CaseStudyEnd, p.ExampleHead, p.ExampleEnd, p.ExtractHead, p.ExtractEnd, .InternalSectionHead, p.InternalSectionEnd, p.KeyPointsHead, p.KeyPointsEnd, p.QuoteHead, p.QuoteEnd, p.ReadingHead, p.ReadingEnd, p.StudyNoteHead, p.StudyNoteEnd, p.ListHead, p.ListEnd { mso-style-next: Normal; } 
             p.BoxHead, p.BoxEnd  { margin: 6.0pt; background: #DEEAF6; border: solid windowtext .5pt; } 
             p.BoxHead { border-bottom: none; font-weight: bold; } 
             p.BoxEnd { border-top: none; } 
@@ -290,6 +302,8 @@
             p.QuoteHead, p.QuoteEnd { margin: 6.0pt; } 
             p.QuoteHead { border-bottom: solid lightgrey .5pt; font-weight: bold; } 
             p.QuoteEnd { border-top: solid lightgrey .5pt; } 
+            p.ListHead { border-bottom: dashed lightgrey 1pt; } 
+            p.ListEnd { border-top: dashed lightgrey 1pt; } 
             
             p.ActivityHead, p.Interaction, p.Answer, p.Discussion, p.ActivityEnd, p.SAQHead, p.SAQEnd, p.ITQHead, p.ITQEnd, p.ExerciseHead, p.ExerciseEnd { mso-style-next: Normal; color: #4472C4; background: #DEEAF6; } 
             p.ActivityHead, p.SAQHead, p.ITQHead, p.ExerciseHead { font-weight: bold; border-top: solid windowtext .5pt; }

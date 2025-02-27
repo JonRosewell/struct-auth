@@ -6,6 +6,14 @@
     exclude-result-prefixes="h o"
     >
     
+    <!-- Structured Authoring: MS Word to OU Structured Content XML
+        MS Word to OU structured content conversion, designed to replace OU IT/LDS 
+        customisation for oXygen.
+        Jon Rosewell, Jan 2025
+        https://github.com/JonRosewell/struct-auth 
+        xhtml2sc.xsl: converts xhtml output from Word into OU structured content XML
+    -->
+    
     <!-- Namespaces: output is OU SC xml file which has no namespace declaration
         Input will be XHTML converted from Word HTML and may also contain MS Office tags
     -->
@@ -214,16 +222,20 @@
     </xsl:template>
     <!-- lose deleted text and tag -->
     <xsl:template mode="styling" match="h:del"/>
-    
-    <!-- strip anchor on commented text, preserving content -->
-    <xsl:template mode="styling" match="h:a[contains(@style, 'mso-comment-reference')]">
+    <!-- strip spans indicating track change, preserve content -->
+    <xsl:template mode="styling" match="h:span[@class='msoDel' or @class='msoIns']">
         <xsl:apply-templates mode="styling"/>
     </xsl:template>
+    
     <!-- strip link to comment, deleting link text -->
     <xsl:template mode="styling" match="h:span[@class='MsoCommentReference']" />
+    <!-- strip comment anchors at higher priority to avoid ambiguity with general case -->
     <!-- strip anchor of back link from comment, deleting the inserted text -->
-    <xsl:template mode="styling" match="h:a[@class='msocomanchor']" />
-    
+    <xsl:template mode="styling" match="h:a[@class='msocomanchor']" priority="0.6"/>
+    <!-- strip anchor on commented text, preserving content -->
+    <xsl:template mode="styling" match="h:a[contains(@style, 'mso-comment-reference')]" priority="0.6">
+        <xsl:apply-templates mode="styling"/>
+    </xsl:template>
     
     <!-- strip div used for Word comments, including content -->
     <xsl:template mode="styling" match="h:div[contains(@style, 'mso-element:comment-list')]" />
