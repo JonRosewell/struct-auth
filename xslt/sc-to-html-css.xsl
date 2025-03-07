@@ -12,12 +12,12 @@
 
     <!-- This is intended for inclusion into sc-to-html.xsl. It builds a CSS style sheet 
         for the html page produced by sc-to-html which in turn builds the Word stylesheet 
-        on import into Word. Every tag/style needs a minimal entry to preserve case, even 
+        when imported into Word. Every tag/style needs a minimal entry to preserve case, even 
         if not visually styled, hence tedious length. -->
     
     <xsl:template name="buildCSS">
         <style>
-<!--            full list of SC tags so that case is preserved on import to Word stylesheet 
+<!--        Start with full list of SC tags so that case is preserved on import to Word stylesheet 
             Some not used because:
             - they are html elements (b, i,...)
             - they are replaced by html (Session by h1, Section by h2,...)
@@ -79,6 +79,7 @@
             p.LearningOutcome  { mso-style-name: LearningOutcome; }
             p.LearningOutcomes  { mso-style-name: LearningOutcomes; }
             p.LibraryofCongressData  { mso-style-name: LibraryofCongressData; }
+            p.ListItem  { mso-style-name: ListItem; }
             p.Logo  { mso-style-name: Logo; }
             p.Matching  { mso-style-name: Matching; }
             p.math  { mso-style-name: math; }
@@ -106,6 +107,7 @@
             p.Standard  { mso-style-name: Standard; }
             p.StudyNote  { mso-style-name: StudyNote; }
             p.sub  { mso-style-name: sub; }
+            p.SubListItem  { mso-style-name: SubListItem; }
             p.sup  { mso-style-name: sup; }
             p.sym  { mso-style-name: sym; }
             p.td  { mso-style-name: td; }
@@ -162,7 +164,6 @@
             p.KeyPoint  { mso-style-name: KeyPoint; }
             span.Label { mso-style-name: Label; }
             span.language  { mso-style-name: language; }
-            p.ListItem  { mso-style-name: ListItem; }
             span.MathML  { mso-style-name: MathML; }
             span.Minutes  { mso-style-name: Minutes; }
             p.MultiColumnBody  { mso-style-name: MultiColumnBody; }
@@ -187,7 +188,6 @@
             p.SourceReference  { mso-style-name: SourceReference; }
             p.Speaker  { mso-style-name: Speaker; }
             p.SubHeading  { mso-style-name: SubHeading; }
-            p.SubListItem  { mso-style-name: SubListItem; }
             p.SubSection  { mso-style-name: SubSection; }
             p.SubSubHeading  { mso-style-name: SubSubHeading; }
             p.SubSubSection  { mso-style-name: SubSubSection; }
@@ -207,7 +207,7 @@
             p.UnNumberedSubsidiaryList  { mso-style-name: UnNumberedSubsidiaryList; }
             p.VoiceRecorder  { mso-style-name: VoiceRecorder; }
             
-<!--            jpr additions: some new, some split of box-like into xxHead and xxEnd pairs -->
+<!--            jpr additions: some special purpose, most split of box-like into xxHead and xxEnd pairs -->
             span.attribute { mso-style-name: attribute; }
             p.RawXML { mso-style-name: RawXML; } 
             p.FigureSrc { mso-style-name: FigureSrc; } 
@@ -229,6 +229,7 @@
             p.ITQHead  { mso-style-name: ITQHead; }
             p.SAQHead  { mso-style-name: SAQHead; }
             p.ListHead  { mso-style-name: ListHead; }
+            p.SubListHead  { mso-style-name: SubListHead; }
             
             p.BoxEnd  { mso-style-name: BoxEnd; }
             p.CaseStudyEnd  { mso-style-name: CaseStudyEnd; }
@@ -246,6 +247,7 @@
             p.ITQEnd  { mso-style-name: ITQEnd; }
             p.SAQEnd  { mso-style-name: SAQEnd; }
             p.ListEnd  { mso-style-name: ListEnd; }            
+            p.SubListEnd  { mso-style-name: SubListEnd; }            
             
 <!--            appearance -->
             p, li, div, p.MsoNormal, li.MsoNormal, div.MsoNormal { font-size:11.0pt; font-family:"Calibri",sans-serif; }
@@ -302,8 +304,11 @@
             p.QuoteHead, p.QuoteEnd { margin: 6.0pt; } 
             p.QuoteHead { border-bottom: solid lightgrey .5pt; font-weight: bold; } 
             p.QuoteEnd { border-top: solid lightgrey .5pt; } 
+            p.ListHead, p.ListEnd, p.SubListHead, p.SubListEnd { font-size: 9.0pt; color:lightgrey; } 
             p.ListHead { border-bottom: dashed lightgrey 1pt; } 
             p.ListEnd { border-top: dashed lightgrey 1pt; } 
+            p.SubListHead { border-bottom: dotted lightgrey 1pt; } 
+            p.SubListEnd { border-top: dotted lightgrey 1pt; } 
             
             p.ActivityHead, p.Interaction, p.Answer, p.Discussion, p.ActivityEnd, p.SAQHead, p.SAQEnd, p.ITQHead, p.ITQEnd, p.ExerciseHead, p.ExerciseEnd { mso-style-next: Normal; color: #4472C4; background: #DEEAF6; } 
             p.ActivityHead, p.SAQHead, p.ITQHead, p.ExerciseHead { font-weight: bold; border-top: solid windowtext .5pt; }

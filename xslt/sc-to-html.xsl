@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns="http://www.w3.org/1999/xhtml" exclude-result-prefixes="" version="3.0">
     
     <!-- Structured Authoring: MS Word to OU Structured Content XML
@@ -19,9 +20,8 @@
     <xsl:include href="sc-to-html-css.xsl"/>
     
     <!-- TODO:
-        More box-like things: KeyPoints, MultiPart/Part,...
         ??? More section-like things: FrontMatter, BackMatter, References, 
-        Check top level - body is equivalent to Unit, so Item not represented. html-to-sc currently converts body to Item/Unit, making up stuff at Item level, which fits with process of copy/paste into template doc
+        Some Word quirks catered for but maybe need checking for consistency, eg avoiding blank lines which could be lost in html stage 
     -->
     
     <!-- ===== default cases should do the bulk of the work ===== -->
@@ -122,13 +122,71 @@
     
     
     <!-- list elements -->
+
+    <!-- Conversion of SC lists to html should be straightforward, but some tweaks help 
+        to round-trip cleanly through Word:
+        * if some list items have extended content, then whole list should be wrapped in 
+        ListHead/ListEnd to avoid ambiguity over where items end 
+        * ...not required for simpler lists where each item is a single paragraph
+        * ...limitation: not detecting occasions when item has content *following* a 
+        sub list; if so, a SubListHead/SubListEnd around sublist would also be needed.
+        if 
+        * wrap untagged text in <p> to achieve more consistent lists
+        * avoid list items with no text by inserting nbsp
+    -->
+    
+    <!-- look for items/subitems that extend to include more than one para, figures, tables etc -->
+    <xsl:template name="checkForExtendedItems" as="xs:boolean">
+        <!-- count lines (ie elements that are not sublists) within each list item of current list -->
+        <xsl:variable name="lineCounts" select="ListItem/count(*[not(contains(name(), 'Subsidiary'))])"/>
+        <!-- count lines within sublists of current list -->
+        <xsl:variable name="innerLineCounts" select="ListItem/*[contains(name(), 'Subsidiary')]/SubListItem/count(*)"/>
+        <!-- has extended content if any count is greater than one -->
+        <xsl:value-of select="max(($lineCounts, $innerLineCounts)) gt 1"/>
+    </xsl:template>
+    
+        
     <xsl:template match="ListItem | SubListItem">
         <li>
-            <xsl:apply-templates select="@* | node()"/>
+            <!-- tweaks to encourage more consistent Word list structure:
+                - wrap raw text in p
+                - if no content, either directly or in child (eg Paragraph) but not sublist, insert nbsp;
+            -->
+            <xsl:if test="text()">
+                <p><xsl:value-of select="text()"/></p>
+            </xsl:if>
+            <xsl:if test="not(text() or exists(*[not(contains(name(), 'Subsidiary'))]))">
+                <p><xsl:text>&#x00a0;</xsl:text></p>
+            </xsl:if>
+            <xsl:apply-templates select="@* | *"/>
         </li>
     </xsl:template>
     
-    <xsl:template match="NumberedList | NumberedSubsidiaryList">
+    <xsl:template match="NumberedList">
+        <xsl:variable name="extended" as="xs:boolean">
+            <xsl:call-template name="checkForExtendedItems"/>
+        </xsl:variable>
+        <xsl:if test="$extended">
+            <p class="ListHead"><xsl:text>&#x00a0;[list head]</xsl:text></p>
+        </xsl:if>
+        <ol>
+            <xsl:attribute name="type">
+                <xsl:choose>
+                    <xsl:when test="@class='lower-roman'">i</xsl:when>
+                    <xsl:when test="@class='upper-roman'">I</xsl:when>
+                    <xsl:when test="@class='lower-alpha'">a</xsl:when>
+                    <xsl:when test="@class='upper-alpha'">A</xsl:when>
+                    <xsl:otherwise>1</xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+            <xsl:apply-templates select="@* | node()"/>
+        </ol>
+        <xsl:if test="$extended">
+            <p class="ListEnd"><xsl:text>&#x00a0;[list end]</xsl:text></p>
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="NumberedSubsidiaryList">
         <ol>
             <xsl:attribute name="type">
                 <xsl:choose>
@@ -144,17 +202,48 @@
     </xsl:template>
     
     
-    <xsl:template match="BulletedList | BulletedSubsidiaryList">
+    <xsl:template match="BulletedList">
+        <xsl:variable name="extended" as="xs:boolean">
+            <xsl:call-template name="checkForExtendedItems"/>
+        </xsl:variable>
+        <xsl:if test="$extended">
+            <p class="ListHead"><xsl:text>&#x00a0;</xsl:text></p>
+        </xsl:if>
+        <ul>
+            <xsl:apply-templates select="@* | node()"/>
+        </ul>
+        <xsl:if test="$extended">
+            <p class="ListEnd"><xsl:text>&#x00a0;</xsl:text></p>
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="BulletedSubsidiaryList">
         <ul>
             <xsl:apply-templates select="@* | node()"/>
         </ul>
     </xsl:template>
     
-    <xsl:template match="UnNumberedList | UnNumberedSubsidiaryList">
+    <xsl:template match="UnNumberedList">
+        <xsl:variable name="extended" as="xs:boolean">
+            <xsl:call-template name="checkForExtendedItems"/>
+        </xsl:variable>
+        <xsl:if test="$extended">
+            <p class="ListHead"><xsl:text>&#x00a0;[list head]</xsl:text></p>
+        </xsl:if>
+        <ul type="none">
+            <xsl:apply-templates select="@* | node()"/>
+        </ul>
+        <xsl:if test="$extended">
+            <p class="ListEnd"><xsl:text>&#x00a0;[list end]</xsl:text></p>
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="UnNumberedSubsidiaryList">
         <ul type="none">
             <xsl:apply-templates select="@* | node()"/>
         </ul>
     </xsl:template>
+    
     
     <!-- table elements -->
     <!-- close map from Table to html <table> but use initial TableHead para instead of 
