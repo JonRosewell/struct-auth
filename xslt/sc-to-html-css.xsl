@@ -250,7 +250,7 @@
             p.SubListEnd  { mso-style-name: SubListEnd; }            
             
 <!--            appearance -->
-            p, li, div, p.MsoNormal, li.MsoNormal, div.MsoNormal { font-size:11.0pt; font-family:"Calibri",sans-serif; }
+            p, li, div, p.MsoNormal, li.MsoNormal, div.MsoNormal, table { font-size:11.0pt; font-family:"Calibri",sans-serif; }
             h1, h2, h3, h4, h5, h6 { font-family:"Calibri Light",sans-serif; color:#2F5496; }
             h1 { font-size: 18pt; } 
             h2 { font-size: 15pt; margin-left: 11pt; } 
@@ -268,7 +268,7 @@
             span.olink { color: blue; text-decoration: underline; mso-no-proof: yes; } 
             span.CrossRef { color: blue; text-decoration: underline; mso-no-proof: yes; }
             span.InlineFigure { color: blue; text-decoration: underline; mso-no-proof: yes; }
-            span.attribute { color: blue; background: #F2F2F2; mso-no-proof: yes; font-size: 9pt; }
+            span.attribute { color: lightgrey; mso-no-proof: yes; font-size: 8pt; }
             span.Number { background: #F2F2F2; font-weight: bold; mso-no-proof: yes;}
             span.SideNote, span.SideNoteHeading, span.SideNoteParagraph { background: #FFFF99; } 
             span.SideNoteHeading { font-weight: bold; } 
@@ -304,7 +304,7 @@
             p.QuoteHead, p.QuoteEnd { margin: 6.0pt; } 
             p.QuoteHead { border-bottom: solid lightgrey .5pt; font-weight: bold; } 
             p.QuoteEnd { border-top: solid lightgrey .5pt; } 
-            p.ListHead, p.ListEnd, p.SubListHead, p.SubListEnd { font-size: 9.0pt; color:lightgrey; } 
+            p.ListHead, p.ListEnd, p.SubListHead, p.SubListEnd { font-size: 8pt; color:lightgrey; } 
             p.ListHead { border-bottom: dashed lightgrey 1pt; } 
             p.ListEnd { border-top: dashed lightgrey 1pt; } 
             p.SubListHead { border-bottom: dotted lightgrey 1pt; } 

@@ -17,7 +17,7 @@
             <Title>Purpose</Title>
             <Paragraph><AuthorComment>NB Work in progress...</AuthorComment></Paragraph>
             <Paragraph>My converter is intended to enable structured authoring in Word of material destined for the VLE (and possibly for print). It provides a (relatively) quick preview via oXygen. To preview:</Paragraph>
-            <NumberedList class="decimal" start="1">
+            <NumberedList>
                <ListItem><Paragraph>copy some or all of the Word document</Paragraph></ListItem>
                <ListItem><Paragraph>paste into a skeleton document in oXygen</Paragraph></ListItem>
                <ListItem><Paragraph>if necessary, attend to any errors shown</Paragraph></ListItem>
@@ -27,7 +27,7 @@
             </NumberedList>
             <Paragraph>The Word document must be carefully styled using style names that correspond to OU structured content (SC) tags (element names); see the <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185747">Structured Content Tag Guide</a> for the complete list. To author from scratch, I can supply a Word document <ComputerCode>empty-sc.docx</ComputerCode> containing the required styles. To author from existing OU web material, I can convert the master XML file back to appropriately styled Word. </Paragraph>
             <Paragraph>The visual appearance of these documents once in Word should be reasonably comfortable to use; if not, the font face, size, colours etc of styles can be freely tweaked without detriment since the conversion relies only on the style name. Note that the list of SC elements and therefore styles is long: use the Word <ComputerUI>Styles</ComputerUI> pane to see all styles; right-click and <ComputerUI>Add to Style Gallery</ComputerUI> those you use frequently.</Paragraph>
-            <Paragraph>This document serves both as documentation as an example / test document – try it out!</Paragraph>
+            <Paragraph>This document serves both as documentation and as an example / test document – try it out!</Paragraph>
          </Section>
       </Session>
       <Session>
@@ -35,39 +35,42 @@
          <Paragraph>This is a paragraph with some direct character formatting for: <b>bold</b>, <i>italic</i>, <u>underline</u>, <sup>sub</sup>/<sub>sup</sub>, <smallCaps>small caps</smallCaps>, <b>strong</b>, <i>emphasis</i>, created with standard Word buttons.</Paragraph>
          <Paragraph>And some standard OU character styles: <ComputerCode>ComputerCode</ComputerCode>, <ComputerUI>ComputerUI</ComputerUI>, <GlossaryTerm>GlossaryTerm</GlossaryTerm>.</Paragraph>
          <Paragraph>Paragraphs can contain <AuthorComment>author comments </AuthorComment>and <EditorComment>editor comments</EditorComment>.</Paragraph>
-         <Paragraph>Paragraphs can contain several sorts of link. For example, an external hyperlink to <a href="https://www.google.com/">Google</a> can be created in Word in the normal way. For references to other documents or parts of the website, it is better to use an &lt;olink> which refers to a document and section names, for example to the <olink targetdoc="Course Guide" targetptr="11">Course guide</olink>. Use &lt;CrossRef> to refer to the <CrossRef idref="lists">next session</CrossRef> or other parts of the <i>same</i> document; this requires placing ids on destinations. See the SC reference about <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185750&amp;section=6">links</a>.</Paragraph>
-         <Paragraph>A paragraph can contain an equation such as <InlineEquation><TeX>e = m c^2</TeX></InlineEquation> inline. Equations can also be shown as display:</Paragraph>
+         <Paragraph>Paragraphs can contain several sorts of link. For example, an external hyperlink to <a href="https://www.google.com/">Google</a> can be created in Word in the normal way. For references to other documents or parts of the website, it is better to use an &lt;olink&gt; which refers to a document and section names, for example to the <olink targetdoc="Course Guide" targetptr="11">Course guide</olink>. Use &lt;CrossRef> to refer to the <CrossRef idref="lists">next session</CrossRef> or other parts of the <i>same</i> document; this requires placing ids on destinations. See the SC reference about <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185750&amp;section=6">links</a>.</Paragraph>
+         <Paragraph>A paragraph can contain an equation such as <InlineEquation> <TeX>e = m c^2</TeX> </InlineEquation> inline. Equations can also be shown as display:</Paragraph>
          <Equation>
             <TeX>\left(x+a\right)^n=\sum_{k=0}^{n}{\binom{n}{k}x^ka^{n-k}}</TeX>
          </Equation>
          <Paragraph>For more detail, see <CrossRef idref="equations">Equations</CrossRef>.</Paragraph>
          <Paragraph>Program listings can be created:</Paragraph>
          <ProgramListing>
-            <Paragraph>pi@raspberry:~ $ mkdir test<br/> pi@raspberry:~ $ cd test<br/> pi@raspberry:~/test $ pwd<br/> /home/pi/test<br/> pi@raspberry:~/test $</Paragraph>
+            <Paragraph>pi@raspberry:~ $ mkdir test<br/>pi@raspberry:~ $ cd test<br/>pi@raspberry:~/test $ pwd<br/>/home/pi/test<br/>pi@raspberry:~/test $</Paragraph>
          </ProgramListing>
          <Paragraph>In a program listing, whitespace is (or should be!) preserved so indentation can be achieved, but it is safest to use non-breaking space! There is no syntax highlighting but a bit of bold and italic can help.</Paragraph>
          <Paragraph>XSLT is powerful: this is what is required to do automatic tagging:</Paragraph>
          <ProgramListing>
-            <Paragraph>&lt;!-- default: para with class (= Word para style) or span with class (= Word char style) become an element of same name --><br/> &lt;<b>xsl:template</b><i>mode</i>="styling" <i>match</i>="h:p[@class] | h:span[@class]" <i>priority</i>="0.4"><br/>     &lt;<b>xsl:element </b><i>name</i>="{@class}"> <br/>         &lt;<b>xsl:apply-templates </b><i>mode</i>="styling"/><br/>     &lt;/xsl:element><br/> &lt;/xsl:template></Paragraph>
+            <Paragraph/>
+         </ProgramListing>
+         <ProgramListing>
+            <Paragraph>&lt;!-- default: para with class (= Word para style) or span with class (= Word char style) become an element of same name --&gt;<br/>&lt;<b>xsl:template</b> <i>mode</i>="styling" <i>match</i>="h:p[@class] | h:span[@class]" <i>priority</i>="0.4"&gt;<br/>    &lt;<b>xsl:element </b> <i>name</i>="{@class}"&gt; <br/>        &lt;<b>xsl:apply-templates </b> <i>mode</i>="styling"/&gt;<br/>    &lt;/xsl:element&gt;<br/>&lt;/xsl:template&gt;</Paragraph>
          </ProgramListing>
          <Section id="equations">
             <Title>Equations</Title>
-            <Paragraph>Basic approach to equations is to paste TeX code and style, either as <i>Equation</i> or <i>InlineEquation</i>, which will translate to &lt;Equation> and &lt;InlineEquation> respectively.</Paragraph>
+            <Paragraph>Basic approach to equations is to paste TeX code and style, either as <i>Equation</i> or <i>InlineEquation</i>, which will translate to &lt;Equation&gt; and &lt;InlineEquation&gt; respectively.</Paragraph>
             <Paragraph>This is a sample TeX equation styled as <i>Equation</i>:</Paragraph>
             <Equation>
                <TeX>z^2=\frac{\text{GDP}}{(r+1)^2}</TeX>
             </Equation>
-            <Paragraph>And the same as an inline equation <InlineEquation><TeX>z^2=\frac{\text{GDP}}{(r+1)^2}</TeX></InlineEquation> in the middle of a paragraph.</Paragraph>
+            <Paragraph>And the same as an inline equation <InlineEquation> <TeX>z^2=\frac{\text{GDP}}{(r+1)^2}</TeX> </InlineEquation> in the middle of a paragraph.</Paragraph>
             <Paragraph>TeX code can be copied from existing VLE pages. The VLE will display equations either as generated image or better-quality client-side MathJax (choose in your VLE profile settings). Both have accessibility features (click or right-click) that include showing TeX equivalent, so use that to grab TeX for existing equations. Paste TeX code as styled line to transfer to SC XML.</Paragraph>
             <Paragraph>To also see a rendered version in Word, you can insert a new Word equation, paste TeX code into it <i>as text</i> and press <ComputerUI>Return</ComputerUI> to render. Switch between <ComputerUI>Professional</ComputerUI> and <ComputerUI>Linear</ComputerUI> to show fully rendered or TeX source.</Paragraph>
             <Paragraph>If you create or edit an equation using Word Equation Editor, copy/paste it <i>as text</i> to a styled line. If a pasted equation doesn’t produce TeX, change Word Equation Options, choosing <ComputerUI>Copy Linear Format to clipboard as plain text</ComputerUI>. </Paragraph>
-            <Paragraph>Examples: an equation inserted using Word equation editor inline <InlineEquation><TeX>\frac{a}{b}</TeX></InlineEquation> with <i>InlineEquation</i> version following. Then an equation inserted as display equation in Word and then copied as <i>Equation</i>:</Paragraph>
+            <Paragraph>Examples: an equation inserted using Word equation editor inline <InlineEquation> <TeX>\frac{a}{b}</TeX> </InlineEquation> with <i>InlineEquation</i> version following. Then an equation inserted as display equation in Word and then copied as <i>Equation</i>:</Paragraph>
             <Equation>
                <TeX>\left(x+a\right)^n=\sum_{k=0}^{n}{\binom{n}{k}x^ka^{n-k}}</TeX>
             </Equation>
             <Paragraph><i>Limitation</i>: The Word equations are lost in conversion but the TeX versions are passed to structured content. Unfortunately it is a manual job to keep them in sync.</Paragraph>
             <Paragraph><i>Gotcha</i>: If you encounter an error 'Warning: The image source (src attribute) has not been specified' when rendering, this may relate to an empty <i>InlineEquation</i>. The culprit may be an end-of-line character in Word that is styled as TeX, most likely within a list. Highlight the end-of-line and press <ComputerUI>Ctrl+Space</ComputerUI>.</Paragraph>
-            <Paragraph>Note 1: I don't know what current practice is for editors handling maths, but I believe it used to involve a MathFlow plugin, both in Word and oXygen. This produces MathML, as can Word Equation Editor. This can also be passed through to SC VLE instead of TeX but it is verbose and unreadable so I find TeX a better alternative.</Paragraph>
+            <Paragraph>Note 1: I don’t know what current practice is for editors handling maths, but I believe it used to involve a MathFlow plugin, both in Word and oXygen. This produces MathML, as can Word Equation Editor. This can also be passed through to SC VLE instead of TeX but it is verbose and unreadable so I find TeX a better alternative.</Paragraph>
             <Paragraph>Note 2: If text in equations differs in size compared to body text, the underlying reason is the VLE handling of high resolution displays. For possibly good reasons, this fudges between the actual hardware pixel size and a nominal web CSS ‘pixel’ and this fudge may not be accurate.</Paragraph>
             <Paragraph>Note 3: The same issue with high resolution displays can make equations appear fuzzy compared to body text of a similar size: equations have been rendered as low resolution JPEG files. You can switch to better client-side MathJax rendering using your VLE profile; unfortunately the default remains JPEG for all users.</Paragraph>
          </Section>
@@ -76,12 +79,12 @@
             <InternalSection>
                <SubHeading>Numbering the really easy way</SubHeading>
                <Paragraph>The simplest approach is to do no numbering whatsoever in your Word document, convert your document to XML, and then run my numbering script (<ComputerCode>number-sc.xsl</ComputerCode>). This will number your document – Sessions / Sections / SubSections, Figures, Tables – in OU house style. You may then go home early.</Paragraph>
-               <Paragraph>I recommend that in text you only refer to ‘the figure below’ or ‘the figure above’ rather than ‘Figure 9’. If absolutely essential, refer to ‘Figure X’ and then search and manually fix references after automatic numbering. For distant references you should in any case use a &lt;CrossRef> link with the destination title (not numbered).</Paragraph>
+               <Paragraph>I recommend that in text you only refer to ‘the figure below’ or ‘the figure above’ rather than ‘Figure 9’. If absolutely essential, refer to ‘Figure X’ and then search and manually fix references after automatic numbering. For distant references you should in any case use a &lt;CrossRef&gt; link with the destination title (not numbered).</Paragraph>
                <Paragraph>A downside is that your Word document will remain unnumbered but you will soon get used to that ;-)</Paragraph>
                <Paragraph>In detail, the numbering transform does the following:</Paragraph>
                <BulletedList>
-                  <ListItem>Strips any existing &lt;Number> tags from previous numbering</ListItem>
-                  <ListItem>Places &lt;Number> at the start of &lt;Title> for Session/Section/SubSection, &lt;Figure>&lt;Caption>, and &lt;Table>&lt;TableHead></ListItem>
+                  <ListItem>Strips any existing &lt;Number&gt; tags from previous numbering</ListItem>
+                  <ListItem>Places &lt;Number&gt; at the start of &lt;Title&gt; for Session/Section/SubSection, &lt;Figure&gt;&lt;Caption&gt;, and &lt;Table&gt;&lt;TableHead&gt;</ListItem>
                   <ListItem>Inserts a number in outline style for sections, and in simple sequence for figures and tables.</ListItem>
                </BulletedList>
                <Paragraph><i>Limitation</i>: The numbering script doesn’t currently number activities since I don’t know how best to deal with the many variants. But it can be easily added once decided whether Activities, Exercises, SAQs, ITQs... should be numbered in a single or several sequences.</Paragraph>
@@ -90,62 +93,42 @@
                <SubHeading>Numbering the less easy way</SubHeading>
                <Paragraph>If you find it essential to number your Word document as you write, then you can insert numbering fields which Word will update automatically. On conversion to XML, these will be converted to literal text. With the appropriate use of fields, you can number figures, tables, and headings in (more or less) OU house style.</Paragraph>
                <BulletedList>
-                  <ListItem><Paragraph>To insert a Word field, use toolbar <ComputerUI>Insert > Quick parts > Field</ComputerUI> and choose <ComputerUI>SEQ</ComputerUI>. Give an identifier to keep sequences separate, for example use ‘Figures’ to get <ComputerCode>{SEQ Figures}</ComputerCode> and similarly for ‘Tables’ and ‘Activities’.</Paragraph></ListItem>
-                  <ListItem><Paragraph>To achieve OU style outline numbering for headings, insert <ComputerUI>Insert > Quick parts > Field</ComputerUI> and choose <ComputerUI>LISTNUM</ComputerUI> with option <ComputerUI>LegalDefault</ComputerUI>, ie <ComputerCode>{LISTNUM LegalDefault}</ComputerCode>.</Paragraph></ListItem>
+                  <ListItem><Paragraph>To insert a Word field, use toolbar <ComputerUI>Insert &gt; Quick parts &gt; Field</ComputerUI> and choose <ComputerUI>SEQ</ComputerUI>. Give an identifier to keep sequences separate, for example use ‘Figures’ to get <ComputerCode>{SEQ Figures}</ComputerCode> and similarly for ‘Tables’ and ‘Activities’.</Paragraph></ListItem>
+                  <ListItem><Paragraph>To achieve OU style outline numbering for headings, insert <ComputerUI>Insert &gt; Quick parts &gt; Field</ComputerUI> and choose <ComputerUI>LISTNUM</ComputerUI> with option <ComputerUI>LegalDefault</ComputerUI>, ie <ComputerCode>{LISTNUM LegalDefault}</ComputerCode>.</Paragraph></ListItem>
                   <ListItem><Paragraph>To show existing Word fields, select all <ComputerUI>Ctrl+A</ComputerUI> and <ComputerUI>Shift+F9</ComputerUI>. <ComputerUI>F9</ComputerUI> updates a field; select all <ComputerUI>Ctrl+A</ComputerUI> to update the whole document.</Paragraph></ListItem>
                </BulletedList>
                <Paragraph>Copy an existing figure caption or heading to make life somewhat easier!</Paragraph>
                <Paragraph><i>Limitation</i>: Word fields are lost when a document is converted to XML, so round-tripping converts auto to manual numbering.</Paragraph>
-               <Paragraph><i>Limitation</i>: Strictly, figure and table numbers should be surrounded by a &lt;Number> tag, and appearance improves if this is done. Heading numbers should also be wrapped in &lt;Number>; I believe this has no visual effect on the VLE, although it does in print. Practice seems to vary. The script will do it for you ;-)</Paragraph>
+               <Paragraph><i>Limitation</i>: Strictly, figure and table numbers should be surrounded by a &lt;Number&gt; tag, and appearance improves if this is done. Heading numbers should also be wrapped in &lt;Number>; I believe this has no visual effect on the VLE, although it does in print. Practice seems to vary. The script will do it for you ;-)</Paragraph>
                <SubHeading>Numbering another easy way</SubHeading>
-               <Paragraph>The automatic numbering features of Word <i>styles</i> are easy to set up and will give you numbering when authoring. However, the numbers do not transfer as text and will be lost on conversion. Subsequent use of my numbering script will provide numbers; this numbering should be identical but I can't guarantee that will always be the case. Should be worth the gamble...</Paragraph>
+               <Paragraph>The automatic numbering features of Word <i>styles</i> are easy to set up and will give you numbering when authoring. However, the numbers do not transfer as text and will be lost on conversion. Subsequent use of my numbering script will provide numbers; this numbering should be identical but I can’t guarantee that will always be the case. Should be worth the gamble...</Paragraph>
             </InternalSection>
-         </Section>
-         <Section>
-            <Title>Escape to RawXML</Title>
-            <Paragraph>An escape mechanism is used to preserve data structures as RawXML; this can be used to handle assets such as video, audio, interactives, ITQ interactions, quiz questions... For example this is an interactive asset held in &lt;MediaContent>:</Paragraph>
-            <MediaContent id="sp-motivation-1-2-2a" type="html5"
-               src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmdocs/simple_poll.zip"
-               width="*" height="0">
-               <Parameters>
-                  <Parameter name="options_count" value="3"/>
-                  <Parameter name="save_mode" value="false"/>
-                  <Parameter name="question"
-                     value="I'm doing this course because I would most like to:"/>
-                  <Parameter name="option0" value="Understand how to use my camera"/>
-                  <Parameter name="option1" value="Learn how to manipulate images"/>
-                  <Parameter name="option2" value="Improve my photography"/>
-               </Parameters>
-            </MediaContent>
-            <Paragraph>These complex structures have little or no text content and are best set up and tested in oXygen. Switch to oXygen <ComputerUI>Text </ComputerUI>view, copy the &lt;MediaContent> or other element, paste into Word as text and style as <i>RawXML</i>; then leave it well alone. In future, this XML will be copied verbatim during conversion, recreating the tag that accesses media.</Paragraph>
-            <Paragraph>If you are reusing existing material with interactive assets, then the XML source will already exist and can be simply copied. For early stages of drafting, the asset may not yet exist: you might choose to use an image and description as a placeholder. At a later stage of production, LDS staff may share drafts using VLE pages and you can then incorporate the relevant XML into your draft.</Paragraph>
          </Section>
          <Section>
             <Title>Tables</Title>
             <Paragraph>Simples: just use normal Word table features, and things will work...</Paragraph>
-            <Table>
+            <Table class="normal" style="topbottomrules">
                <TableHead>Simple table</TableHead>
                <tbody>
                   <tr>
-                     <td class="TableCentered"><Paragraph><b>Header</b></Paragraph></td>
-                     <td class="TableCentered"><Paragraph><b>Col one</b></Paragraph></td>
-                     <td class="TableCentered"><Paragraph><b>Col two</b></Paragraph></td>
-                     <td class="TableCentered"><Paragraph><b>Col three</b></Paragraph></td>
+                     <th>Header</th>
+                     <th>Col one</th>
+                     <th>Col two</th>
+                     <th>Col three</th>
                   </tr>
                   <tr>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                     <td><Paragraph>row 1, col one</Paragraph></td>
-                     <td><Paragraph>row 1, col two</Paragraph></td>
-                     <td><Paragraph>row 1, col three</Paragraph></td>
+                     <td>Row 1</td>
+                     <td>row 1, col one</td>
+                     <td>row 1, col two</td>
+                     <td>row 1, col three</td>
                   </tr>
                   <tr>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>row 2, col one</Paragraph></td>
-                     <td><Paragraph>row 2, col two</Paragraph></td>
-                     <td><Paragraph>row 2, col three</Paragraph></td>
+                     <td>Row 2</td>
+                     <td>row 2, col one</td>
+                     <td>row 2, col two</td>
+                     <td>row 2, col three</td>
                   </tr>
                </tbody>
-               <Description/>
             </Table>
             <Paragraph>Plain vanilla tables will work, including left/centre/right alignment (use <ComputerUI>Paragraph > Align</ComputerUI> toolbar buttons) and decimal alignment (use <ComputerUI>Paragraph > Tabs > Decimal</ComputerUI>). </Paragraph>
             <Paragraph><i>Limitation</i>: alignment requires heuristics; let me know if unreliable. Decimal alignment likely to be lost on round-trip conversions; recreate decimal tab stop if necessary.</Paragraph>
@@ -160,17 +143,17 @@
                   <tr>
                      <td><Paragraph>Row 1</Paragraph></td>
                      <td><Paragraph>Left</Paragraph></td>
-                     <td><Paragraph>1.23</Paragraph></td>
+                     <td class="TableDecimal"><Paragraph>1.23</Paragraph></td>
                   </tr>
                   <tr>
                      <td><Paragraph>Row 2</Paragraph></td>
                      <td class="TableCentered"><Paragraph>Centre</Paragraph></td>
-                     <td><Paragraph>123.4567</Paragraph></td>
+                     <td class="TableDecimal"><Paragraph>123.4567</Paragraph></td>
                   </tr>
                   <tr>
                      <td><Paragraph>Row 3</Paragraph></td>
                      <td class="TableRight"><Paragraph>Right</Paragraph></td>
-                     <td><Paragraph>123.0</Paragraph></td>
+                     <td class="TableDecimal"><Paragraph>123.0</Paragraph></td>
                   </tr>
                </tbody>
                <Description/>
@@ -255,31 +238,38 @@
             <ListItem>Item two</ListItem>
          </BulletedList>
          <Paragraph>Numbered list:</Paragraph>
-         <NumberedList start="1" class="decimal">
+         <NumberedList class="decimal">
             <ListItem>Item one</ListItem>
             <ListItem>Item two</ListItem>
          </NumberedList>
          <Paragraph>Unnumbered list:</Paragraph>
          <UnNumberedList>
-            <ListItem><Paragraph>Item one</Paragraph></ListItem>
-            <ListItem><Paragraph>Item two</Paragraph></ListItem>
+            <ListItem>Item one</ListItem>
+            <ListItem>Item two</ListItem>
          </UnNumberedList>
-         <Paragraph><i>Care needed</i>: To create lists in Word, use the toolbar buttons for bulleted, numbered and outline lists. Use the <i>List Paragraph</i> style to create an SC &lt;UnNumberedList>. In general, Word allows you to mess with indentation to create things that look like lists, but the result may simply be indented paragraphs and the indentation will be lost on conversion. To remedy problems, try <ComputerUI>Styles > Clear all </ComputerUI>and reapply list structure cleanly.</Paragraph>
+         <Paragraph>To create lists in Word, use the toolbar buttons for bulleted, numbered and outline lists. Use the <i>List Paragraph</i> style to create an SC &lt;UnNumberedList>. </Paragraph>
+         <Paragraph><i>Care needed</i>: In general, Word allows you to mess with indentation to create things that look like lists, but the result may simply be indented paragraphs and the indentation will be lost on conversion. To remedy problems, try:</Paragraph>
+         <NumberedList class="lower-alpha">
+            <ListItem><Paragraph>Remove list styling using toolbar buttons, or</Paragraph></ListItem>
+            <ListItem><Paragraph>Remove list styling by applying <i>Normal </i>style, or</Paragraph></ListItem>
+            <ListItem> <Paragraph>Remove all styling with <ComputerUI>Styles > Clear all</ComputerUI>.</Paragraph></ListItem>
+         </NumberedList>
+         <Paragraph>Then reapply list structure cleanly.</Paragraph>
          <Paragraph>Nested lists are possible, although structured content only allows two levels.</Paragraph>
          <Paragraph>Bulleted list:</Paragraph>
          <BulletedList>
-            <ListItem>Fruit <BulletedSubsidiaryList><SubListItem>Apple</SubListItem><SubListItem>Banana</SubListItem></BulletedSubsidiaryList></ListItem>
-            <ListItem>Vegetables <BulletedSubsidiaryList><SubListItem>Aubergine</SubListItem><SubListItem>Broccoli</SubListItem></BulletedSubsidiaryList></ListItem>
+            <ListItem>Fruit <BulletedSubsidiaryList> <SubListItem>Apple</SubListItem> <SubListItem>Banana</SubListItem> </BulletedSubsidiaryList></ListItem>
+            <ListItem>Vegetables <BulletedSubsidiaryList> <SubListItem>Aubergine</SubListItem> <SubListItem>Broccoli</SubListItem> </BulletedSubsidiaryList></ListItem>
          </BulletedList>
          <Paragraph>Numbered list:</Paragraph>
-         <NumberedList start="1" class="decimal">
-            <ListItem>Fruit <NumberedSubsidiaryList start="1" class="decimal"><SubListItem>Apple</SubListItem><SubListItem>Banana</SubListItem></NumberedSubsidiaryList></ListItem>
-            <ListItem>Vegetables <NumberedSubsidiaryList start="1" class="decimal"><SubListItem>Aubergine</SubListItem><SubListItem>Broccoli</SubListItem></NumberedSubsidiaryList></ListItem>
+         <NumberedList class="decimal">
+            <ListItem>Fruit <NumberedSubsidiaryList class="decimal"> <SubListItem>Apple</SubListItem> <SubListItem>Banana</SubListItem> </NumberedSubsidiaryList></ListItem>
+            <ListItem>Vegetables <NumberedSubsidiaryList class="decimal"> <SubListItem>Aubergine</SubListItem> <SubListItem>Broccoli</SubListItem> </NumberedSubsidiaryList></ListItem>
          </NumberedList>
          <Paragraph>An outline / nested list where numbering style differs at each level is possible in both Word and SC, but conversion is not guaranteed. Use the Word outline list toolbar button.</Paragraph>
-         <NumberedList class="decimal" start="1">
-            <ListItem><Paragraph>Fruit</Paragraph><NumberedSubsidiaryList class="lower-alpha" start="1"><SubListItem><Paragraph>Apple</Paragraph></SubListItem><SubListItem><Paragraph>Banana</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
-            <ListItem><Paragraph>Vegetables</Paragraph><NumberedSubsidiaryList class="lower-alpha" start="1"><SubListItem><Paragraph>Aubergine</Paragraph></SubListItem><SubListItem><Paragraph>Broccoli</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
+         <NumberedList start="1" class="decimal">
+            <ListItem><Paragraph>Fruit</Paragraph><NumberedSubsidiaryList start="1" class="lower-alpha"> <SubListItem><Paragraph>Apple</Paragraph></SubListItem><SubListItem><Paragraph>Banana</Paragraph></SubListItem> </NumberedSubsidiaryList></ListItem>
+            <ListItem><Paragraph>Vegetables</Paragraph><NumberedSubsidiaryList start="1" class="lower-alpha"> <SubListItem><Paragraph>Aubergine</Paragraph></SubListItem><SubListItem><Paragraph>Broccoli</Paragraph></SubListItem> </NumberedSubsidiaryList></ListItem>
          </NumberedList>
          <Paragraph>Numbered lists don’t have to start at ‘1’ (or ‘a’, ‘i’); you may wish to continue a list after intervening content. First an alphabetical list starting at (d):</Paragraph>
          <NumberedList start="4" class="lower-alpha">
@@ -294,35 +284,52 @@
             <ListItem>toadstool</ListItem>
          </NumberedList>
          <Paragraph><i>Limitation</i>: for lists created in Word, the first digit is used to infer the list type and start number. So some start values are ambiguous (i, v, o, x) or not possible (numbers beyond 9, letters beyond z). You can fix once in XML.</Paragraph>
-         <Paragraph><i>Limitation</i>: Structured content allows list items to have complex content: more than one paragraph of text, figures, tables, equations etc. This is not fully supported in Word since it is tricky to show where a complex item ends. For simple cases, inserting Word manual line breaks (<ComputerUI>Shift+Enter</ComputerUI>) will have the desired effect. </Paragraph>
-         <NumberedList class="lower-alpha" start="1">
-            <ListItem><Paragraph> </Paragraph><NumberedSubsidiaryList class="lower-roman" start="1"><SubListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is</Paragraph><Paragraph><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX></InlineEquation></Paragraph><Paragraph> (Check: The line slopes down, so the gradient should be negative.) </Paragraph></SubListItem><SubListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is</Paragraph><Paragraph><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6.</TeX></InlineEquation></Paragraph><Paragraph> (Check: The line slopes up, so the gradient should be positive.)</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
-            <ListItem><Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph></ListItem>
-         </NumberedList>
-         <Paragraph>Alternatively, turn complex content into body-level content and restart the list at the next item. For the most difficult cases, replace the first level of listing by <i>SubHeadings</i> and (if necessary) the second level by <i>SubSubHeadings</i>. Conversion into a complex SC list can be done at handover. (Note: <i>SubHeading</i> and <i>SubSubHeading</i> can only be used within an activity or box, but you can insert an <i>InternalSection</i> in body text to avoid this restriction.)</Paragraph>
-         <InternalSection>
-            <SubHeading>(a)</SubHeading>
-            <NumberedList class="decimal" start="1">
-               <ListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is </Paragraph></ListItem>
+         <Paragraph>The examples above are simple: each list item is only a single paragraph. These are easy to create in Word and will translate straightforwardly to structured content. See the next section for dealing with more complex list structures. </Paragraph>
+         <Section>
+            <Title>Extended lists</Title>
+            <Paragraph>Structured content allows list items to have extended content: more than one paragraph of text, figures, tables, equations etc. This is straightforward in SC since the tagging shows where each item begins and ends. However, where a Word list item has extended content, the list is broken around the additional content, and this would lead to poor structure in SC.</Paragraph>
+            <Paragraph>For simple cases, inserting Word manual line breaks (<ComputerUI>Shift+Enter</ComputerUI>) within a list item is sufficient to achieve the desired effect:</Paragraph>
+            <NumberedList class="lower-alpha">
+               <ListItem><NumberedSubsidiaryList class="lower-roman"><SubListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is<br/><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX></InlineEquation><br/>(Check: The line slopes down, so the gradient should be negative.) </Paragraph></SubListItem><SubListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is<br/><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX></InlineEquation><br/>(Check: The line slopes up, so the gradient should be positive.)</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
+               <ListItem><Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph></ListItem>
             </NumberedList>
-            <Equation>
-               <TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX>
-            </Equation>
-            <Paragraph>(Check: The line slopes down, so the gradient should be negative.) </Paragraph>
-            <NumberedList class="decimal" start="2">
-               <ListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is</Paragraph></ListItem>
+            <Paragraph>This hack isn’t possible if the extended content includes figures, tables, display equations and so on. In that case, surround the list with blank lines of <i>ListHead</i> and <i>ListEnd</i> style. Within this pair, any content following a list item is assumed to be part of the same item until the next item is reached. (Note that indentation in Word is ignored when converting to SC.)</Paragraph>
+            <NumberedList class="lower-alpha">
+               <ListItem><NumberedSubsidiaryList class="lower-roman"><SubListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is</Paragraph><Equation><TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX></Equation><Paragraph>(Check: The line slopes down, so the gradient should be negative.) </Paragraph></SubListItem><SubListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is</Paragraph><Equation><TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX></Equation><Paragraph>(Check: The line slopes up, so the gradient should be positive.)</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
+               <ListItem><Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph></ListItem>
             </NumberedList>
-            <Equation>
-               <TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX>
-            </Equation>
-            <Paragraph>(Check: The line slopes up, so the gradient should be positive.)</Paragraph>
-            <SubHeading>(b)</SubHeading>
-            <Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph>
-         </InternalSection>
+            <Paragraph>In a few cases, a further bracketing may be required around a sublist to clarify the structure:</Paragraph>
+            <NumberedList class="lower-alpha">
+               <ListItem><Paragraph>Calculate the gradients of the lines shown below.</Paragraph><Figure><Image src="\\dog\units_non_course\TM110\Unit 6\mu123_u6_fact_05.png"/>  </Figure></ListItem>
+               <ListItem>      <Paragraph>For each of the following pairs of points, calculate the gradient of the line that passes through them.</Paragraph><NumberedSubsidiaryList class="lower-roman">            <SubListItem><Paragraph><InlineEquation><TeX>A(2,2)</TeX></InlineEquation> and <InlineEquation><TeX>B(-2,2)</TeX></InlineEquation></Paragraph></SubListItem><SubListItem><Paragraph><InlineEquation><TeX>A(2,2)</TeX></InlineEquation> and <InlineEquation><TeX>C(-1.5,-2.5)</TeX></InlineEquation></Paragraph></SubListItem><SubListItem><Paragraph><InlineEquation><TeX>A(2,2)</TeX></InlineEquation> and <InlineEquation><TeX>D(3,-1)</TeX></InlineEquation></Paragraph></SubListItem></NumberedSubsidiaryList><Paragraph>(You might find it helpful to first sketch these points on a graph.) <AuthorComment>SubListHead/End clarifies that this line belongs to b) not iii)</AuthorComment></Paragraph></ListItem>
+               <ListItem><Paragraph>What is the rise between any two points on a <i>horizontal</i> line? What is the gradient of a horizontal line?</Paragraph></ListItem>
+            </NumberedList>
+            <Paragraph>If all else fails, replace the first level of listing by <i>SubHeadings</i> and (if necessary) the second level by <i>SubSubHeadings</i>. (Note: <i>SubHeading</i> and <i>SubSubHeading</i> can only be used within an activity or box, but you can insert an <i>InternalSection</i> in body text to avoid this restriction.) Doing things by hand is also a way to escape the SC restriction to two list levels. </Paragraph>
+            <InternalSection>
+               <SubHeading>Question 1</SubHeading>
+               <SubSubHeading>(a)</SubSubHeading>
+               <NumberedList>
+                  <ListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is </Paragraph></ListItem>
+               </NumberedList>
+               <Equation>
+                  <TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX>
+               </Equation>
+               <Paragraph>(Check: The line slopes down, so the gradient should be negative.) </Paragraph>
+               <NumberedList start="2">
+                  <ListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is</Paragraph></ListItem>
+               </NumberedList>
+               <Equation>
+                  <TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX>
+               </Equation>
+               <Paragraph>(Check: The line slopes up, so the gradient should be positive.)</Paragraph>
+               <SubSubHeading>(b)</SubSubHeading>
+               <Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph>
+            </InternalSection>
+         </Section>
       </Session>
       <Session id="boxes">
          <Title>Boxes</Title>
-         <Paragraph>There are a variety of box-like structures available in structured content. Most were intended to have semantic meaning, for example using &lt;Reading> means you could generate a list of all the Readings in a module, but there is also a generic &lt;Box>. All function as containers, both structurally and visually. In Word, a box is created between pairs of styled paragraphs, for example <i>StudyNoteHead</i> and <i>StudyNoteEnd</i> to enclose a &lt;StudyNote>. Any text on the <i>StudyNoteHead</i> line will be used as a heading; text on the <i>StudyNoteEnd</i> line will be lost.</Paragraph>
+         <Paragraph>There is a variety of box-like structures available in structured content. Most were intended to have semantic meaning, for example using &lt;Reading> means you could generate a list of all the Readings in a module, but there is also a generic &lt;Box&gt;. All function as containers, both structurally and visually. In Word, a box is created between pairs of styled paragraphs, for example <i>StudyNoteHead</i> and <i>StudyNoteEnd</i> to enclose a &lt;StudyNote&gt;. Any text on the <i>StudyNoteHead</i> line will be used as a heading; text on the <i>StudyNoteEnd</i> line will be lost.</Paragraph>
          <Paragraph>If you don’t follow these rules, the generated XML will show validation errors. Hopefully these will help you understand the problem and fix it in XML; you can then correct the styling of your Word master so that the next conversion is less painful.</Paragraph>
          <Example>
             <Heading>Example</Heading>
@@ -358,43 +365,42 @@
             <Paragraph>A paragraph of body text.</Paragraph>
          </CaseStudy>
          <Paragraph>A paragraph of body text.</Paragraph>
-         <Paragraph><i>Limitation</i>: Boxes can be given different styles and resource icons but these are not (currently) supported in Word. Sorry.</Paragraph>
-         <Box>
+         <Box type="style1">
             <Heading>Box style 1</Heading>
             <Paragraph>A paragraph of body text.</Paragraph>
             <Paragraph>A paragraph of body text.</Paragraph>
          </Box>
          <Paragraph>A paragraph of body text.</Paragraph>
          <Paragraph>A paragraph of body text.</Paragraph>
-         <Box>
+         <Box type="style2">
             <Heading>Box style 2</Heading>
             <Paragraph>A paragraph of body text.</Paragraph>
             <Paragraph>A paragraph of body text.</Paragraph>
          </Box>
          <Paragraph>A paragraph of body text.</Paragraph>
          <Paragraph>A paragraph of body text.</Paragraph>
-         <Box>
+         <Box type="style3">
             <Heading>Box style 3</Heading>
             <Paragraph>A paragraph of body text.</Paragraph>
             <Paragraph>A paragraph of body text.</Paragraph>
          </Box>
          <Paragraph>A paragraph of body text.</Paragraph>
          <Paragraph>A paragraph of body text.</Paragraph>
-         <Box>
+         <Box type="style4">
             <Heading>Box style 4</Heading>
             <Paragraph>A paragraph of body text.</Paragraph>
             <Paragraph>A paragraph of body text.</Paragraph>
          </Box>
          <Paragraph>A paragraph of body text.</Paragraph>
          <StudyNote>
-            <Paragraph>A study note doesn't require a heading.</Paragraph>
+            <Paragraph>A study note doesn’t require a heading.</Paragraph>
          </StudyNote>
          <Paragraph>A paragraph of body text.</Paragraph>
          <Box>
-            <Paragraph>All types of box don't require a heading.</Paragraph>
+            <Paragraph>All types of box don’t require a heading.</Paragraph>
          </Box>
          <Paragraph>A paragraph of body text.</Paragraph>
-         <StudyNote>
+         <StudyNote resource1="reading_matter" resource2="calculator" resource3="forum">
             <Heading>Icons</Heading>
             <Paragraph>All boxy things can be flagged with up to three icons from a <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185755&amp;section=1.1">long list</a>.</Paragraph>
          </StudyNote>
@@ -403,14 +409,13 @@
             <Heading>Quote heading</Heading>
             <Paragraph>This is a quote</Paragraph>
             <Paragraph>Another quoted paragraph.</Paragraph>
-            <Reference>Anon (traditional) &lt;Reference></Reference>
+            <Reference>Anon (traditional) &lt;Reference&gt;</Reference>
          </Quote>
          <Paragraph>A paragraph of body text.</Paragraph>
-         <Paragraph>An &lt;InternalSection> acts like a box but is considered later in <CrossRef idref="test-headings">Test of heading levels</CrossRef>.</Paragraph>
+         <Paragraph>An &lt;InternalSection&gt; acts like a box but is considered later in <CrossRef idref="test-headings">Test of heading levels</CrossRef>.</Paragraph>
          <Paragraph>A paragraph of body text.</Paragraph>
          <StudyNote>
             <Heading>Limitations</Heading>
-            <Paragraph>It is not currently possible to set icons or adjust box style in Word. I feel too messy for too little benefit, but contact me if you think this would be valuable.</Paragraph>
             <Paragraph>Although SC allows it, I do not support nested boxes in any permutation. On the VLE, nothing much is achieved by doing so anyway – only one structure is visible. Remember that all boxes allow <i>SubHeading</i> and <i>SubSubHeading</i> if you need some internal structure. </Paragraph>
          </StudyNote>
          <Paragraph>A paragraph of body text.</Paragraph>
@@ -419,17 +424,16 @@
             <KeyPoint>First important thing: remember to use a matching closing style, e.g. <i>BoxHead</i> and <i>BoxEnd</i>.</KeyPoint>
             <KeyPoint>Second important thing: for a box without a heading, use an empty <i>BoxHead</i>.</KeyPoint>
             <KeyPoint>Final thing: A &lt;KeyPoint> looks just the same as a normal para to me.</KeyPoint>
-            <Paragraph>KeyPoints are structured differently and have a different semantic import to other boxes but are visually pretty similar.</Paragraph>
+            <Paragraph>KeyPoints are structured differently and have a different semantic import to other boxes but are visually pretty similar (shame).</Paragraph>
          </KeyPoints>
       </Session>
       <Session>
          <Title>Activities</Title>
-         <Paragraph>Structured content supports a range of structures for activities of various sorts. &lt;Activity> is probably the generic type; others are variants, e.g. ITQ works for short/quick interactions. All have a basic structure of: &lt;Question>, &lt;Interaction>, &lt;Answer>, &lt;Discussion>. Components are optional: &lt;Question> &lt;Answer> and &lt;Question> &lt;Discussion> are common combinations. All parts can contain many elements: paragraphs, lists, tables, etc.</Paragraph>
-         <Paragraph>&lt;Interaction> creates interactive questions (single choice, multiple choice, matching, free text and more). These would be a pain to set up in Word so set up in oXygen and copy back into Word as <i>RawXML</i>; content can be tweaked once in Word.</Paragraph>
-         <Paragraph>Activities are similar to boxes; they are visually and semantically enclosed. In Word, an activity is created between pairs of styled paragraphs, for example <i>ActivityHead</i> and <i>ActivityEnd</i> enclose an &lt;Activity>. The question immediately follows <i>ActivityHead</i>; add a line styled <i>Answer</i> and/or <i>Discussion</i> to separate the question from answer and discussion. Any text on the <i>ActivityHead</i> line will be used as a heading; text on the <i>ActivityEnd</i>, <i>Answer</i> and <i>Discussion</i> lines will be lost. To create other activities, chose styles appropriately, for example <i>ExerciseHead</i>, <i>Discussion</i> and <i>ExerciseEnd</i>.</Paragraph>
-         <Paragraph><i>Limitation</i>: In XML, all activities can be given icons from the <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185755&amp;section=1.1">list</a> but this isn’t (currently) supported in Word. Maybe an AuthorComment to <AuthorComment>note which icons</AuthorComment> until final handover?</Paragraph>
+         <Paragraph>Structured content supports a range of structures for activities of various sorts. &lt;Activity&gt; is probably the generic type; others are variants, e.g. ITQ works for short/quick interactions. All have a basic structure of: &lt;Question&gt;, &lt;Interaction&gt;, &lt;Answer&gt;, &lt;Discussion&gt;. Components are optional: &lt;Question&gt; &lt;Answer&gt; and &lt;Question&gt; &lt;Discussion&gt; are common combinations. All parts can contain many elements: paragraphs, lists, tables, etc.</Paragraph>
+         <Paragraph>&lt;Interaction&gt; creates interactive questions (single choice, multiple choice, matching, free text and more). These would be a pain to set up in Word so set up in oXygen and copy back into Word as <i>RawXML</i> (see <CrossRef idref="rawxml">Escape to RawXML</CrossRef>). Content can be tweaked once in Word, for example to correct a typo.</Paragraph>
+         <Paragraph>Activities are similar to boxes; they are visually and semantically enclosed. In Word, an activity is created between pairs of styled paragraphs, for example <i>ActivityHead</i> and <i>ActivityEnd</i> enclose an &lt;Activity&gt;. The question immediately follows <i>ActivityHead</i>; add a line styled <i>Answer</i> and/or <i>Discussion</i> to separate the question from answer and discussion. Any text on the <i>ActivityHead</i> line will be used as a heading; text on the <i>ActivityEnd</i>, <i>Answer</i> and <i>Discussion</i> lines will be lost. To create other activities, chose styles appropriately, for example <i>ExerciseHead</i>, <i>Discussion</i> and <i>ExerciseEnd</i>.</Paragraph>
          <Paragraph><i>Limitation</i>: Although SC allows it, I do not support nested boxes / activities in any permutation. Remember that all boxes allow <i>SubHeading</i> and <i>SubSubHeading</i>. If you feel, say, an activity needs a study note, maybe place it before/after?</Paragraph>
-         <Activity>
+         <Activity resource1="activity" resource2="cloud_based">
             <Heading>Activity</Heading>
             <Question>
                <Paragraph>This is the question.</Paragraph>
@@ -509,77 +513,68 @@
          <RevealMore>Reveal text: Can occur anywhere but can only be simple text, not paragraphs or other content.</RevealMore>
          <Paragraph>A paragraph of body text.</Paragraph>
          <Paragraph>See <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185753">Activities</a> for the full list of activity types.</Paragraph>
-         <Paragraph><i>Limitation</i>: SC supports &lt;Multipart> for activities made of several parts, each of which is functionally a complete activity. (A motivation might be to avoid numbering parts individually.) I have not implemented this in Word: please use separate activities and combine in oXygen at handover where necessary.</Paragraph>
+         <Paragraph><i>Limitation</i>: SC supports &lt;Multipart&gt; for activities made of several parts, each of which is functionally a complete activity. (A motivation might be to avoid numbering parts individually.) I have not implemented this in Word: please use separate activities and combine in oXygen at handover where necessary.</Paragraph>
       </Session>
       <Session>
          <Title>Images</Title>
-         <Paragraph>You will want to paste images into a Word document so you can see what you are writing about but unfortunately these images will not transfer to XML. The VLE preview/publishing system requires images and other assets to be placed on a server. Following the recipe below will allow you to preview/publish images from a server such as <a href="file://dog/">\\dog</a> (for drafts) or SharePoint (for final images), as well as see your images in context while writing.</Paragraph>
+         <Paragraph>You will want to paste images into a Word document so you can see what you are writing about but unfortunately these images will not transfer to XML. The VLE preview/publishing system requires images and other assets to be placed on a server. Following the recipe below will allow you to preview/publish images from a server such as <a href="file://dog">\\dog</a> (for drafts) or SharePoint (for final images), as well as see your images in context while writing.</Paragraph>
          <Paragraph>Use the following styling on successive lines:</Paragraph>
-         <NumberedList start="1" class="decimal">
-            <ListItem><i>Figure</i> for a paragraph in which the image is pasted (but note this image is a visual placeholder; the render will use the file at the URL given as <i>FigureSrc</i>).</ListItem>
-            <ListItem><i>FigureSrc</i> for the URL of the image file on a web server (or pathname if on a file server)</ListItem>
-            <ListItem><i>Caption</i> for text of caption (see earlier section for advice on figure <CrossRef idref="numbering">numbering</CrossRef>)</ListItem>
-            <ListItem><i>Alternative</i> for alt text if required</ListItem>
-            <ListItem><i>SourceReference</i> to show where the figure originated (LDS don’t do this; they extract from rights database, insert at end of each document and keep themselves busy checking numbering)</ListItem>
-            <ListItem><i>Description</i> for long description (one or more lines)</ListItem>
+         <NumberedList class="decimal">
+            <ListItem><Paragraph><i>Figure</i> for a paragraph in which the image is pasted (but note this image is a visual placeholder; the render will use the file at the URL given as <i>FigureSrc</i>).</Paragraph></ListItem>
+            <ListItem><Paragraph><i>FigureSrc</i> for the URL of the image file on a web server (or pathname if on a file server)</Paragraph></ListItem>
+            <ListItem><Paragraph><i>Caption</i> for text of caption (see earlier section for advice on figure <CrossRef idref="numbering">numbering</CrossRef>)</Paragraph></ListItem>
+            <ListItem><Paragraph><i>Alternative</i> for alt text if required</Paragraph></ListItem>
+            <ListItem><Paragraph><i>SourceReference</i> to show where the figure originated (LDS don’t do this; they extract from rights database, insert at end of each document and keep themselves busy checking numbering)</Paragraph></ListItem>
+            <ListItem><Paragraph><i>Description</i> for long description (one or more lines)</Paragraph></ListItem>
          </NumberedList>
-         <Paragraph><i>Figure</i> must be used to generate the &lt;Figure> tag; others are optional but should appear in order.</Paragraph>
-         <Paragraph>&lt;<i>IMHO</i>> A good caption and figure description are more useful to more people than alt-text.&lt;/<i>IMHO</i>></Paragraph>
-         <Paragraph>&lt;<i>hobbyhorse</i>>The <i>SourceReference</i> can be used as acknowledgement for each figure, but I suggest that during authoring, you also use it as a cross-reference to the OU Rights Database aka ‘The Portal’. For every copyright image, get its unique ID and incorporate it into <i>SourceReference</i>. Also use <i>SourceReference</i> to note figures/images that do not need copyright clearance: OU drawn, screen dumps, Creative Commons, etc. Then you can run my custom transform in oXygen to generate an asset list for the current document should your curriculum manager or LDS project manager demand it; this report shows &lt;SourceReference> and therefore essential rights info. To keep busywork to a minimum, it might be better to initially only inform LDS about images that definitely require copyright clearance. Those that don’t require clearance can wait to be added to the rights portal at final handover. This avoids trying to keep portal entries (e.g. figure numbers!) in sync with documents that are still being drafted. &lt;/<i>hobbyhorse</i>></Paragraph>
+         <Paragraph><i>Figure</i> must be used to generate the &lt;Figure&gt; tag; others are optional but should appear in order.</Paragraph>
+         <Paragraph>&lt;<i>IMHO</i>&gt; A good caption and figure description are more useful to more people than alt-text.&lt;/<i>IMHO</i>&gt;</Paragraph>
+         <Paragraph>&lt;<i>hobbyhorse</i>&gt;The <i>SourceReference</i> can be used as acknowledgement for each figure, but I suggest that during authoring, you also use it as a cross-reference to the OU Rights Database aka ‘The Portal’. For every copyright image, get its unique ID and incorporate it into <i>SourceReference</i>. Also use <i>SourceReference</i> to note figures/images that do not need copyright clearance: OU drawn, screen dumps, Creative Commons, etc. Then you can run my custom transform in oXygen to generate an asset list for the current document should your curriculum manager or LDS project manager demand it; this report shows &lt;SourceReference&gt; and therefore essential rights info. To keep busywork to a minimum, it might be better to initially only inform LDS about images that definitely require copyright clearance. Those that don’t require clearance can wait to be added to the rights portal at final handover. This avoids trying to keep portal entries (e.g. figure numbers!) in sync with documents that are still being drafted. &lt;/<i>hobbyhorse</i>&gt;</Paragraph>
          <Paragraph>An image follows this paragraph:</Paragraph>
          <Figure>
             <Image src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmimages/tg089_wk05_f002.tif.jpg"/>
             <Caption>Magnified screen showing individual pixels of an icon</Caption>
-            <Alternative/>
             <SourceReference>© The Open University</SourceReference>
-            <Description/>
          </Figure>
          <Paragraph> </Paragraph>
          <Paragraph>Another image, this time with description.</Paragraph>
          <Figure>
             <Image src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmimages/tg089_wk05_f019.tif.jpg"/>
             <Caption>The bright rose draws our eye</Caption>
-            <Alternative/>
             <SourceReference>Courtesy of Margaret Salisbury</SourceReference>
-            <Description><Paragraph>Two figures in elaborate masks and costumes during the Venice Carnival. One figure has a white costume, the other black, and both silhouetted against an evening sky. The figure in black offers a bright red rose to the figure in white.</Paragraph><Paragraph>Additional paragraph of description if required.</Paragraph><Paragraph>Another paragraph of description if required.</Paragraph></Description>
+            <Description><Paragraph>Two figures in elaborate masks and costumes during the Venice Carnival. One figure has a white costume, the other black, and both silhouetted against an evening sky. The figure in black offers a bright red rose to the figure in white.</Paragraph><Paragraph>Additional paragraph of description if required.</Paragraph><Paragraph>Another paragraph of description if required.</Paragraph> </Description>
          </Figure>
          <Paragraph>Back to a normal paragraph.</Paragraph>
          <Paragraph>Another image</Paragraph>
          <Figure>
             <Image src="https://openuniv.sharepoint.com/sites/tmodules/tg089/session1e1/t189s01_f05-03.jpg"/>
             <Caption>Misty trees</Caption>
-            <Alternative/>
             <SourceReference>TG089 course team, The Open University</SourceReference>
-            <Description><Paragraph>A square format landscape showing two birch trees in silhouette against a misty background. The photo overall is low-key and has as a purplish tint.</Paragraph></Description>
+            <Description><Paragraph>A square format landscape showing two birch trees in silhouette against a misty background. The photo overall is low-key and has as a purplish tint.</Paragraph> </Description>
          </Figure>
          <Paragraph>Back to a normal paragraph.</Paragraph>
          <Figure>
             <Image src="\\dog\units_non_course\TG089\jpr2\tm129_blk03_tm129_lin_w1_f01.tif.png"/>
             <Caption>An image from \\dog</Caption>
-            <Alternative/>
-            <SourceReference/>
-            <Description/>
          </Figure>
          <Paragraph>Back to a normal paragraph.</Paragraph>
          <Paragraph><AuthorComment>Image below to follow</AuthorComment></Paragraph>
          <Figure>
             <Image src="https://openuniv.sharepoint.com/sites/tmodules/tm129/lmimages/missing.png"/>
             <Caption>An image with no url given</Caption>
-            <Alternative/>
             <SourceReference>Steve Granger, The Open University</SourceReference>
-            <Description><Paragraph>A close-up of a rock rose with white petals and yellow centre. The centre of the flower is on the right rule of thirds. Two more blooms on the left top and bottom rule of thirds are out of focus in the background.</Paragraph></Description>
+            <Description><Paragraph>A close-up of a rock rose with white petals and yellow centre. The centre of the flower is on the right rule of thirds. Two more blooms on the left top and bottom rule of thirds are out of focus in the background.</Paragraph> </Description>
          </Figure>
          <Paragraph>Images without a source url will show a default image which needs replacing as appropriate. The placeholder is hardwired as https://openuniv.sharepoint.com/sites/tmodules/tm129/lmimages/missing.png which works for now...</Paragraph>
          <Figure>
             <Image src="https://openuniv.sharepoint.com/sites/tmodules/tm129/lmimages/missing.png"/>
             <Caption>An image with a bad url wouldn’t show as ‘missing’ but would generate an error when rendering</Caption>
-            <Alternative/>
             <SourceReference>Steve Granger, The Open University</SourceReference>
-            <Description><Paragraph>A close-up of a rock rose with white petals and yellow centre. The centre of the flower is on the right rule of thirds. Two more blooms on the left top and bottom rule of thirds are out of focus in the background.</Paragraph></Description>
+            <Description> <Paragraph/> <Paragraph>A close-up of a rock rose with white petals and yellow centre. The centre of the flower is on the right rule of thirds. Two more blooms on the left top and bottom rule of thirds are out of focus in the background.</Paragraph> </Description>
          </Figure>
          <Paragraph>Back to a normal paragraph.</Paragraph>
-         <Paragraph>&lt;<i>hobbyhorse</i>> The issue noted earlier with regard to fuzzy equations on high resolution displays may also currently be apparent as fuzzy text in images, for example in hand-drawn figures and screen dumps. Worth a discussion with LDS staff to see if there has been any progress in this area…&lt;/<i>hobbyhorse</i>></Paragraph>
-         <Paragraph>&lt;<i>hobbyhorse</i>> And don't get me started on how LDS processes result in poor image quality, lost colour spaces… Although I believe the handling of large images has now been improved – thanks, Tammy!&lt;/<i>hobbyhorse</i>></Paragraph>
+         <Paragraph>&lt;<i>hobbyhorse</i>&gt; The issue noted earlier with regard to fuzzy equations on high resolution displays may also currently be apparent as fuzzy text in images, for example in hand-drawn figures and screen dumps. Worth a discussion with LDS staff to see if there has been any progress in this area…&lt;/<i>hobbyhorse</i>&gt;</Paragraph>
+         <Paragraph>&lt;<i>hobbyhorse</i>&gt; And don’t get me started on how LDS processes result in poor image quality, lost colour spaces… Although I believe the handling of large images has now been improved – thanks, Tammy!&lt;/<i>hobbyhorse</i>&gt;</Paragraph>
          <StudyNote>
             <Heading>Caption appearance</Heading>
             <Paragraph>The intended appearance of a figure caption on the VLE is for the number to be bold but the caption itself to not be bold. This is controlled by the SC &lt;Caption> and &lt;Number> tags; you should not apply bold directly. I suggest doing no manual styling or numbering and using the numbering script.</Paragraph>
@@ -587,6 +582,7 @@
       </Session>
       <Session>
          <Title>Media content</Title>
+         <Paragraph>Some examples of rich media are given here and an explanation follow.</Paragraph>
          <Paragraph>An introductory video.</Paragraph>
          <Paragraph>Watch the following video to discover what the focus of Week 5 will be.</Paragraph>
          <MediaContent
@@ -612,7 +608,7 @@
          <MediaContent
             src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmimages/tg089s05_f2.2_01.zip"
             type="html5" height="345" id="wk5_act4" width="*">
-            <Description><Paragraph>An interactive figure to illustrate the responses of cones to different wavelengths. A slider at the bottom right below a spectrum can be moved to set the wavelength. To the top left are bars representing how strongly each cone type responds at that wavelength. Buttons below allow you to see the response of an S cone (blue), M cone (green) and L cone (red). At the top right is a graph plotting the relative response (on a scale 0 to 1) of a cone type against wavelength (on a scale 400 to 700 nm which aligns with the spectrum below). This graph shows three traces, each with a similar shape which rises to a peak and then falls. The response of an S cone (blue) peaks at about 450 nm, an M cone (green) peaks at about 560 nm, and an L cone (red) at about 580 nm. The L cone (red) response is somewhat broader than that of the other cones. </Paragraph><Paragraph>As the wavelength is changed, the bar showing the strength of response of a cone type rises and falls and the corresponding response curve is traced out on the graph.</Paragraph></Description>
+            <Description> <Paragraph>An interactive figure to illustrate the responses of cones to different wavelengths. A slider at the bottom right below a spectrum can be moved to set the wavelength. To the top left are bars representing how strongly each cone type responds at that wavelength. Buttons below allow you to see the response of an S cone (blue), M cone (green) and L cone (red). At the top right is a graph plotting the relative response (on a scale 0 to 1) of a cone type against wavelength (on a scale 400 to 700 nm which aligns with the spectrum below). This graph shows three traces, each with a similar shape which rises to a peak and then falls. The response of an S cone (blue) peaks at about 450 nm, an M cone (green) peaks at about 560 nm, and an L cone (red) at about 580 nm. The L cone (red) response is somewhat broader than that of the other cones. </Paragraph><Paragraph>As the wavelength is changed, the bar showing the strength of response of a cone type rises and falls and the corresponding response curve is traced out on the graph.</Paragraph> </Description>
          </MediaContent>
          <Paragraph>Although each cone type responds strongly to one colour of the spectrum, they also respond, to a greater or lesser extent, to a range of colours. This means that light of any particular colour striking the eye will give rise to a combined response by the different types of cone.</Paragraph>
          <Paragraph>Below is a poll not in an activity.</Paragraph>
@@ -622,14 +618,18 @@
                <Parameter name="options_count" value="5"/>
                <Parameter name="save_mode" value="false"/>
                <Parameter name="question"
-                  value="Do you expect to use Linux in the future (after TM129)?"/>
-               <Parameter name="option0" value="No, probably not"/>
-               <Parameter name="option1" value="Possibly – for personal use, study or hobby"/>
-               <Parameter name="option2" value="Possibly – for work or similar purposes"/>
-               <Parameter name="option3" value="Very likely – for personal use, study or hobby"/>
-               <Parameter name="option4" value="Very likely – for work or similar purposes"/>
+                  value="Do you expect to use             Linux in the future (after TM129)?"/>
+               <Parameter name="option0" value="No,             probably not"/>
+               <Parameter name="option1"
+                  value="Possibly          – for personal             use, study or hobby"/>
+               <Parameter name="option2" value="Possibly – for             work or similar purposes"/>
+               <Parameter name="option3"
+                  value="Very likely – for             personal          use, study or hobby"/>
+               <Parameter name="option4"
+                  value="Very             likely – for work or similar          purposes"/>
             </Parameters>
          </MediaContent>
+         <Paragraph/>
          <Paragraph>A poll inside an activity.</Paragraph>
          <Activity>
             <Heading>Activity 1: Poll</Heading>
@@ -643,10 +643,12 @@
                      <Parameter name="options_count" value="3"/>
                      <Parameter name="save_mode" value="false"/>
                      <Parameter name="question"
-                        value="I'm doing this course because I would most like to:"/>
-                     <Parameter name="option0" value="Understand how to use my camera"/>
-                     <Parameter name="option1" value="Learn how to manipulate images"/>
-                     <Parameter name="option2" value="Improve my photography"/>
+                        value="I'm doing this course          because I             would most like to:"/>
+                     <Parameter name="option0"
+                        value="Understand how to             use my                         camera"/>
+                     <Parameter name="option1"
+                        value="Learn how to manipulate                         images"/>
+                     <Parameter name="option2" value="Improve my             photography"/>
                   </Parameters>
                </MediaContent>
                <Paragraph>And this one please:</Paragraph>
@@ -657,10 +659,12 @@
                      <Parameter name="options_count" value="3"/>
                      <Parameter name="save_mode" value="false"/>
                      <Parameter name="question"
-                        value="I'm doing this course because I would most like to:"/>
-                     <Parameter name="option0" value="Understand how to use my camera"/>
-                     <Parameter name="option1" value="Learn how to manipulate images"/>
-                     <Parameter name="option2" value="Improve my photography"/>
+                        value="I'm doing this course          because I             would most like to:"/>
+                     <Parameter name="option0"
+                        value="Understand how to             use my                         camera"/>
+                     <Parameter name="option1"
+                        value="Learn how to manipulate                         images"/>
+                     <Parameter name="option2" value="Improve my             photography"/>
                   </Parameters>
                </MediaContent>
             </Question>
@@ -673,10 +677,30 @@
          <MediaContent type="html5" webthumbnail="false"
             src="https://openuniv.sharepoint.com/sites/tmodules/tm129/lmimages/tm129_blk03_fs_files_f08.zip"
             id="figure9" width="*" height="275">
-            <Caption>Mounting a USB stick onto a Linux system at <ComputerCode>/mnt/usb</ComputerCode></Caption>
-            <Description><Paragraph>An animated diagram to illustrate disk mounting.</Paragraph><Paragraph>Before the mount there are two separate file hierarchies: one for the Linux system and the other for a USB stick.</Paragraph><Paragraph>The Linux system has a file system starting at root / with directories bin, lib, mnt, and usr. The mnt directory has two subdirectories, usb and dvd, which are empty.</Paragraph><Paragraph>The USB stick has a file system starting at root / which has two directories, TM111 and TM129, and TM129 contains two files tma01.docx and tma02.docx.</Paragraph><Paragraph>When the animation is run, the entire tree of directories and files on the USB stick is shown sliding over to merge with the Linux system, the root of the USB system joining to the Linux system at the /mnt/usb directory.</Paragraph><Paragraph>After the mount there is therefore a single merged hierarchy on the Linux system. This is unchanged except that the /mnt/usb directory now has directories TM111 and TM129, and TM129 contains two files tma01.docx and tma02.docx.</Paragraph></Description>
+            <Caption>Mounting a USB stick onto a Linux system at <ComputerCode>/mnt/usb</ComputerCode> </Caption>
+            <Description> <Paragraph>An animated diagram to illustrate disk mounting.</Paragraph><Paragraph>Before the mount there are two separate file hierarchies: one for the Linux system and the other for a USB stick.</Paragraph><Paragraph>The Linux system has a file system starting at root / with directories bin, lib, mnt, and usr. The mnt directory has two subdirectories, usb and dvd, which are empty.</Paragraph><Paragraph>The USB stick has a file system starting at root / which has two directories, TM111 and TM129, and TM129 contains two files tma01.docx and tma02.docx.</Paragraph><Paragraph>When the animation is run, the entire tree of directories and files on the USB stick is shown sliding over to merge with the Linux system, the root of the USB system joining to the Linux system at the /mnt/usb directory.</Paragraph><Paragraph>After the mount there is therefore a single merged hierarchy on the Linux system. This is unchanged except that the /mnt/usb directory now has directories TM111 and TM129, and TM129 contains two files tma01.docx and tma02.docx.</Paragraph> </Description>
          </MediaContent>
          <Paragraph>The file <ComputerCode>tma01.docx</ComputerCode> on the USB stick has the path <ComputerCode>/mnt/usb/TM129/tma01.docx</ComputerCode> once mounted.</Paragraph>
+         <Section id="rawxml">
+            <Title>Escape to RawXML</Title>
+            <Paragraph>An escape mechanism is used to preserve data structures as RawXML; this can be used to handle assets such as video, audio, interactives, ITQ interactions, quiz questions... For example this is an interactive asset held in &lt;MediaContent&gt;:</Paragraph>
+            <MediaContent id="sp-motivation-1-2-2a" type="html5"
+               src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmdocs/simple_poll.zip"
+               width="*" height="0">
+               <Parameters>
+                  <Parameter name="options_count" value="3"/>
+                  <Parameter name="save_mode" value="false"/>
+                  <Parameter name="question"
+                     value="I'm doing this course          because I would most like             to:"/>
+                  <Parameter name="option0"
+                     value="Understand how to          use my             camera"/>
+                  <Parameter name="option1" value="Learn how to manipulate             images"/>
+                  <Parameter name="option2" value="Improve my             photography"/>
+               </Parameters>
+            </MediaContent>
+            <Paragraph>These complex structures have little or no text content and are best set up and tested in oXygen. Switch to oXygen <ComputerUI>Text </ComputerUI>view, copy the &lt;MediaContent&gt; or other element, paste into Word as text and style as <i>RawXML</i>; then leave it well alone. In future, this XML will be copied verbatim during conversion, recreating the tag that accesses media.</Paragraph>
+            <Paragraph>If you are reusing existing material with interactive assets, then the XML source will already exist and can be simply copied. For early stages of drafting, the asset may not yet exist: you might choose to use an image and description as a placeholder. At a later stage of production, LDS staff may share drafts using VLE pages and you can then incorporate the relevant XML into your draft.</Paragraph>
+         </Section>
       </Session>
       <Session id="test-headings">
          <Title>Test of heading levels (level 1)</Title>
@@ -685,74 +709,74 @@
             <TableHead>Heading level and SC document structure</TableHead>
             <tbody>
                <tr>
-                  <td class="TableCentered"><Paragraph><b>Word style</b></Paragraph></td>
-                  <td class="TableCentered"><Paragraph><b>Structured Content element</b></Paragraph></td>
-                  <td class="TableCentered"><Paragraph><b>Page navigation?</b></Paragraph></td>
-                  <td class="TableCentered"><Paragraph><b>Hierarchical structure?</b></Paragraph></td>
+                  <th>Word style</th>
+                  <th>Structured Content element</th>
+                  <th>Page navigation?</th>
+                  <th>Hierarchical structure?</th>
                </tr>
                <tr>
-                  <td><Paragraph>Heading 1</Paragraph></td>
-                  <td><Paragraph>Session</Paragraph></td>
-                  <td><Paragraph>yes</Paragraph></td>
-                  <td><Paragraph>level 1</Paragraph></td>
+                  <td>Heading 1</td>
+                  <td>Session</td>
+                  <td>yes</td>
+                  <td>level 1</td>
                </tr>
                <tr>
-                  <td><Paragraph>Heading 2</Paragraph></td>
-                  <td><Paragraph>Section</Paragraph></td>
-                  <td><Paragraph>yes</Paragraph></td>
-                  <td><Paragraph>level 2</Paragraph></td>
+                  <td>Heading 2</td>
+                  <td>Section</td>
+                  <td>yes</td>
+                  <td>level 2</td>
                </tr>
                <tr>
-                  <td><Paragraph>Heading 3</Paragraph></td>
-                  <td><Paragraph>SubSection</Paragraph></td>
-                  <td><Paragraph>yes</Paragraph></td>
-                  <td><Paragraph>level 3</Paragraph></td>
+                  <td>Heading 3</td>
+                  <td>SubSection</td>
+                  <td>yes</td>
+                  <td>level 3</td>
                </tr>
                <tr>
-                  <td><Paragraph>Heading 4</Paragraph></td>
-                  <td><Paragraph>SubSubSection</Paragraph></td>
-                  <td><Paragraph>no</Paragraph></td>
-                  <td><Paragraph>level 4</Paragraph></td>
+                  <td>Heading 4</td>
+                  <td>SubSubSection</td>
+                  <td>no</td>
+                  <td>level 4</td>
                </tr>
                <tr>
-                  <td><Paragraph>SubHeading or Heading 5</Paragraph></td>
-                  <td><Paragraph>SubHeading</Paragraph></td>
-                  <td><Paragraph>no</Paragraph></td>
-                  <td><Paragraph>no</Paragraph></td>
+                  <td>SubHeading or Heading 5</td>
+                  <td>SubHeading</td>
+                  <td>no</td>
+                  <td>no</td>
                </tr>
                <tr>
-                  <td><Paragraph>SubSubHeading or Heading 6</Paragraph></td>
-                  <td><Paragraph>SubSubHeading</Paragraph></td>
-                  <td><Paragraph>no</Paragraph></td>
-                  <td><Paragraph>no</Paragraph></td>
+                  <td>SubSubHeading or Heading 6</td>
+                  <td>SubSubHeading</td>
+                  <td>no</td>
+                  <td>no</td>
                </tr>
             </tbody>
             <Description/>
          </Table>
          <Paragraph>Word styles <i>Heading 1</i> to <i>Heading 4</i> are converted to structural, enclosing SC tags. They must be used in strict hierarchy: you must not jump from <i>Heading 1</i> to <i>Heading 3</i>.</Paragraph>
-         <Paragraph><i>Heading 1</i> to <i>Heading 3</i> will convert to &lt;Session>, &lt;Section> and &lt;SubSection> which are reflected in the VLE navigation menu (so keep section titles short!) and in the contents page of a book. On the VLE, each of these start a new web page with <ComputerUI>Next</ComputerUI> / <ComputerUI>Previous</ComputerUI> navigation.</Paragraph>
-         <Paragraph><i>Heading 4</i> &lt;SubSubSection> does not start a new page; its heading and contents will appear under the enclosing &lt;SubSection>. Once you are within a &lt;SubSubSection>, it is also possible to use &lt;SubHeading> and &lt;SubSubHeading> (Word styles <i>SubHeading</i> and <i>SubSubHeading</i>). These are not structural and you can scatter them with abandon. If used, Word styles <i>Heading 5</i> and <i>Heading 6</i> will translate to &lt;SubHeading> and &lt;SubSubHeading>.</Paragraph>
-         <Paragraph>You can escape from these strict rules by means of &lt;InternalSection>. This can be placed at any hierarchical level; it functions as an invisible <CrossRef idref="boxes">box</CrossRef> within a page and doesn’t cause a page break. It can have a &lt;Heading> which is visually similar to the level 3 heading &lt;SubSection>&lt;Title>. Within an internal section, you can freely place &lt;SubHeading> and &lt;SubSubHeading>. You can therefore use &lt;InternalSection> to create manually organised pages which can be longer than the choppy style enforced by the standard level structure. (Short pages and clicking ‘Next’ was considered preferable to clicking on scroll bars, but that was before the world got used to swiping.)</Paragraph>
+         <Paragraph><i>Heading 1</i> to <i>Heading 3</i> will convert to &lt;Session&gt;, &lt;Section&gt; and &lt;SubSection&gt; which are reflected in the VLE navigation menu (so keep section titles short!) and in the contents page of a book. On the VLE, each of these start a new web page with <ComputerUI>Next</ComputerUI> / <ComputerUI>Previous</ComputerUI> navigation.</Paragraph>
+         <Paragraph><i>Heading 4</i> &lt;SubSubSection&gt; does not start a new page; its heading and contents will appear under the enclosing &lt;SubSection&gt;. Once you are within a &lt;SubSubSection&gt;, it is also possible to use &lt;SubHeading&gt; and &lt;SubSubHeading&gt; (Word styles <i>SubHeading</i> and <i>SubSubHeading</i>). These are not structural and you can scatter them with abandon. If used, Word styles <i>Heading 5</i> and <i>Heading 6</i> will translate to &lt;SubHeading&gt; and &lt;SubSubHeading&gt;.</Paragraph>
+         <Paragraph>You can escape from these strict rules by means of &lt;InternalSection&gt;. This can be placed at any hierarchical level; it functions as an invisible <CrossRef idref="boxes">box</CrossRef> within a page and doesn’t cause a page break. It can have a &lt;Heading&gt; which is visually similar to the level 3 heading &lt;SubSection&gt;&lt;Title&gt;. Within an internal section, you can freely place &lt;SubHeading&gt; and &lt;SubSubHeading&gt;. You can therefore use &lt;InternalSection&gt; to create manually organised pages which can be longer than the choppy style enforced by the standard level structure. (Short pages and clicking ‘Next’ was considered preferable to clicking on scroll bars, but that was before the world got used to swiping.)</Paragraph>
          <Paragraph>OU house style (enforced by LDS) is outline numbering for levels 1–3, but not level 4. Internal sections and headings should escape numbering. See <CrossRef idref="numbering">Numbering</CrossRef> for advice.</Paragraph>
          <Section>
             <Title>A Section (level 2)</Title>
-            <Paragraph>Word style <i>Heading 2 </i>becomes a &lt;Section> which starts a new page and is in navigation menu.</Paragraph>
+            <Paragraph>Word style <i>Heading 2 </i> becomes a &lt;Section&gt; which starts a new page and is in navigation menu.</Paragraph>
             <Paragraph>A paragraph of body text.</Paragraph>
             <Paragraph>Can’t put headings in a Section</Paragraph>
             <Paragraph>A paragraph of body text.</Paragraph>
             <Paragraph>A paragraph of body text.</Paragraph>
             <SubSection>
                <Title>A SubSection (level 3)</Title>
-               <Paragraph>Word style <i>Heading 3 </i>becomes a &lt;SubSection> which starts a new page and is in navigation menu.</Paragraph>
+               <Paragraph>Word style <i>Heading 3 </i> becomes a &lt;SubSection&gt; which starts a new page and is in navigation menu.</Paragraph>
                <Paragraph>A paragraph of body text.</Paragraph>
                <Paragraph>Can’t put headings in a SubSection</Paragraph>
                <Paragraph>A paragraph of body text.</Paragraph>
                <Paragraph>A paragraph of body text.</Paragraph>
                <SubSubSection>
                   <Heading>SubSubSection (level 4)</Heading>
-                  <Paragraph>Word style <i>Heading 4</i> becomes a &lt;SubSubSection> which <i>doesn’t</i> start a new page and <i>isn’t</i> in navigation menu.</Paragraph>
+                  <Paragraph>Word style <i>Heading 4</i> becomes a &lt;SubSubSection&gt; which <i>doesn’t</i> start a new page and <i>isn’t</i> in navigation menu.</Paragraph>
                   <Paragraph>(Confusion over terminology! By the time it gets to structured content, a SubSubSection has a Heading, not a Title; I guess logic is that titles are only given to things that start pages and are part of site navigation. Well, it confused me...)</Paragraph>
-                  <Paragraph>Word <i>Heading 1-4 </i>are converted to structural, enclosing SC tags. You can also use <i>SubHeading</i> and <i>SubSubHeading</i> which can be placed anywhere in a SubSubSection and which are wholly unstructured. Their appearance should be sensible relative to Headings 1-4. Word <i>Heading 5</i> and <i>Heading 6</i> also translate to &lt;SubHeading> and &lt;SubSubHeading>.</Paragraph>
+                  <Paragraph>Word <i>Heading 1-4 </i>are converted to structural, enclosing SC tags. You can also use <i>SubHeading</i> and <i>SubSubHeading</i> which can be placed anywhere in a SubSubSection and which are wholly unstructured. Their appearance should be sensible relative to Headings 1-4. Word <i>Heading 5</i> and <i>Heading 6</i> also translate to &lt;SubHeading&gt; and &lt;SubSubHeading&gt;.</Paragraph>
                   <SubHeading>Subheading in sub sub section</SubHeading>
                   <Paragraph>A paragraph of body text.</Paragraph>
                   <Paragraph>A paragraph of body text.</Paragraph>
@@ -764,26 +788,26 @@
          </Section>
          <Section>
             <Title>Another Section (level 2) with internal sections</Title>
-            <Paragraph>&lt;InternalSection> can be used anywhere. It acts like a box, ie it is a containing structure, has a heading and can contain (unstructured) &lt;SubHeadings> and &lt;SubSubHeadings>. It is probably most useful as an alternative to a level 3 heading; an alternative that doesn’t cause a break to a new page.</Paragraph>
+            <Paragraph>&lt;InternalSection&gt; can be used anywhere. It acts like a box, ie it is a containing structure, has a heading and can contain (unstructured) &lt;SubHeadings&gt; and &lt;SubSubHeadings&gt;. It is probably most useful as an alternative to a level 3 heading; an alternative that doesn’t cause a break to a new page.</Paragraph>
             <Paragraph>For example, if a Heading 3 style were used here, a new page would be generated leaving very little on this page.</Paragraph>
             <InternalSection>
                <Heading>Internal section heading</Heading>
                <Paragraph>A paragraph of body text.</Paragraph>
                <Paragraph>A paragraph of body text.</Paragraph>
-               <SubHeading>Subheading in internal section</SubHeading>
+               <SubHeading> <b>Subheading in internal section</b> </SubHeading>
                <Paragraph>A paragraph of body text.</Paragraph>
                <Paragraph>A paragraph of body text.</Paragraph>
                <SubSubHeading>SubSubHeading in internal section</SubSubHeading>
                <Paragraph>A paragraph of body text.</Paragraph>
                <Paragraph>A paragraph of body text.</Paragraph>
             </InternalSection>
-            <Paragraph>This paragraph is actually outside the &lt;InternalSection> although that isn’t obvious once rendered. Is it detectable in print? No idea.</Paragraph>
+            <Paragraph>This paragraph is actually outside the &lt;InternalSection&gt; although that isn’t obvious once rendered. Is it detectable in print? No idea.</Paragraph>
             <InternalSection>
                <Heading>Another internal section</Heading>
-               <Paragraph>More than one &lt;InternalSection> on a page is allowed.</Paragraph>
-               <Paragraph>By the way, a level 4 &lt;SubSubSection> would also not split the page, but you can’t place a level 4 &lt;SubSubSection> directly into a level 2 &lt;Section>; you would need an intervening level 3 &lt;Section> as container and that would split the page anyway. You pays your money and has no choice...</Paragraph>
+               <Paragraph>More than one &lt;InternalSection&gt; on a page is allowed.</Paragraph>
+               <Paragraph>By the way, a level 4 &lt;SubSubSection&gt; would also not split the page, but you can’t place a level 4 &lt;SubSubSection&gt; directly into a level 2 &lt;Section&gt;; you would need an intervening level 3 &lt;Section&gt; as container and that would split the page anyway. You pays your money and has no choice...</Paragraph>
             </InternalSection>
-            <Paragraph>Internal sections aren’t in the navigation menu, but &lt;CrossRef> can jump to an &lt;InternalSection>.</Paragraph>
+            <Paragraph>Internal sections aren’t in the navigation menu, but &lt;CrossRef&gt; can jump to an &lt;InternalSection&gt;.</Paragraph>
          </Section>
          <Section>
             <Title>Yet another Section (level 2)</Title>
@@ -802,7 +826,7 @@
             <Title>Environment</Title>
             <Paragraph>You will need to use oXygen. oXygen should have IT/LDS customisations already set up. If not, follow: <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185735">OXYGEN-OSEP: Installation</a>.</Paragraph>
             <Paragraph>To replace the IT/LDS conversion with mine:</Paragraph>
-            <NumberedList class="decimal" start="1">
+            <NumberedList>
                <ListItem><Paragraph>Use Windows File Explorer to look at this directory: <ComputerCode>C:\Users\[youroucu]\AppData\Roaming\com.oxygenxml.author\extensions\v26.0\frameworks\structuredcontent\structuredcontent\xslt</ComputerCode></Paragraph></ListItem>
                <ListItem><Paragraph>Locate the file <ComputerCode>xhtml2sc.xsl</ComputerCode>. </Paragraph></ListItem>
                <ListItem><Paragraph>Rename it to <ComputerCode>xhtml2sc.bak</ComputerCode>.</Paragraph></ListItem>
@@ -813,7 +837,7 @@
          <Section>
             <Title>Converting Word to SC</Title>
             <Paragraph>Briefly:</Paragraph>
-            <NumberedList class="decimal" start="1">
+            <NumberedList>
                <ListItem><Paragraph>write a styled Word document</Paragraph></ListItem>
                <ListItem><Paragraph>copy the content to clipboard</Paragraph></ListItem>
                <ListItem><Paragraph>paste into a skeleton document in oXygen</Paragraph></ListItem>
@@ -831,11 +855,11 @@
                <Title>File conversion</Title>
                <Paragraph>The suggested way of working is as above: copy/paste Word content into a skeleton XML file within oXygen. This requires oXygen with OU IT/LDS customisation; internally, this converts Word content into HTML and then XHTML before my conversion (replacing the official version) translates into structured content.</Paragraph>
                <Paragraph>An alternative workflow in outline would be:</Paragraph>
-               <NumberedList start="1" class="decimal">
-                  <ListItem>Save your Word document as HTML.</ListItem>
-                  <ListItem>Convert HTML to XHTML (XHTML 1.0 Transitional).</ListItem>
-                  <ListItem>Convert XHMTL to SC XML using <ComputerCode>html-to-sc.xsl</ComputerCode> (which calls the normal <ComputerCode>xhtml2sc.xsl</ComputerCode> translator but also provides a skeleton container).</ListItem>
-                  <ListItem>Upload and preview at <a href="https://learn2.open.ac.uk/mod/oucontent/upload.php">learn2 upload page</a>.</ListItem>
+               <NumberedList>
+                  <ListItem><Paragraph>Save your Word document as HTML.</Paragraph></ListItem>
+                  <ListItem><Paragraph>Convert HTML to XHTML (XHTML 1.0 Transitional).</Paragraph></ListItem>
+                  <ListItem><Paragraph>Convert XHMTL to SC XML using <ComputerCode>html-to-sc.xsl</ComputerCode> (which calls the normal <ComputerCode>xhtml2sc.xsl</ComputerCode> translator but also provides a skeleton container).</Paragraph></ListItem>
+                  <ListItem><Paragraph>Upload and preview at <a href="https://learn2.open.ac.uk/mod/oucontent/upload.php">learn2 upload page</a>.</Paragraph></ListItem>
                </NumberedList>
                <Paragraph>In principle, this could be done without oXygen, although it would require alternative tool support: an XSLT processor and an HTML-to-XHTML converter. oXygen provides both of these tools, and it is possible to use the above workflow using oXygen <i>without</i> the OU IT/LDS customisation. Other toolchains could be used; I have not investigated any but for instance Eclipse would be a good bet since oXygen is based on it.</Paragraph>
             </SubSection>
@@ -844,13 +868,13 @@
             <Title>Converting SC to Word</Title>
             <Paragraph>Before you start work on existing VLE documents, note that there are several options:</Paragraph>
             <BulletedList>
-               <ListItem>Obtain the XML master and edit in oXygen. This is the quickest and safest option for small changes.</ListItem>
-               <ListItem>The normal ‘official’ process is to start with a Word version and use track changes; after handover, an editor will make corresponding changes to the master XML. Unfortunately this is slow and error prone, so not recommended.</ListItem>
-               <ListItem><b>Recommended</b> for all non-trivial changes and definitely for major rewrites: (down) convert the XML into styled Word and use my (up) converter.</ListItem>
+               <ListItem><Paragraph>Obtain the XML master and edit in oXygen. This is the quickest and safest option for small changes.</Paragraph></ListItem>
+               <ListItem><Paragraph>The normal ‘official’ process is to start with a Word version and use track changes; after handover, an editor will make corresponding changes to the master XML. Unfortunately this is slow and error prone, so not recommended.</Paragraph></ListItem>
+               <ListItem><Paragraph><b>Recommended</b> for all non-trivial changes and definitely for major rewrites: (down) convert the XML into styled Word and use my (up) converter.</Paragraph></ListItem>
             </BulletedList>
             <Paragraph>I can offer a (semi-)automated down conversion from an existing XML master document to styled Word. This preserves all content, including rich content such as images, video and interactions, and styles the Word document so that it can immediately be previewed and published. You can then edit the Word document, taking advantage of quick preview and even publish the final document.</Paragraph>
             <Paragraph><i>Limitation</i>: The automated down conversion turns XML to styled HTML which can be opened and edited in Word. However, there are additional steps required, firstly to set up oXygen and then, for every file converted, to embed external images into Word .docx. This is a pain, so I am happy to do this myself for occasional files on request. If you expect to do this for many documents, <CrossRef idref="setupscripts">set up the script</CrossRef> for <ComputerCode>sc-to-html.xsl</ComputerCode> and run it against the master XML document. Open the resulting HTML file in Word and <CrossRef idref="embedimages">embed the image files</CrossRef>.</Paragraph>
-            <Paragraph><i>Limitation</i>: Although having both down- and up-conversions between Word and XML provides the potential for round-trip working, I can’t claim this would make sense as a routine way of working. There are a few limitations on what can be written in Word (for example table and box styles are not currently preserved) and additional effort is required to convert into .docx. But it is worth doing when it is time for a rewrite of existing material.</Paragraph>
+            <Paragraph><i>Limitation</i>: Although having both down- and up-conversions between Word and XML provides the potential for round-trip working, I can’t claim this would make sense as a routine way of working. There are a few limitations on what can be written in Word (for example table borders are not currently preserved) and additional effort is required to convert into .docx. But it is worth doing when it is time for a rewrite of existing material.</Paragraph>
          </Section>
          <Section id="setupscripts">
             <Title>Setting up scripts</Title>
@@ -859,48 +883,48 @@
             <Paragraph>The next section shows how to set up the script for auto-numbering; the same procedure can be used for other scripts.</Paragraph>
             <SubSection>
                <Title>Set up the autonumber script</Title>
-               <NumberedList start="1" class="decimal">
-                  <ListItem>Open the <ComputerUI>Transformation Scenarios</ComputerUI> view by clicking on its tab or using menu <ComputerUI>Window > Show view > Transformation scenarios</ComputerUI>.</ListItem>
-                  <ListItem>Click the Add button in the view’s toolbar and choose <ComputerUI>XML transformation with XSLT</ComputerUI>.</ListItem>
-                  <ListItem>Complete the settings shown in the table below, making use of dropdowns provided.</ListItem>
-                  <ListItem>When you wish to autonumber a file, open it, check <ComputerUI>Autonumber</ComputerUI> (and no others) in the <ComputerUI>Transformation Scenarios</ComputerUI> view and click on <ComputerUI>Apply</ComputerUI>.</ListItem>
-                  <ListItem>Preview and save the result.</ListItem>
+               <NumberedList>
+                  <ListItem><Paragraph>Open the <ComputerUI>Transformation Scenarios</ComputerUI> view by clicking on its tab or using menu <ComputerUI>Window > Show view > Transformation scenarios</ComputerUI>.</Paragraph></ListItem>
+                  <ListItem><Paragraph>Click the Add button in the view’s toolbar and choose <ComputerUI>XML transformation with XSLT</ComputerUI>.</Paragraph></ListItem>
+                  <ListItem><Paragraph>Complete the settings shown in the table below, making use of dropdowns provided.</Paragraph></ListItem>
+                  <ListItem><Paragraph>When you wish to autonumber a file, open it, check <ComputerUI>Autonumber</ComputerUI> (and no others) in the <ComputerUI>Transformation Scenarios</ComputerUI> view and click on <ComputerUI>Apply</ComputerUI>.</Paragraph></ListItem>
+                  <ListItem><Paragraph>Preview and save the result.</Paragraph></ListItem>
                </NumberedList>
                <Table>
                   <TableHead/>
                   <tbody>
                      <tr>
-                        <td><Paragraph> </Paragraph></td>
-                        <td><Paragraph>Setting</Paragraph></td>
-                        <td><Paragraph>Value</Paragraph></td>
+                        <td><Paragraph><b> </b></Paragraph></td>
+                        <td><Paragraph><b>Setting</b></Paragraph></td>
+                        <td><Paragraph><b>Value</b></Paragraph></td>
                      </tr>
                      <tr>
-                        <td><Paragraph>Overall</Paragraph></td>
+                        <td><Paragraph><b>Overall</b></Paragraph></td>
                         <td><Paragraph>Name:</Paragraph></td>
                         <td><Paragraph>Autonumber</Paragraph></td>
                      </tr>
                      <tr>
-                        <td><Paragraph>XSLT tab</Paragraph></td>
+                        <td><Paragraph><b>XSLT tab</b></Paragraph></td>
                         <td><Paragraph>XML URL:</Paragraph></td>
-                        <td><Paragraph>${currentFileURL}</Paragraph></td>
+                        <td><Paragraph><ComputerCode>${currentFileURL}</ComputerCode></Paragraph></td>
                      </tr>
                      <tr>
-                        <td><Paragraph> </Paragraph></td>
+                        <td><Paragraph><b> </b></Paragraph></td>
                         <td><Paragraph>XSL URL:</Paragraph></td>
-                        <td><Paragraph>file:/C:/Users/[…]/number-sc.xsl</Paragraph></td>
+                        <td><Paragraph><ComputerCode>file:/C:/Users/[…]/number-sc.xsl</ComputerCode></Paragraph></td>
                      </tr>
                      <tr>
-                        <td><Paragraph>Output tab</Paragraph></td>
+                        <td><Paragraph><b>Output tab</b></Paragraph></td>
                         <td><Paragraph>Save as:</Paragraph></td>
                         <td><Paragraph>(blank)</Paragraph></td>
                      </tr>
                      <tr>
-                        <td><Paragraph> </Paragraph></td>
+                        <td><Paragraph><b> </b></Paragraph></td>
                         <td><Paragraph>Open in editor:</Paragraph></td>
                         <td><Paragraph>(checked)</Paragraph></td>
                      </tr>
                      <tr>
-                        <td><Paragraph> </Paragraph></td>
+                        <td><Paragraph><b> </b></Paragraph></td>
                         <td><Paragraph>Show in results view as:</Paragraph></td>
                         <td><Paragraph>(none checked)</Paragraph></td>
                      </tr>
@@ -912,40 +936,42 @@
             <SubSection>
                <Title>Available scripts</Title>
                <Paragraph>Other scripts are available:</Paragraph>
-               <BulletedList>
-                  <ListItem><ComputerCode>number-sc.xsl</ComputerCode>: auto-numbering</ListItem>
-                  <ListItem><ComputerCode>sc-to-html.xsl</ComputerCode>: SC XML to styled HTML which can be imported into Word</ListItem>
-                  <ListItem><ComputerCode>html-to-sc.xsl</ComputerCode>: converts XHTML <i>files</i> originating from styled Word into SC XML (not normally required)</ListItem>
-                  <ListItem><ComputerCode>asset-list.xsl</ComputerCode>: produces an asset list for a document <AuthorComment>[to come]</AuthorComment></ListItem>
-               </BulletedList>
+               <UnNumberedList>
+                  <ListItem><Paragraph><ComputerCode>number-sc.xsl</ComputerCode>: auto-numbering</Paragraph></ListItem>
+                  <ListItem><Paragraph><ComputerCode>sc-to-html.xsl</ComputerCode>: SC XML to styled HTML which can be imported into Word</Paragraph></ListItem>
+                  <ListItem><Paragraph><ComputerCode>html-to-sc.xsl</ComputerCode>: converts XHTML <i>files</i> originating from styled Word into SC XML (not normally required)</Paragraph></ListItem>
+                  <ListItem><Paragraph><ComputerCode>asset-list.xquery</ComputerCode>: produces an asset list for a document (set up as <ComputerUI>XML transformation with XQuery</ComputerUI>)</Paragraph></ListItem>
+               </UnNumberedList>
                <Paragraph>These scripts need to be set up as above, changing details as appropriate.</Paragraph>
             </SubSection>
          </Section>
          <Section id="embedimages">
             <Title>Embedding images in Word</Title>
-            <Paragraph>This advice mainly applies to down-conversion from SC to Word via HTML – ignore otherwise.</Paragraph>
+            <Paragraph>This advice mainly applies to down-conversion from SC to Word via HTML – ignore otherwise. Info here is <i>not required</i> for conversion from Word to SC XML.</Paragraph>
             <Paragraph>Word will open and save HTML documents. HTML images are external files whose location is in the <i>src</i> attribute of &lt;img> elements. Word preserves this external linkage, even if the document is subsequently saved as a .docx format file, but this can cause permission/access issues when moving/sharing documents. To avoid this, you can embed images in .docx files.</Paragraph>
             <Paragraph>To do this, open an HTML document in Word and:</Paragraph>
-            <NumberedList start="1" class="decimal">
-               <ListItem>Open the <ComputerUI>Links</ComputerUI> dialogue – type this in the Word search bar because it is not shown on toolbar.</ListItem>
-               <ListItem>Select all images listed</ListItem>
-               <ListItem>Check <ComputerUI>Save picture in document</ComputerUI> and click <ComputerUI>Update now</ComputerUI></ListItem>
-               <ListItem>Again select all images and click <ComputerUI>Break link</ComputerUI></ListItem>
-               <ListItem>Save the document in .docx format.</ListItem>
+            <NumberedList>
+               <ListItem><Paragraph>Open the <ComputerUI>Links</ComputerUI> dialogue – type this in the Word search bar because it is not shown on toolbar.</Paragraph></ListItem>
+               <ListItem><Paragraph>Select all images listed</Paragraph></ListItem>
+               <ListItem><Paragraph>Check <ComputerUI>Save picture in document</ComputerUI> and click <ComputerUI>Update now</ComputerUI></Paragraph> </ListItem>
+               <ListItem><Paragraph>Again select all images and click <ComputerUI>Break link</ComputerUI> </Paragraph></ListItem>
+               <ListItem><Paragraph>Save the document in .docx format.</Paragraph></ListItem>
             </NumberedList>
             <Paragraph><b>Note</b>: The <ComputerUI>Links </ComputerUI>dialogue should close automatically when all external images have been dealt with. If it shows persistently, it suggests an image cannot be found. Use <ComputerUI>Change source</ComputerUI> to remedy, choosing a placeholder image if necessary.</Paragraph>
             <Paragraph><b>Note</b>: If original images are on OU SharePoint, Word may refuse to link / display them. A work around is as follows:</Paragraph>
-            <NumberedList start="1" class="decimal">
-               <ListItem>Instead of opening the HTML file in Word, open it first in a browser.</ListItem>
-               <ListItem>Check that images are displayed.</ListItem>
-               <ListItem>Save a local copy of the complete web page – this creates a local folder with copies of images and rewrites the &lt;img> <i>src</i> attributes to match.</ListItem>
-               <ListItem>Open this saved document in Word and proceed to embed images as above.</ListItem>
+            <NumberedList>
+               <ListItem><Paragraph>Instead of opening the HTML file in Word, open it first in a browser.</Paragraph></ListItem>
+               <ListItem><Paragraph>Check that images are displayed.</Paragraph></ListItem>
+               <ListItem><Paragraph>Save a local copy of the complete web page – this creates a local folder with copies of images and rewrites the &lt;img> <i>src</i> attributes to match.</Paragraph></ListItem>
+               <ListItem><Paragraph>Open this saved document in Word and proceed to embed images as above.</Paragraph></ListItem>
             </NumberedList>
             <Paragraph>(It seems OU Word treats OU SharePoint as a security risk but I cannot fix trust settings to allow this; if anyone knows how, please share...)</Paragraph>
-            <Paragraph><b>Note</b>: Another reason that images may not display is due to LDS image work flow. SC files may refer to the .tif or .eps original and rely on the publishing backend to automatically generate a .jpg version (of possibly dubious quality!). Edit the XML master, adding .jpg (sometimes .png) extension (e.g. <ComputerCode>a123_fig01.eps.jpg</ComputerCode>) to make things work.</Paragraph>
-            <Paragraph><b>Note</b>: Another reason that images may not display is a <i>src</i> file path which references <ComputerCode>DavWWWRoot</ComputerCode>. Edit the XML master to change following this example:</Paragraph>
-            <Paragraph>src="\\openuniv.sharepoint.com@SSL\DavWWWRoot\sites\tmodules\tg089\lmimages\t189s06_f07-02.jpg" </Paragraph>
-            <Paragraph>src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmimages/t189s06_f07-02.jpg"</Paragraph>
+            <Paragraph><b>Note</b>: Another reason that images may not display is due to LDS image workflow. SC files may refer to the .tif or .eps original and rely on the publishing backend to automatically generate a .jpg version (of possibly dubious quality!). Edit the XML master, adding .jpg (sometimes .png) extension (e.g. <ComputerCode>a123_fig01.eps.jpg</ComputerCode>) to make things work.</Paragraph>
+            <Paragraph><b>Note</b>: Another reason that images may not display is a <i>src</i> file path which references  <ComputerCode>DavWWWRoot</ComputerCode>. Edit the XML master to change following this example:</Paragraph>
+            <ComputerDisplay>
+               <Paragraph>src="\\openuniv.sharepoint.com@SSL\DavWWWRoot\sites\tmodules\tg089\lmimages\t189s06_f07-02.jpg" </Paragraph>
+               <Paragraph>src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmimages/t189s06_f07-02.jpg"</Paragraph>
+            </ComputerDisplay>
             <Paragraph>(Any similar <i>src_uri</i> attributes can be left, edited or deleted.)</Paragraph>
          </Section>
       </Session>

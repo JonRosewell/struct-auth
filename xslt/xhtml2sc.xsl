@@ -35,10 +35,10 @@
     <!-- starting point of transform -->
     <xsl:template match="/">
         <!-- to show input: -->
-        <xsl:variable name="identity-result">
+<!--        <xsl:variable name="identity-result">
             <xsl:apply-templates mode="identity" select="/"/>
         </xsl:variable>
-
+-->
         <xsl:variable name="styling-result">
             <xsl:apply-templates mode="styling" select="h:html/h:body"/>
         </xsl:variable>
@@ -68,7 +68,7 @@
         </xsl:variable>
 
         <xsl:copy-of select="$fixing-result"/>
-<!--        <xsl:copy-of select="$identity-result"/>-->
+<!--        <xsl:copy-of select="$attributing-result"/>-->
 
     </xsl:template>
 
@@ -251,13 +251,10 @@
         <xsl:param name="leader"/>
         <xsl:param name="style"/>
         <!-- clue is first char after stripping leading white space *and nbsp* -->
-        <xsl:variable name="clue"
-            select="substring(normalize-space(translate($leader, '&#xA0;', '')), 1 ,1)"/>
+        <xsl:variable name="clue" select="substring(normalize-space(translate($leader, '&#xA0;', '')), 1 ,1)"/>
         <!-- level & margin may be in style; NB if missing take value NaN -->
-        <xsl:variable name="_level"
-            select="number(substring-before(substring-after($style, 'level'), ' '))"/>
-        <xsl:variable name="_margin"
-            select="number(substring-before(substring-after($style, 'margin-left:'), 'pt'))"/>
+        <xsl:variable name="_level" select="number(substring-before(substring-after($style, 'level'), ' '))"/>
+        <xsl:variable name="_margin" select="number(substring-before(substring-after($style, 'margin-left:'), 'pt'))"/>
         <!-- use level if explicit, otherwise infer from margin if given, else assume 1 -->
         <xsl:variable name="level" select="if ($_level &gt; 1) then 2 
                                             else if ($_level=1) then 1 
@@ -308,8 +305,7 @@
         NB level clues assume lists are styled carefully in Word: probably ok for single 
         type list or outline type, but changing type of sublist will reset level. 
     -->
-    <xsl:template mode="styling"
-        match="h:p[contains(@style, 'mso-list:') or contains(@class, 'MsoList')]" priority="0.6">
+    <xsl:template mode="styling" match="h:p[contains(@style, 'mso-list:') or contains(@class, 'MsoList')]" priority="0.6">
         <xsl:variable name="leader" select=".//h:span[contains(@style, 'mso-list:Ignore')]"/>
         <xsl:variable name="info">
             <xsl:call-template name="getListInfo">
@@ -343,21 +339,32 @@
 
     <!-- Attributing ======================================================== -->
 
-    <!-- Attributes (currently only id) may occur as spans in element text but need 
+    <!-- Attributes (eg id) may occur as spans in element text but need 
         hoisting into element as attribute. For Title & Heading id needs to be in 
         containing structure rather than the heading.
-        Assume a syntax like {id="s4.a"} and only a single attribute name/value pair. 
-        If later necessary, could split several attrib pairs by separator.
+        Assume a syntax like {id="s4.a"}; if several given, they simply repeat, including braces.
     -->
 
-    <xsl:template mode="attributing" match="attribute">
-        <xsl:variable name="pair" select="substring-before(substring-after( . , '{'), '}')"/>
+    <!-- process an attribute, recursive call deals with string of several -->
+    <xsl:template name="makeAttributes">
+        <xsl:param name="attStr"/>
+        <xsl:variable name="pair" select="substring-before(substring-after($attStr, '{'), '}')"/>
         <xsl:variable name="attName" select="normalize-space(substring-before($pair, '='))"/>
-        <xsl:variable name="attValue"
-            select="substring-before(substring-after($pair, '=&quot;'), '&quot;')"/>
-        <xsl:attribute name="{$attName}" select="$attValue"/>
+        <xsl:variable name="attValue" select="substring-before(substring-after($pair, '=&quot;'), '&quot;')"/>
+        <xsl:if test="$attName ne ''">
+            <xsl:attribute name="{$attName}" select="$attValue"/>
+            <xsl:call-template name="makeAttributes">
+                <xsl:with-param name="attStr" select="substring-after($attStr, '}')"/>
+            </xsl:call-template>
+        </xsl:if>
     </xsl:template>
-
+    
+    <xsl:template mode="attributing" match="attribute">
+        <xsl:call-template name="makeAttributes">
+            <xsl:with-param name="attStr" select="."/>
+        </xsl:call-template>
+    </xsl:template>
+    
     <!-- default identity: copy attributes unchanged -->
     <xsl:template mode="attributing" match="@*">
         <xsl:copy-of select="."/>
@@ -476,6 +483,10 @@
             <xsl:if test="$th_id != ''">
                 <xsl:attribute name="id" select="$th_id"/>
             </xsl:if>
+            <xsl:variable name="th_style" select="preceding-sibling::*[1][self::TableHead]/@style"/>
+            <xsl:if test="$th_style != ''">
+                <xsl:attribute name="style" select="$th_style"/>
+            </xsl:if>
             <TableHead>
                 <!-- take content from preceding TableHead and/or table/caption -->
                 <xsl:apply-templates mode="objecting"
@@ -527,6 +538,7 @@
     <xsl:template mode="objecting" match="Figure">
         <xsl:variable name="figSrc" select="following-sibling::*[1][self::FigureSrc]"/>
         <Figure>
+            <xsl:apply-templates mode="objecting" select="@*"/>
             <Image src="{if ($figSrc!='') then $figSrc else $missing-image}"/>
             <Caption>
                 <xsl:apply-templates mode="force"

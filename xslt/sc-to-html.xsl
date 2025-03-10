@@ -21,7 +21,8 @@
     
     <!-- TODO:
         ??? More section-like things: FrontMatter, BackMatter, References, 
-        Some Word quirks catered for but maybe need checking for consistency, eg avoiding blank lines which could be lost in html stage 
+        Some Word quirks catered for but maybe need checking for consistency, eg avoiding blank lines which could be lost in html stage or Word input (use nbsp or maybe <o:p/> as Word does?) 
+        Attributes: piecemeal so far, but maybe just turn all into styled text? Generic may be less code, as well as better round-trip
     -->
     
     <!-- ===== default cases should do the bulk of the work ===== -->
@@ -31,7 +32,7 @@
         needed even at Paragraph level eg for links.
         Some attribs are also copied into text so they can be perserved and edited in Word:
         - src for images
-        - id for sections, boxes, activities as destination for CrossRef
+        - id for sections, boxes, activities, figures as destination for CrossRef
     -->    
     <xsl:template match="@*" >
         <xsl:copy>
@@ -41,20 +42,23 @@
     
     <!-- BEWARE: this changes an attribute to child text and could provoke error: 
           An attribute node ([somename]) cannot be created after a child of the containing element.
-        which occurs because handling @id has created a child before @somename 
-        when processed by apply-templates select="@*".
-        Solution adopted is to write pairs
+        which occurs because handling @id has created a child before @somename when 
+        processed by apply-templates select="@*".
+        Solution adopted is to write surrounding pairs, eg:
             <xsl:apply-templates select="@*[name()!='id']"/>
+            <xsl:apply-templates />
             <xsl:apply-templates select="@id"/>
         to ensure other attribs are copied safely before creating content. 
         Looks a bit nicer to have ids at end of para anyway...
         Unfortunately ids can occur on many elements larger than para: sections, boxes, tables, figures...
         Generalise template so that can be used for other attributes that need translating to text in future
+        Slightly risky that same attribute name can be used for diff purposes, eg type for lists and boxes, and
+        sometimes needs handling differently, eg for list type, act on it rather than output as attribute span.
     -->
-    <xsl:template match="@id">
+    <xsl:template match="@id | @style | @type | @resource1 | @resource2 | @resource3">
         <span class="attribute">
             <xsl:text>{</xsl:text>
-            <xsl:value-of select="local-name()"/>
+            <xsl:value-of select="name()"/>
             <xsl:text>="</xsl:text>
             <xsl:value-of select="."/>
             <xsl:text>"}</xsl:text>
@@ -65,14 +69,14 @@
     <!-- An element becomes <p class="name"> which then becomes Word para style. 
         Elements which become spans override this. -->
     <xsl:template match="*">
-        <p class="{local-name()}">
+        <p class="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </p>
     </xsl:template>
     
     <!-- Some elements are preserved as html tags -->
     <xsl:template match="b | i | u | sub | sup | table | tbody | tr | th | td | br | a | font">
-        <xsl:element name="{local-name()}">
+        <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
     </xsl:template>
@@ -83,7 +87,7 @@
         Specific cases later removed when overriden.
         -->
     <xsl:template match="AuthorComment | EditorComment | ComputerCode | GlossaryTerm | IndexTerm | InlineEquation | InlineFigure | InlineChemistry | Icon | ComputerUI | footnote | language | SecondVoice | SideNote | SideNoteParagraph | Number | Hours | Minutes | TeX | Label">
-        <span class="{local-name()}">
+        <span class="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </span>
     </xsl:template>
@@ -139,7 +143,7 @@
     <xsl:template name="checkForExtendedItems" as="xs:boolean">
         <!-- count lines (ie elements that are not sublists) within each list item of current list -->
         <xsl:variable name="lineCounts" select="ListItem/count(*[not(contains(name(), 'Subsidiary'))])"/>
-        <!-- count lines within sublists of current list -->
+        <!-- count lines within sublists of current list -->    
         <xsl:variable name="innerLineCounts" select="ListItem/*[contains(name(), 'Subsidiary')]/SubListItem/count(*)"/>
         <!-- has extended content if any count is greater than one -->
         <xsl:value-of select="max(($lineCounts, $innerLineCounts)) gt 1"/>
@@ -252,7 +256,7 @@
     <xsl:template match="Table">
         <xsl:apply-templates select="TableHead"/> 
         <table>
-            <xsl:apply-templates select="@*[local-name()!='id']"/>
+            <xsl:apply-templates select="@*[name()!='id' and name()!='style']"/>
             <xsl:apply-templates select="tbody"/>
         </table>
         <xsl:apply-templates select="Description"/>
@@ -262,6 +266,7 @@
         <p class="TableHead">
             <xsl:apply-templates select="node()"/>
             <xsl:apply-templates select="parent::Table/@id"/>
+            <xsl:apply-templates select="parent::Table/@style"/>
         </p>
     </xsl:template>
 
@@ -277,13 +282,14 @@
     
     <!-- image related -->
     <xsl:template match="Figure">
-<!--        <xsl:apply-templates select="@* | node()"/>-->
+        <!-- may have @id but attach that to para containing visible image -->
         <xsl:apply-templates />
     </xsl:template>
     
     <xsl:template match="Figure/Image">
         <p class="Figure">
-            <img src="{@src}"/>     <!-- image tag will show in Word if permission allows -->
+            <img src="{@src}"/>     <!-- image will show in browser or Word (if permission allows) -->
+            <xsl:apply-templates select="parent::Figure/@id"/> <!-- tag on id (maybe used by crossref) -->
         </p>
         <p class="FigureSrc">       <!-- but rely on source as text of separate para -->
             <xsl:value-of select="@src"/>
@@ -305,7 +311,7 @@
     <!-- program listing -->
     <xsl:template match="ProgramListing | ProgramListing/Paragraph">
         <p class="ProgramListing">
-            <xsl:apply-templates/>
+            <xsl:apply-templates />
         </p>
     </xsl:template>
     
@@ -344,7 +350,7 @@
     </xsl:template>
     
     <xsl:template match="Session | Section | SubSection | SubSubSection">
-        <xsl:variable name="type" select="local-name()"/>
+        <xsl:variable name="type" select="name()"/>
         <xsl:call-template name="makeSection">
             <xsl:with-param name="level" select=
                 "if ($type='SubSubSection') then 'h4'
@@ -366,12 +372,12 @@
         <xsl:param name="type" select="'Box'"/>
         <!-- head para has text of heading if provided, or nbsp to stop Word losing empty lines -->
         <p class="{concat($type, 'Head')}">
-            <xsl:apply-templates select="@*[local-name()!='id']"/>
+            <xsl:apply-templates select="@* except(@id | @type | @resource1 | @resource2 | @resource3)"/>
             <xsl:apply-templates select="Heading/node()"/>
             <xsl:if test="not(Heading/node())">
                 <xsl:text>&#x00a0;</xsl:text>
             </xsl:if>
-            <xsl:apply-templates select="@id"/>
+            <xsl:apply-templates select="@id | @type | @resource1 | @resource2 | @resource3"/>
         </p>
         <!-- content of box -->
         <xsl:apply-templates/>
@@ -381,7 +387,7 @@
     
     <xsl:template match="Box | CaseStudy | Dialogue | Example | Extract | Quote | Reading | StudyNote | Verse | InternalSection | KeyPoints | Activity | Exercise | ITQ | SAQ ">
         <xsl:call-template name="makeBox">
-            <xsl:with-param name="type" select="local-name()"/>
+            <xsl:with-param name="type" select="name()"/>
         </xsl:call-template>
     </xsl:template>
     
@@ -390,7 +396,7 @@
     
     <!-- Dividers that serve to separate parts of container; divider itself has fixed text -->
     <xsl:template match="Interaction | Answer | Discussion">
-        <p class="{local-name()}"><xsl:value-of select="local-name()"/></p>
+        <p class="{name()}"><xsl:value-of select="name()"/></p>
         <xsl:apply-templates/>
     </xsl:template>
     <!-- Question part doesn't need divider since question text always follows heading -->
