@@ -28,6 +28,7 @@
             <Paragraph>The Word document must be carefully styled using style names that correspond to OU structured content (SC) tags (element names); see the <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185747">Structured Content Tag Guide</a> for the complete list. To author from scratch, I can supply a Word document <ComputerCode>empty-sc.docx</ComputerCode> containing the required styles. To author from existing OU web material, I can convert the master XML file back to appropriately styled Word. </Paragraph>
             <Paragraph>The visual appearance of these documents once in Word should be reasonably comfortable to use; if not, the font face, size, colours etc of styles can be freely tweaked without detriment since the conversion relies only on the style name. Note that the list of SC elements and therefore styles is long: use the Word <ComputerUI>Styles</ComputerUI> pane to see all styles; right-click and <ComputerUI>Add to Style Gallery</ComputerUI> those you use frequently.</Paragraph>
             <Paragraph>This document serves both as documentation and as an example / test document – try it out!</Paragraph>
+            <Paragraph>Software can be found on GitHub <a href="https://github.com/JonRosewell/struct-auth">https://github.com/JonRosewell/struct-auth</a>.</Paragraph>
          </Section>
       </Session>
       <Session>
@@ -291,7 +292,7 @@
             <Paragraph>For simple cases, inserting Word manual line breaks (<ComputerUI>Shift+Enter</ComputerUI>) within a list item is sufficient to achieve the desired effect:</Paragraph>
             <NumberedList class="lower-alpha">
                <ListItem><NumberedSubsidiaryList class="lower-roman"><SubListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is<br/><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX></InlineEquation><br/>(Check: The line slopes down, so the gradient should be negative.) </Paragraph></SubListItem><SubListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is<br/><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX></InlineEquation><br/>(Check: The line slopes up, so the gradient should be positive.)</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
-               <ListItem><Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph></ListItem>
+               <ListItem><Paragraph>The rise between any two points on a horizontal line is zero. <br/>Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph></ListItem>
             </NumberedList>
             <Paragraph>This hack isn’t possible if the extended content includes figures, tables, display equations and so on. In that case, surround the list with blank lines of <i>ListHead</i> and <i>ListEnd</i> style. Within this pair, any content following a list item is assumed to be part of the same item until the next item is reached. (Note that indentation in Word is ignored when converting to SC.)</Paragraph>
             <NumberedList class="lower-alpha">
@@ -824,6 +825,7 @@
          <Title>Using the converter</Title>
          <Section>
             <Title>Environment</Title>
+            <Paragraph>Software can be found on GitHub <a href="https://github.com/JonRosewell/struct-auth">https://github.com/JonRosewell/struct-auth</a>.</Paragraph>
             <Paragraph>You will need to use oXygen. oXygen should have IT/LDS customisations already set up. If not, follow: <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185735">OXYGEN-OSEP: Installation</a>.</Paragraph>
             <Paragraph>To replace the IT/LDS conversion with mine:</Paragraph>
             <NumberedList>

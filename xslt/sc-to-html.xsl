@@ -140,6 +140,9 @@
     -->
     
     <!-- look for items/subitems that extend to include more than one para, figures, tables etc -->
+    <!-- nb not quite perfect since test for children doesn't distinguish tags within 
+        para (b, i, sup etc) from tags that are para-like (Paragraph, Figure etc). But too messy to
+        exclude long list of things -->
     <xsl:template name="checkForExtendedItems" as="xs:boolean">
         <!-- count lines (ie elements that are not sublists) within each list item of current list -->
         <xsl:variable name="lineCounts" select="ListItem/count(*[not(contains(name(), 'Subsidiary'))])"/>
@@ -149,20 +152,21 @@
         <xsl:value-of select="max(($lineCounts, $innerLineCounts)) gt 1"/>
     </xsl:template>
     
-        
     <xsl:template match="ListItem | SubListItem">
         <li>
-            <!-- tweaks to encourage more consistent Word list structure:
-                - wrap raw text in p
-                - if no content, either directly or in child (eg Paragraph) but not sublist, insert nbsp;
-            -->
-            <xsl:if test="text()">
-                <p><xsl:value-of select="text()"/></p>
-            </xsl:if>
-            <xsl:if test="not(text() or exists(*[not(contains(name(), 'Subsidiary'))]))">
-                <p><xsl:text>&#x00a0;</xsl:text></p>
-            </xsl:if>
-            <xsl:apply-templates select="@* | *"/>
+            <!-- tweaks to encourage more consistent Word list structure: -->
+            <xsl:choose>
+                <xsl:when test="text()">    <!-- has raw text, wrap it in Paragraph -->
+                    <p><xsl:apply-templates select="@* | node()"/></p>
+                </xsl:when>                 <!-- has content children (ignoring any sublists) -->
+                <xsl:when test="exists(*[not(contains(name(), 'Subsidiary'))])">
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:when>
+                <xsl:otherwise>             <!-- has no content (except maybe sublist), generate nbsp -->
+                    <p><xsl:text>&#x00a0;</xsl:text></p>
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:otherwise>
+            </xsl:choose>
         </li>
     </xsl:template>
     

@@ -39,6 +39,8 @@
             p.Box  { mso-style-name: Box; } 
             p.br  { mso-style-name: br; }
             p.BritishLibraryData  { mso-style-name: BritishLibraryData; }
+            p.BulletedList  { mso-style-name: BulletedList; }
+            p.BulletedSubsidiaryList  { mso-style-name: BulletedSubsidiaryList; }
             p.CaseStudy  { mso-style-name: CaseStudy; } 
             p.Conclusion  { mso-style-name: Conclusion; }
             p.CoPublished  { mso-style-name: CoPublished; }
@@ -59,6 +61,8 @@
             p.FrontMatter  { mso-style-name: FrontMatter; }
             p.FurtherReading  { mso-style-name: FurtherReading; }
             p.GeneralInfo  { mso-style-name: GeneralInfo; }
+            p.Glossary  { mso-style-name: Glossary; }
+            p.GlossaryItem  { mso-style-name: GlossaryItem; }
             p.HalfTitleVerso  { mso-style-name: HalfTitleVerso; }
             p.i  { mso-style-name: i; }
             p.Imprint  { mso-style-name: Imprint; }
@@ -87,6 +91,8 @@
             p.meta  { mso-style-name: meta; }
             p.Multipart  { mso-style-name: Multipart; }
             p.MultipleChoice  { mso-style-name: MultipleChoice; }
+            p.NumberedList  { mso-style-name: NumberedList; }
+            p.NumberedSubsidiaryList  { mso-style-name: NumberedSubsidiaryList; }
             p.OUCourseInfo  { mso-style-name: OUCourseInfo; }
             p.OUWebAddress  { mso-style-name: OUWebAddress; }
             span.OwnerRef  { mso-style-name: OwnerRef; }
@@ -119,6 +125,8 @@
             p.Total  { mso-style-name: Total; }
             p.Typeset  { mso-style-name: Typeset; }
             p.u  { mso-style-name: u; }
+            p.UnNumberedList  { mso-style-name: UnNumberedList; }
+            p.UnNumberedSubsidiaryList  { mso-style-name: UnNumberedSubsidiaryList; }
             p.Verse  { mso-style-name: Verse; }
 -->
             
@@ -126,8 +134,6 @@
             p.Alternative  { mso-style-name: Alternative; }
             p.Answer  { mso-style-name: Answer; }
             span.AuthorComment  { mso-style-name: AuthorComment; }
-            p.BulletedList  { mso-style-name: BulletedList; }
-            p.BulletedSubsidiaryList  { mso-style-name: BulletedSubsidiaryList; }
             p.ByLine  { mso-style-name: ByLine; }
             p.Caption  { mso-style-name: Caption; }
             p.Chemistry  { mso-style-name: Chemistry; }
@@ -145,8 +151,6 @@
             p.footnote  { mso-style-name: footnote; }
             p.FreeResponse  { mso-style-name: FreeResponse; }
             p.FreeResponseDisplay  { mso-style-name: FreeResponseDisplay; }
-            p.Glossary  { mso-style-name: Glossary; }
-            p.GlossaryItem  { mso-style-name: GlossaryItem; }
             span.GlossaryTerm  { mso-style-name: GlossaryTerm; }
             p.Heading  { mso-style-name: Heading; }
             span.Hours  { mso-style-name: Hours; }
@@ -170,8 +174,6 @@
             p.MultiColumnHead  { mso-style-name: MultiColumnHead; }
             p.MultiColumnText  { mso-style-name: MultiColumnText; }
             span.Number  { mso-style-name: Number; }
-            p.NumberedList  { mso-style-name: NumberedList; }
-            p.NumberedSubsidiaryList  { mso-style-name: NumberedSubsidiaryList; }
             span.olink  { mso-style-name: olink; }
             p.Paragraph  { mso-style-name: Paragraph; }
             p.ProgramListing  { mso-style-name: ProgramListing; }
@@ -203,8 +205,6 @@
             p.Unit  { mso-style-name: Unit; }
             p.UnitID  { mso-style-name: UnitID; }
             p.UnitTitle  { mso-style-name: UnitTitle; }
-            p.UnNumberedList  { mso-style-name: UnNumberedList; }
-            p.UnNumberedSubsidiaryList  { mso-style-name: UnNumberedSubsidiaryList; }
             p.VoiceRecorder  { mso-style-name: VoiceRecorder; }
             
 <!--            jpr additions: some special purpose, most split of box-like into xxHead and xxEnd pairs -->
@@ -287,7 +287,7 @@
             p.Description { mso-style-next: Normal; color: teal; } 
             p.Alternative  { color: teal; font-style: italic; }
             
-            p.BoxHead, p.BoxEnd, p.CaseStudyHead, p.CaseStudyEnd, p.ExampleHead, p.ExampleEnd, p.ExtractHead, p.ExtractEnd, .InternalSectionHead, p.InternalSectionEnd, p.KeyPointsHead, p.KeyPointsEnd, p.QuoteHead, p.QuoteEnd, p.ReadingHead, p.ReadingEnd, p.StudyNoteHead, p.StudyNoteEnd, p.ListHead, p.ListEnd { mso-style-next: Normal; } 
+            p.BoxHead, p.BoxEnd, p.CaseStudyHead, p.CaseStudyEnd, p.ExampleHead, p.ExampleEnd, p.ExtractHead, p.ExtractEnd, p.InternalSectionHead, p.InternalSectionEnd, p.KeyPointsHead, p.KeyPointsEnd, p.QuoteHead, p.QuoteEnd, p.ReadingHead, p.ReadingEnd, p.StudyNoteHead, p.StudyNoteEnd, p.ListHead, p.ListEnd { mso-style-next: Normal; } 
             p.BoxHead, p.BoxEnd  { margin: 6.0pt; background: #DEEAF6; border: solid windowtext .5pt; } 
             p.BoxHead { border-bottom: none; font-weight: bold; } 
             p.BoxEnd { border-top: none; } 
