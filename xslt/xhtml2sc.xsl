@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:h="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"
-    exclude-result-prefixes="h o xs">
+    xmlns:h="http://www.w3.org/1999/xhtml" 
+    xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml"
+    exclude-result-prefixes="h o v xs">
 
     <!-- Structured Authoring: MS Word to OU Structured Content XML
         MS Word to OU structured content conversion, designed to replace OU IT/LDS 
@@ -38,8 +39,8 @@
         <!-- to show input: -->
 <!--        <xsl:variable name="identity-result">
             <xsl:apply-templates mode="identity" select="/"/>
-        </xsl:variable>
--->
+        </xsl:variable>-->
+        
         <xsl:variable name="styling-result">
             <xsl:apply-templates mode="styling" select="h:html/h:body"/>
         </xsl:variable>
@@ -107,6 +108,11 @@
         Result will be much simpler, no longer in html namespace, but still flat linear.
     -->
 
+    <!-- start at html body -->
+    <xsl:template mode="styling" match="h:body">
+        <xsl:apply-templates mode="styling"/>
+    </xsl:template>
+    
     <!-- Default: para with class (= Word para style) or span with class (= Word char style)
         become an element of same name. 
         This is lower than normal priority (would be 0.5) to ensure special cases will override -->
@@ -127,28 +133,6 @@
     <xsl:template mode="styling" match="*">
         <xsl:element name="{local-name()}">
             <xsl:apply-templates mode="styling" select="node() | @href | @start | @type"/>
-        </xsl:element>
-    </xsl:template>
-
-    <!-- table cells: preserve spans, and infer alignment using heuristics -->
-    <xsl:template mode="styling" match="h:td">
-        <xsl:element name="{local-name()}">
-            <!-- colspan/rowspan: will get default value=1 (from schema?) unless ignored -->
-            <xsl:apply-templates mode="styling" select="@colspan[. != 1] | @rowspan[. != 1]"/>
-            <!-- get cell alignment either from td or from child para -->
-            <xsl:if test="@align='center' or descendant::h:p[@align='center']">
-                <xsl:attribute name="class" select="'TableCentered'"/>
-            </xsl:if>
-            <xsl:if test="@align='right' or descendant::h:p[@align='right']">
-                <xsl:attribute name="class" select="'TableRight'"/>
-            </xsl:if>
-            <!-- get decimal from alignment from child para decimal tab stop; also allow
-                fudged td style from sc-to-html down conversion -->
-            <xsl:if test="@align='decimal' or descendant::h:p[contains(@style, 'decimal')]">
-                <xsl:attribute name="class" select="'TableDecimal'"/>
-            </xsl:if>
-            <!-- content: -->
-            <xsl:apply-templates mode="styling" select="node()"/>
         </xsl:element>
     </xsl:template>
 
@@ -190,8 +174,9 @@
         </i>
     </xsl:template>
 
-    <!-- strip office namespace tags; seem to be used to prevent empty html paras but have no content -->
-    <xsl:template mode="styling" match="o:*">
+    <!-- strip office namespace tags; o: seems to be used to prevent empty html paras but have no content
+        v: is vector markup language eg used to wrap images in borders -->
+    <xsl:template mode="styling" match="o:* | v:*">
         <xsl:apply-templates mode="styling"/>
     </xsl:template>
 
@@ -327,12 +312,61 @@
     <xsl:template mode="styling" match="h:span[contains(@style, 'mso-list:Ignore')]"/>
 
 
-    <!-- start at html body -->
-    <xsl:template mode="styling" match="h:body">
-        <xsl:apply-templates mode="styling"/>
+    <!-- table cells: td and th similar, but SC has different attrib names so 
+        named template does common processing.
+        Preserve spans, infer alignment using heuristics, and make a stab at borders.
+    -->
+    <xsl:template name="stylingTableCell">
+        <xsl:param name="cell" />   <!-- expect td or th -->
+        <xsl:variable name="prefix" select="if ($cell='th') then 'ColumnHead' else 'Table'"/>
+        <xsl:element name="{$cell}">
+            <!-- colspan/rowspan: would get default value=1 (from schema?) unless ignored -->
+            <xsl:apply-templates mode="styling" select="@colspan[. != 1] | @rowspan[. != 1]"/>
+            <!-- get cell alignment either from cell or from child para -->
+            <xsl:if test="@align='center' or descendant::h:p[@align='center']">
+                <xsl:attribute name="class" select="$prefix || 'Centered'"/>
+            </xsl:if>
+            <xsl:if test="@align='right' or descendant::h:p[@align='right']">
+                <xsl:attribute name="class" select="$prefix || 'Right'"/>
+            </xsl:if>
+            <!-- get decimal from alignment from child para decimal tab stop; 
+                also allow fudged td style from sc-to-html down conversion -->
+            <xsl:if test="@align='decimal' or descendant::h:p[contains(@style, 'decimal')]">
+                <xsl:attribute name="class" select="$prefix || 'Decimal'"/>
+            </xsl:if>
+            <!-- borders: use regexp to find in style, either specific or all borders -->
+            <xsl:if test="matches(@style, '(border:|border-left:)[^;]*solid')">
+                <xsl:attribute name="borderleft" select="'true'"/>
+            </xsl:if>
+            <xsl:if test="matches(@style, '(border:|border-right:)[^;]*solid')">
+                <xsl:attribute name="borderright" select="'true'"/>
+            </xsl:if>
+            <xsl:if test="matches(@style, '(border:|border-top:)[^;]*solid')">
+                <xsl:attribute name="bordertop" select="'true'"/>
+            </xsl:if>
+            <xsl:if test="matches(@style, '(border:|border-bottom:)[^;]*solid')">
+                <xsl:attribute name="borderbottom" select="'true'"/>
+            </xsl:if>
+            <!-- content: -->
+            <xsl:apply-templates mode="styling" select="node()"/>
+        </xsl:element>
     </xsl:template>
-
-
+    
+    <xsl:template mode="styling" match="h:td">
+        <xsl:call-template name="stylingTableCell">
+            <xsl:with-param name="cell" select="'td'"/>
+        </xsl:call-template>
+    </xsl:template>
+    
+    <!-- td and th similar, but Word seems to export only td, so have added 'th' 
+    char style / span to flag which cells are intended as th rather than td. -->    
+    <xsl:template mode="styling" match="h:th | h:td[h:p/h:span[@class='th']]">
+        <xsl:call-template name="stylingTableCell">
+            <xsl:with-param name="cell" select="'th'"/>
+        </xsl:call-template>
+    </xsl:template>
+    
+    
 
     <!-- Attributing ======================================================== -->
 
@@ -1074,6 +1108,8 @@
     <!-- A chance to fix outstanding issues... 
         - Sublists need hoisting into previous list item, rather than between items
         - Where list items contain br, split into paragraphs
+        - Where a th span/char style has been used to mark table cells that should be th (Word
+          only generates td), clean up any remaining th within Paragraph
     -->
 
     <!-- default identity: copy elements and attributes unchanged -->
@@ -1115,5 +1151,11 @@
         </xsl:copy>
     </xsl:template>
     
-
+    <!-- Have used a th span/char style to mark td that should be th, so need to strip any 
+        remaining trace within Paragraph  -->
+    <xsl:template mode="fixing" match="Paragraph/th | th/th">
+        <xsl:apply-templates mode="fixing" select="node()"/>
+    </xsl:template>
+    
+    
 </xsl:stylesheet>

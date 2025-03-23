@@ -199,6 +199,7 @@
             p.TableHead  { mso-style-name: TableHead; }
             p.Term  { mso-style-name: Term; }
             span.TeX  { mso-style-name: TeX; }
+            span.th  { mso-style-name: th; }
             p.Timing  { mso-style-name: Timing; }
             p.Title  { mso-style-name: Title; }
             p.Transcript  { mso-style-name: Transcript; }
@@ -256,7 +257,7 @@
             h2 { font-size: 15pt; margin-left: 11pt; } 
             h3 { font-size: 13pt; margin-left: 22pt; } 
             h4 { font-size: 11pt; margin-left: 33pt; font-style: italic; } 
-            table, th, td { border: solid windowtext .5pt; border-collapse: collapse; margin: 4pt }
+            table, th, td { border: none; border-collapse: collapse; padding: 6pt }
             p.TableHead { border-bottom: solid #9CC2E5 1.5pt; font-weight: bold; }
             
             span.EditorComment { color: magenta; } 
@@ -273,6 +274,7 @@
             span.SideNote, span.SideNoteHeading, span.SideNoteParagraph { background: #FFFF99; } 
             span.SideNoteHeading { font-weight: bold; } 
             span.Label { font-weight: bold; } 
+            span.th { font-weight: bold; background: #DEEAF6; } 
             
             p.UnitTitle { font-size: 24pt; }
             span.TeX, span.MathML, span.InlineEquation, p.Equation { font-family: "Times New Roman", serif; color: purple; mso-no-proof: yes; } 

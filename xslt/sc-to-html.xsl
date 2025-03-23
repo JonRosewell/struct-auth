@@ -27,12 +27,12 @@
     
     <!-- ===== default cases should do the bulk of the work ===== -->
     
-    <!-- Copy all attributes (not many in SC) 
+    <!-- Copy attributes (not many in SC) where make sense in html. 
+        Other attribs are instead copied into text so they can be perserved and edited in Word (see below)
+        Slightly risky that same attribute name can be used for diff purposes, eg type for lists and boxes, and
+        sometimes needs handling differently, eg for list type, act on it rather than output as attribute span.
         NB need to be careful to apply select="@* | node()" or attribs won't be selected anyway;
         needed even at Paragraph level eg for links.
-        Some attribs are also copied into text so they can be perserved and edited in Word:
-        - src for images
-        - id for sections, boxes, activities, figures as destination for CrossRef
     -->    
     <xsl:template match="@*" >
         <xsl:copy>
@@ -40,7 +40,11 @@
         </xsl:copy>
     </xsl:template>
     
-    <!-- BEWARE: this changes an attribute to child text and could provoke error: 
+    <!-- For specific attributes, convert into visible / editable text:
+        * src for images
+        * id for sections, boxes, activities, figures as destination for CrossRef
+        * resource = icons for activities and boxes
+        BEWARE: this changes an attribute to child text and could provoke error: 
           An attribute node ([somename]) cannot be created after a child of the containing element.
         which occurs because handling @id has created a child before @somename when 
         processed by apply-templates select="@*".
@@ -50,10 +54,6 @@
             <xsl:apply-templates select="@id"/>
         to ensure other attribs are copied safely before creating content. 
         Looks a bit nicer to have ids at end of para anyway...
-        Unfortunately ids can occur on many elements larger than para: sections, boxes, tables, figures...
-        Generalise template so that can be used for other attributes that need translating to text in future
-        Slightly risky that same attribute name can be used for diff purposes, eg type for lists and boxes, and
-        sometimes needs handling differently, eg for list type, act on it rather than output as attribute span.
     -->
     <xsl:template match="@id | @style | @type | @resource1 | @resource2 | @resource3">
         <span class="attribute">
@@ -75,7 +75,7 @@
     </xsl:template>
     
     <!-- Some elements are preserved as html tags -->
-    <xsl:template match="b | i | u | sub | sup | table | tbody | tr | th | td | br | a | font">
+    <xsl:template match="b | i | u | sub | sup | table | tbody | tr | td | br | a | font">
         <xsl:element name="{name()}">
             <xsl:apply-templates select="@* | node()"/>
         </xsl:element>
@@ -127,15 +127,13 @@
     
     <!-- list elements -->
 
-    <!-- Conversion of SC lists to html should be straightforward, but some tweaks help 
+    <!-- Conversion of SC lists to html tags should be straightforward, but some tweaks help 
         to round-trip cleanly through Word:
         * if some list items have extended content, then whole list should be wrapped in 
         ListHead/ListEnd to avoid ambiguity over where items end 
         * ...not required for simpler lists where each item is a single paragraph
         * ...limitation: not detecting occasions when item has content *following* a 
         sub list; if so, a SubListHead/SubListEnd around sublist would also be needed.
-        if 
-        * wrap untagged text in <p> to achieve more consistent lists
         * avoid list items with no text by inserting nbsp
     -->
     
@@ -274,13 +272,50 @@
         </p>
     </xsl:template>
 
-    <!-- tr, th, td, tbody are copied -->
-    <!-- change td slignment to html attribs (with 'decimal' added as fudge) -->
+    <!-- tr, th, td, tbody are copied but some attribs should be converted to html equivs -->
+    <!-- change td,th alignment to html attribs (with 'decimal' added as fudge) -->
     <xsl:template match="td/@class">
         <xsl:attribute name="align" 
             select="if (. ='TableCentered') then 'center' else
                     if (. ='TableRight') then 'right' else
                     if (. ='TableDecimal') then 'decimal' else 'left'" />
+    </xsl:template>
+    <xsl:template match="th/@class">
+        <xsl:attribute name="align" 
+            select="if (. ='ColumnHeadCentered') then 'center' else
+                    if (. ='ColumnHeadRight') then 'right' else
+                    if (. ='ColumnHeadDecimal') then 'decimal' else 'left'" />
+    </xsl:template>
+    
+    <!-- for borders, need to construct a style string from separate attribs -->
+    <xsl:template match="td/@*[contains(name(), 'border')] | th/@*[contains(name(), 'border')]">
+        <xsl:attribute name="style">
+            <xsl:for-each select="../@*">
+                <xsl:if test="name() = 'borderleft' and . = 'true'">
+                    <xsl:text>border-left:solid 1pt;</xsl:text>
+                </xsl:if>
+                <xsl:if test="name() = 'borderright' and . = 'true'">
+                    <xsl:text>border-right:solid 1pt;</xsl:text>
+                </xsl:if>
+                <xsl:if test="name() = 'bordertop' and . = 'true'">
+                    <xsl:text>border-top:solid 1pt;</xsl:text>
+                </xsl:if>
+                <xsl:if test="name() = 'borderbottom' and . = 'true'">
+                    <xsl:text>border-bottom:solid 1pt;</xsl:text>
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:attribute>
+    </xsl:template>
+    
+    
+    <!-- th will likely be converted to td on pass through Word, so also preserve as a span -->    
+    <xsl:template match="th">
+        <th>
+            <xsl:apply-templates select="@*"/>
+            <span class="th">
+                <xsl:apply-templates select="node()"/>
+            </span>
+        </th>
     </xsl:template>
     
     

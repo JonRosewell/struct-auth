@@ -16,7 +16,7 @@
          <Section>
             <Title>Purpose</Title>
             <Paragraph><AuthorComment>NB Work in progress...</AuthorComment></Paragraph>
-            <Paragraph>My converter is intended to enable structured authoring in Word of material destined for the VLE (and possibly for print). It provides a (relatively) quick preview via oXygen. To preview:</Paragraph>
+            <Paragraph>My converter is intended to enable structured authoring in Word of material destined for the VLE (and possibly for print). It provides a quick preview via oXygen. To preview:</Paragraph>
             <NumberedList>
                <ListItem><Paragraph>copy some or all of the Word document</Paragraph></ListItem>
                <ListItem><Paragraph>paste into a skeleton document in oXygen</Paragraph></ListItem>
@@ -25,16 +25,28 @@
                <ListItem><Paragraph>if appropriate, click the <ComputerUI>Save</ComputerUI> link to publish on the VLE</Paragraph></ListItem>
                <ListItem><Paragraph>go home early ;-)</Paragraph></ListItem>
             </NumberedList>
-            <Paragraph>The Word document must be carefully styled using style names that correspond to OU structured content (SC) tags (element names); see the <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185747">Structured Content Tag Guide</a> for the complete list. To author from scratch, I can supply a Word document <ComputerCode>empty-sc.docx</ComputerCode> containing the required styles. To author from existing OU web material, I can convert the master XML file back to appropriately styled Word. </Paragraph>
+            <Paragraph>The Word document must be carefully styled using style names that correspond to OU structured content (SC) tags (element names); see the <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185747">Structured Content Tag Guide</a> for the complete list. To author from scratch, I can supply a Word document <ComputerCode>empty-sc.docx</ComputerCode> containing the required styles. </Paragraph>
+            <Paragraph>To author from existing OU web material, I can convert the master XML file back to appropriately styled Word. Faithful round-trip of content between SC XML and Word is therefore possible.</Paragraph>
             <Paragraph>The visual appearance of these documents once in Word should be reasonably comfortable to use; if not, the font face, size, colours etc of styles can be freely tweaked without detriment since the conversion relies only on the style name. Note that the list of SC elements and therefore styles is long: use the Word <ComputerUI>Styles</ComputerUI> pane to see all styles; right-click and <ComputerUI>Add to Style Gallery</ComputerUI> those you use frequently.</Paragraph>
             <Paragraph>This document serves both as documentation and as an example / test document – try it out!</Paragraph>
             <Paragraph>Software can be found on GitHub <a href="https://github.com/JonRosewell/struct-auth">https://github.com/JonRosewell/struct-auth</a>.</Paragraph>
+         </Section>
+         <Section>
+            <Title>Alternatives</Title>
+            <Paragraph>I believe that my converter makes possible a decent method of writing interactive learning material destined for the VLE by combining the familiarity of Word and its strengths in dealing with large documents with a rapid preview on the VLE. However, there are other approaches:</Paragraph>
+            <BulletedList>
+               <ListItem>Stick to the ‘normal’ work flow of handing over Word for manual tagging. The downsides are: long delays before seeing anything on-screen, error-prone transcription requiring a lot of proofreading.</ListItem>
+               <ListItem>Write directly in oXygen. This is particularly useful for small updates. Downsides: a cluttered interface, hard to share documents with colleagues.</ListItem>
+               <ListItem>Markdown: Both Tony Hirst and I have had a go at Markdown to SC conversion in the past. Downside: Markdown is not rich enough to capture the range of SC / VLE features although fine for headings, lists, tables and images.</ListItem>
+               <ListItem>LaTeX: I have a suspicion that someone somewhere has a converter for LaTeX to SC, but I’ve never tracked this down. There is a route for publishing print from LaTeX, but I am unclear whether this can be diverted toward the VLE.</ListItem>
+            </BulletedList>
+            <Paragraph>All the above produce structured content. This fits into normal production routes, with the benefit of producing alternative formats for student choice and accessibility support.  Other approaches such as creating Jupyter notebooks don’t attempt to fit into ‘official’ processes; they can escape the VLE limitations, for example by providing decent coding support, but may incur extra effort elsewhere, for example to provide accessibility support.</Paragraph>
          </Section>
       </Session>
       <Session>
          <Title>Basic text</Title>
          <Paragraph>This is a paragraph with some direct character formatting for: <b>bold</b>, <i>italic</i>, <u>underline</u>, <sup>sub</sup>/<sub>sup</sub>, <smallCaps>small caps</smallCaps>, <b>strong</b>, <i>emphasis</i>, created with standard Word buttons.</Paragraph>
-         <Paragraph>And some standard OU character styles: <ComputerCode>ComputerCode</ComputerCode>, <ComputerUI>ComputerUI</ComputerUI>, <GlossaryTerm>GlossaryTerm</GlossaryTerm>.</Paragraph>
+         <Paragraph>And some standard OU character styles: <ComputerCode>ComputerCode</ComputerCode>, <ComputerUI>ComputerUI</ComputerUI>, <GlossaryTerm>GlossaryTerm</GlossaryTerm>, <SecondVoice>second voice</SecondVoice> (to show thought processes in mathematical arguments).</Paragraph>
          <Paragraph>Paragraphs can contain <AuthorComment>author comments </AuthorComment>and <EditorComment>editor comments</EditorComment>.</Paragraph>
          <Paragraph>Paragraphs can contain several sorts of link. For example, an external hyperlink to <a href="https://www.google.com/">Google</a> can be created in Word in the normal way. For references to other documents or parts of the website, it is better to use an &lt;olink&gt; which refers to a document and section names, for example to the <olink targetdoc="Course Guide" targetptr="11">Course guide</olink>. Use &lt;CrossRef> to refer to the <CrossRef idref="lists">next session</CrossRef> or other parts of the <i>same</i> document; this requires placing ids on destinations. See the SC reference about <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185750&amp;section=6">links</a>.</Paragraph>
          <Paragraph>A paragraph can contain an equation such as <InlineEquation> <TeX>e = m c^2</TeX> </InlineEquation> inline. Equations can also be shown as display:</Paragraph>
@@ -54,181 +66,7 @@
          <ProgramListing>
             <Paragraph>&lt;!-- default: para with class (= Word para style) or span with class (= Word char style) become an element of same name --&gt;<br/>&lt;<b>xsl:template</b> <i>mode</i>="styling" <i>match</i>="h:p[@class] | h:span[@class]" <i>priority</i>="0.4"&gt;<br/>    &lt;<b>xsl:element </b> <i>name</i>="{@class}"&gt; <br/>        &lt;<b>xsl:apply-templates </b> <i>mode</i>="styling"/&gt;<br/>    &lt;/xsl:element&gt;<br/>&lt;/xsl:template&gt;</Paragraph>
          </ProgramListing>
-         <Section id="equations">
-            <Title>Equations</Title>
-            <Paragraph>Basic approach to equations is to paste TeX code and style, either as <i>Equation</i> or <i>InlineEquation</i>, which will translate to &lt;Equation&gt; and &lt;InlineEquation&gt; respectively.</Paragraph>
-            <Paragraph>This is a sample TeX equation styled as <i>Equation</i>:</Paragraph>
-            <Equation>
-               <TeX>z^2=\frac{\text{GDP}}{(r+1)^2}</TeX>
-            </Equation>
-            <Paragraph>And the same as an inline equation <InlineEquation> <TeX>z^2=\frac{\text{GDP}}{(r+1)^2}</TeX> </InlineEquation> in the middle of a paragraph.</Paragraph>
-            <Paragraph>TeX code can be copied from existing VLE pages. The VLE will display equations either as generated image or better-quality client-side MathJax (choose in your VLE profile settings). Both have accessibility features (click or right-click) that include showing TeX equivalent, so use that to grab TeX for existing equations. Paste TeX code as styled line to transfer to SC XML.</Paragraph>
-            <Paragraph>To also see a rendered version in Word, you can insert a new Word equation, paste TeX code into it <i>as text</i> and press <ComputerUI>Return</ComputerUI> to render. Switch between <ComputerUI>Professional</ComputerUI> and <ComputerUI>Linear</ComputerUI> to show fully rendered or TeX source.</Paragraph>
-            <Paragraph>If you create or edit an equation using Word Equation Editor, copy/paste it <i>as text</i> to a styled line. If a pasted equation doesn’t produce TeX, change Word Equation Options, choosing <ComputerUI>Copy Linear Format to clipboard as plain text</ComputerUI>. </Paragraph>
-            <Paragraph>Examples: an equation inserted using Word equation editor inline <InlineEquation> <TeX>\frac{a}{b}</TeX> </InlineEquation> with <i>InlineEquation</i> version following. Then an equation inserted as display equation in Word and then copied as <i>Equation</i>:</Paragraph>
-            <Equation>
-               <TeX>\left(x+a\right)^n=\sum_{k=0}^{n}{\binom{n}{k}x^ka^{n-k}}</TeX>
-            </Equation>
-            <Paragraph><i>Limitation</i>: The Word equations are lost in conversion but the TeX versions are passed to structured content. Unfortunately it is a manual job to keep them in sync.</Paragraph>
-            <Paragraph><i>Gotcha</i>: If you encounter an error 'Warning: The image source (src attribute) has not been specified' when rendering, this may relate to an empty <i>InlineEquation</i>. The culprit may be an end-of-line character in Word that is styled as TeX, most likely within a list. Highlight the end-of-line and press <ComputerUI>Ctrl+Space</ComputerUI>.</Paragraph>
-            <Paragraph>Note 1: I don’t know what current practice is for editors handling maths, but I believe it used to involve a MathFlow plugin, both in Word and oXygen. This produces MathML, as can Word Equation Editor. This can also be passed through to SC VLE instead of TeX but it is verbose and unreadable so I find TeX a better alternative.</Paragraph>
-            <Paragraph>Note 2: If text in equations differs in size compared to body text, the underlying reason is the VLE handling of high resolution displays. For possibly good reasons, this fudges between the actual hardware pixel size and a nominal web CSS ‘pixel’ and this fudge may not be accurate.</Paragraph>
-            <Paragraph>Note 3: The same issue with high resolution displays can make equations appear fuzzy compared to body text of a similar size: equations have been rendered as low resolution JPEG files. You can switch to better client-side MathJax rendering using your VLE profile; unfortunately the default remains JPEG for all users.</Paragraph>
-         </Section>
-         <Section id="numbering">
-            <Title>Numbering</Title>
-            <InternalSection>
-               <SubHeading>Numbering the really easy way</SubHeading>
-               <Paragraph>The simplest approach is to do no numbering whatsoever in your Word document, convert your document to XML, and then run my numbering script (<ComputerCode>number-sc.xsl</ComputerCode>). This will number your document – Sessions / Sections / SubSections, Figures, Tables – in OU house style. You may then go home early.</Paragraph>
-               <Paragraph>I recommend that in text you only refer to ‘the figure below’ or ‘the figure above’ rather than ‘Figure 9’. If absolutely essential, refer to ‘Figure X’ and then search and manually fix references after automatic numbering. For distant references you should in any case use a &lt;CrossRef&gt; link with the destination title (not numbered).</Paragraph>
-               <Paragraph>A downside is that your Word document will remain unnumbered but you will soon get used to that ;-)</Paragraph>
-               <Paragraph>In detail, the numbering transform does the following:</Paragraph>
-               <BulletedList>
-                  <ListItem>Strips any existing &lt;Number&gt; tags from previous numbering</ListItem>
-                  <ListItem>Places &lt;Number&gt; at the start of &lt;Title&gt; for Session/Section/SubSection, &lt;Figure&gt;&lt;Caption&gt;, and &lt;Table&gt;&lt;TableHead&gt;</ListItem>
-                  <ListItem>Inserts a number in outline style for sections, and in simple sequence for figures and tables.</ListItem>
-               </BulletedList>
-               <Paragraph><i>Limitation</i>: The numbering script doesn’t currently number activities since I don’t know how best to deal with the many variants. But it can be easily added once decided whether Activities, Exercises, SAQs, ITQs... should be numbered in a single or several sequences.</Paragraph>
-               <Paragraph><i>Limitation</i>: Equations probably have to be manually numbered, at least to use explicit tag/style (actually <i>Label</i> rather than <i>Number</i>) because typically only some steps are numbered, but could perhaps be renumbered automatically to cope with changes. References would still break, though, so perhaps this is a case for using Word SEQ numbering described next?</Paragraph>
-               <Paragraph>See later to <CrossRef idref="setupscripts">set up script</CrossRef> for numbering.</Paragraph>
-               <SubHeading>Numbering the less easy way</SubHeading>
-               <Paragraph>If you find it essential to number your Word document as you write, then you can insert numbering fields which Word will update automatically. On conversion to XML, these will be converted to literal text. With the appropriate use of fields, you can number figures, tables, and headings in (more or less) OU house style.</Paragraph>
-               <BulletedList>
-                  <ListItem><Paragraph>To insert a Word field, use toolbar <ComputerUI>Insert &gt; Quick parts &gt; Field</ComputerUI> and choose <ComputerUI>SEQ</ComputerUI>. Give an identifier to keep sequences separate, for example use ‘Figures’ to get <ComputerCode>{SEQ Figures}</ComputerCode> and similarly for ‘Tables’ and ‘Activities’.</Paragraph></ListItem>
-                  <ListItem><Paragraph>To achieve OU style outline numbering for headings, insert <ComputerUI>Insert &gt; Quick parts &gt; Field</ComputerUI> and choose <ComputerUI>LISTNUM</ComputerUI> with option <ComputerUI>LegalDefault</ComputerUI>, ie <ComputerCode>{LISTNUM LegalDefault}</ComputerCode>.</Paragraph></ListItem>
-                  <ListItem><Paragraph>To show existing Word fields, select all <ComputerUI>Ctrl+A</ComputerUI> and <ComputerUI>Shift+F9</ComputerUI>. <ComputerUI>F9</ComputerUI> updates a field; select all <ComputerUI>Ctrl+A</ComputerUI> to update the whole document.</Paragraph></ListItem>
-               </BulletedList>
-               <Paragraph>Copy an existing figure caption or heading to make life somewhat easier!</Paragraph>
-               <Paragraph><i>Limitation</i>: Word fields are lost when a document is converted to XML, so round-tripping converts auto to manual numbering.</Paragraph>
-               <Paragraph><i>Limitation</i>: Strictly, figure and table numbers should be surrounded by a &lt;Number&gt; tag, and appearance improves if this is done. Heading numbers should also be wrapped in &lt;Number>; I believe this has no visual effect on the VLE, although it does in print. Practice seems to vary. The script will do it for you ;-)</Paragraph>
-               <SubHeading>Numbering another easy way</SubHeading>
-               <Paragraph>The automatic numbering features of Word <i>styles</i> are easy to set up and will give you numbering when authoring. However, the numbers do not transfer as text and will be lost on conversion. Subsequent use of my numbering script will provide numbers; this numbering should be identical but I can’t guarantee that will always be the case. Should be worth the gamble...</Paragraph>
-            </InternalSection>
-         </Section>
-         <Section>
-            <Title>Tables</Title>
-            <Paragraph>Simples: just use normal Word table features, and things will work...</Paragraph>
-            <Table class="normal" style="topbottomrules">
-               <TableHead>Simple table</TableHead>
-               <tbody>
-                  <tr>
-                     <th>Header</th>
-                     <th>Col one</th>
-                     <th>Col two</th>
-                     <th>Col three</th>
-                  </tr>
-                  <tr>
-                     <td>Row 1</td>
-                     <td>row 1, col one</td>
-                     <td>row 1, col two</td>
-                     <td>row 1, col three</td>
-                  </tr>
-                  <tr>
-                     <td>Row 2</td>
-                     <td>row 2, col one</td>
-                     <td>row 2, col two</td>
-                     <td>row 2, col three</td>
-                  </tr>
-               </tbody>
-            </Table>
-            <Paragraph>Plain vanilla tables will work, including left/centre/right alignment (use <ComputerUI>Paragraph > Align</ComputerUI> toolbar buttons) and decimal alignment (use <ComputerUI>Paragraph > Tabs > Decimal</ComputerUI>). </Paragraph>
-            <Paragraph><i>Limitation</i>: alignment requires heuristics; let me know if unreliable. Decimal alignment likely to be lost on round-trip conversions; recreate decimal tab stop if necessary.</Paragraph>
-            <Table>
-               <TableHead>Cell alignment</TableHead>
-               <tbody>
-                  <tr>
-                     <td><Paragraph><b>Header</b></Paragraph></td>
-                     <td><Paragraph><b>Text in a wide column</b></Paragraph></td>
-                     <td><Paragraph><b>Decimal in a wide column</b></Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                     <td><Paragraph>Left</Paragraph></td>
-                     <td class="TableDecimal"><Paragraph>1.23</Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td class="TableCentered"><Paragraph>Centre</Paragraph></td>
-                     <td class="TableDecimal"><Paragraph>123.4567</Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 3</Paragraph></td>
-                     <td class="TableRight"><Paragraph>Right</Paragraph></td>
-                     <td class="TableDecimal"><Paragraph>123.0</Paragraph></td>
-                  </tr>
-               </tbody>
-               <Description/>
-            </Table>
-            <Paragraph>Merging cells works, both horizontally and vertically.</Paragraph>
-            <Table>
-               <TableHead>Cells merged horizontally</TableHead>
-               <tbody>
-                  <tr>
-                     <td><Paragraph><b>Header</b></Paragraph></td>
-                     <td><Paragraph><b>One</b></Paragraph></td>
-                     <td><Paragraph><b>Two</b></Paragraph></td>
-                     <td><Paragraph><b>Three</b></Paragraph></td>
-                     <td><Paragraph><b>Four</b></Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                     <td colspan="2"><Paragraph>Merging cells horizontally means text spills across</Paragraph></td>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                  </tr>
-               </tbody>
-               <Description/>
-            </Table>
-            <Table>
-               <TableHead>Cells merged vertically</TableHead>
-               <tbody>
-                  <tr>
-                     <td><Paragraph><b>Header</b></Paragraph></td>
-                     <td><Paragraph><b>One</b></Paragraph></td>
-                     <td><Paragraph><b>Two</b></Paragraph></td>
-                     <td><Paragraph><b>Three</b></Paragraph></td>
-                     <td><Paragraph><b>Four</b></Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                     <td rowspan="2"><Paragraph>Merging cells vertically means text spills down if it is long enough to fill the cell. Merging cells vertically means text spills down if it is long enough to fill the cell. Merging cells vertically means text spills down if it is long enough to fill the cell. Merging cells vertically means text spills down if it is long enough to fill the cell.</Paragraph></td>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                     <td><Paragraph>Row 1</Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                     <td><Paragraph>Row 2</Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 3</Paragraph></td>
-                     <td><Paragraph>Row 3</Paragraph></td>
-                     <td><Paragraph>Row 3</Paragraph></td>
-                     <td><Paragraph>Row 3</Paragraph></td>
-                     <td><Paragraph>Row 3</Paragraph></td>
-                  </tr>
-                  <tr>
-                     <td><Paragraph>Row 4</Paragraph></td>
-                     <td><Paragraph>Row 4</Paragraph></td>
-                     <td><Paragraph>Row 4</Paragraph></td>
-                     <td><Paragraph>Row 4</Paragraph></td>
-                     <td><Paragraph>Row 4</Paragraph></td>
-                  </tr>
-               </tbody>
-               <Description/>
-            </Table>
-            <Paragraph><i>Limitation</i>: SC tables (like HTML) can have header rows/columns which are tagged and rendered differently to other cells. I have no equivalent in Word; using bold text is probably the best that can be easily achieved. Can be fixed manually in oXygen at handover.</Paragraph>
-            <Paragraph><i>Limitation</i>: Complex styling is not going to work: SC offers limited styling and most of this has no effect on the VLE anyway, and I have made no attempt to implement mapping from Word to SC except as above. For a complex layout, I suggest you insert a placeholder image of your desired layout and hope someone can replicate something close in oXygen at final handover.</Paragraph>
-         </Section>
+         <Paragraph><i>Limitation</i>: Word only allows text to be given a single named style so some permutations are messy: <SecondVoice>for example equations such as <InlineEquation><TeX>x^2</TeX></InlineEquation> within second voice</SecondVoice>. Word's built-in formatting <SecondVoice>(<b>bold</b>, <i>italic </i><b><i>etc</i></b>) </SecondVoice>doesn’t suffer the same restriction.</Paragraph>
       </Session>
       <Session id="lists">
          <Title>Lists</Title>
@@ -327,6 +165,159 @@
                <Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph>
             </InternalSection>
          </Section>
+      </Session>
+      <Session>
+         <Title>Tables</Title>
+         <Paragraph>Simples: just use normal Word table features, and things will work...</Paragraph>
+         <Table class="normal" style="topbottomrules">
+            <TableHead>Simple table</TableHead>
+            <tbody>
+               <tr>
+                  <th>Header</th>
+                  <th>Col one</th>
+                  <th>Col two</th>
+                  <th>Col three</th>
+               </tr>
+               <tr>
+                  <td>Row 1</td>
+                  <td>row 1, col one</td>
+                  <td>row 1, col two</td>
+                  <td>row 1, col three</td>
+               </tr>
+               <tr>
+                  <td>Row 2</td>
+                  <td>row 2, col one</td>
+                  <td>row 2, col two</td>
+                  <td>row 2, col three</td>
+               </tr>
+            </tbody>
+         </Table>
+         <Paragraph>Plain vanilla tables will work, including left/centre/right alignment (use <ComputerUI>Paragraph > Align</ComputerUI> toolbar buttons) and decimal alignment (use <ComputerUI>Paragraph > Tabs > Decimal</ComputerUI>). </Paragraph>
+         <Paragraph><i>Limitation</i>: alignment requires heuristics; let me know if unreliable. Decimal alignment likely to be lost on round-trip conversions; recreate decimal tab stop if necessary.</Paragraph>
+         <Table>
+            <TableHead>Cell alignment</TableHead>
+            <tbody>
+               <tr>
+                  <th><Paragraph>Header</Paragraph></th>
+                  <th><Paragraph>Text in a wide column</Paragraph></th>
+                  <th><Paragraph>Decimal in a wide column</Paragraph></th>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 1</Paragraph></td>
+                  <td><Paragraph>Left</Paragraph></td>
+                  <td class="TableDecimal"><Paragraph>1.23</Paragraph></td>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td class="TableCentered"><Paragraph>Centre</Paragraph></td>
+                  <td class="TableDecimal"><Paragraph>123.4567</Paragraph></td>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 3</Paragraph></td>
+                  <td class="TableRight"><Paragraph>Right</Paragraph></td>
+                  <td class="TableDecimal"><Paragraph>123.0</Paragraph></td>
+               </tr>
+            </tbody>
+            <Description/>
+         </Table>
+         <Paragraph>Merging cells works, both horizontally and vertically.</Paragraph>
+         <Table>
+            <TableHead>Cells merged horizontally</TableHead>
+            <tbody>
+               <tr>
+                  <th><Paragraph>Header</Paragraph></th>
+                  <th><Paragraph>One</Paragraph></th>
+                  <th><Paragraph>Two</Paragraph></th>
+                  <th><Paragraph>Three</Paragraph></th>
+                  <th><Paragraph>Four</Paragraph></th>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 1</Paragraph></td>
+                  <td colspan="2"><Paragraph>Merging cells horizontally means text spills across</Paragraph></td>
+                  <td><Paragraph>Row 1</Paragraph></td>
+                  <td><Paragraph>Row 1</Paragraph></td>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td><Paragraph>Row 2</Paragraph></td>
+               </tr>
+            </tbody>
+            <Description/>
+         </Table>
+         <Table>
+            <TableHead>Cells merged vertically</TableHead>
+            <tbody>
+               <tr>
+                  <th><Paragraph>Header</Paragraph></th>
+                  <th><Paragraph>One</Paragraph></th>
+                  <th><Paragraph>Two</Paragraph></th>
+                  <th><Paragraph>Three</Paragraph></th>
+                  <th><Paragraph>Four</Paragraph></th>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 1</Paragraph></td>
+                  <td rowspan="2"><Paragraph>Merging cells vertically means text spills down if it is long enough to fill the cell. Merging cells vertically means text spills down if it is long enough to fill the cell. Merging cells vertically means text spills down if it is long enough to fill the cell. Merging cells vertically means text spills down if it is long enough to fill the cell.</Paragraph></td>
+                  <td><Paragraph>Row 1</Paragraph></td>
+                  <td><Paragraph>Row 1</Paragraph></td>
+                  <td><Paragraph>Row 1</Paragraph></td>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td><Paragraph>Row 2</Paragraph></td>
+                  <td><Paragraph>Row 2</Paragraph></td>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 3</Paragraph></td>
+                  <td><Paragraph>Row 3</Paragraph></td>
+                  <td><Paragraph>Row 3</Paragraph></td>
+                  <td><Paragraph>Row 3</Paragraph></td>
+                  <td><Paragraph>Row 3</Paragraph></td>
+               </tr>
+               <tr>
+                  <td><Paragraph>Row 4</Paragraph></td>
+                  <td><Paragraph>Row 4</Paragraph></td>
+                  <td><Paragraph>Row 4</Paragraph></td>
+                  <td><Paragraph>Row 4</Paragraph></td>
+                  <td><Paragraph>Row 4</Paragraph></td>
+               </tr>
+            </tbody>
+            <Description/>
+         </Table>
+         <Paragraph><i>Work around</i>: SC tables (like HTML) can have header cells tagged &lt;th> that are rendered differently to other cells. Word doesn't have an exact equivalent so I also provide a character style <i>th</i>; a cell with this formatting is converted to a header &lt;th> rather than normal &lt;td> cell. Or you could just stick to bold text.</Paragraph>
+         <Table>
+            <TableHead>Test borders</TableHead>
+            <tbody>
+               <tr>
+                  <th borderright="true">aaa</th>
+                  <th>bbb</th>
+                  <th>ccc</th>
+                  <th>ddd</th>
+               </tr>
+               <tr>
+                  <td borderright="true">one</td>
+                  <td>one,bbb</td>
+                  <td>one,ccc</td>
+                  <td>one,ddd</td>
+               </tr>
+               <tr>
+                  <td borderright="true">two</td>
+                  <td>two,bbb</td>
+                  <td borderbottom="true" borderleft="true" borderright="true" bordertop="true">two,ccc</td>
+                  <td>two,ddd</td>
+               </tr>
+               <tr>
+                  <td borderright="true">three</td>
+                  <td>three,bbb</td>
+                  <td>three,ccc</td>
+                  <td>three,ddd</td>
+               </tr>
+            </tbody>
+         </Table>
+         <Paragraph><i>Limitation</i>: Complex table styling is not going to work: SC offers limited styling and most of this has no effect on the VLE anyway. By default, table cells are not bordered, but the VLE does allow individual cell borders (left, right, top, bottom per cell) to be shown; any solid border in Word is assumed to be equivalent.</Paragraph>
       </Session>
       <Session id="boxes">
          <Title>Boxes</Title>
@@ -580,10 +571,11 @@
             <Heading>Caption appearance</Heading>
             <Paragraph>The intended appearance of a figure caption on the VLE is for the number to be bold but the caption itself to not be bold. This is controlled by the SC &lt;Caption> and &lt;Number> tags; you should not apply bold directly. I suggest doing no manual styling or numbering and using the numbering script.</Paragraph>
          </StudyNote>
+         <Paragraph>Inline images can be used as well. Here are some examples: calculator icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\calculator.png" alt="calculator" longdesc=""/></InlineFigure>, reading icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\reading.png" alt="reading"/></InlineFigure>, external link icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\external.png" alt="external"/></InlineFigure>. As with normal figures, the file must exist on a server and the path given in this form: [alt text](file path) and styling as <i>InlineFigure</i>. The image inserted in Word is ignored.</Paragraph>
       </Session>
       <Session>
          <Title>Media content</Title>
-         <Paragraph>Some examples of rich media are given here and an explanation follow.</Paragraph>
+         <Paragraph>Some examples of rich media are given here and an explanation follows.</Paragraph>
          <Paragraph>An introductory video.</Paragraph>
          <Paragraph>Watch the following video to discover what the focus of Week 5 will be.</Paragraph>
          <MediaContent
@@ -703,6 +695,27 @@
             <Paragraph>If you are reusing existing material with interactive assets, then the XML source will already exist and can be simply copied. For early stages of drafting, the asset may not yet exist: you might choose to use an image and description as a placeholder. At a later stage of production, LDS staff may share drafts using VLE pages and you can then incorporate the relevant XML into your draft.</Paragraph>
          </Section>
       </Session>
+      <Session id="equations">
+         <Title>Equations</Title>
+         <Paragraph>Basic approach to equations is to paste TeX code and style, either as <i>Equation</i> or <i>InlineEquation</i>, which will translate to &lt;Equation&gt; and &lt;InlineEquation&gt; respectively.</Paragraph>
+         <Paragraph>This is a sample TeX equation styled as <i>Equation</i>:</Paragraph>
+         <Equation>
+            <TeX>z^2=\frac{\text{GDP}}{(r+1)^2}</TeX>
+         </Equation>
+         <Paragraph>And the same as an inline equation <InlineEquation> <TeX>z^2=\frac{\text{GDP}}{(r+1)^2}</TeX> </InlineEquation> in the middle of a paragraph.</Paragraph>
+         <Paragraph>TeX code can be copied from existing VLE pages. The VLE will display equations either as generated image or better-quality client-side MathJax (choose in your VLE profile settings). Both have accessibility features (click or right-click) that include showing TeX equivalent, so use that to grab TeX for existing equations. Paste TeX code as styled line to transfer to SC XML.</Paragraph>
+         <Paragraph>To also see a rendered version in Word, you can insert a new Word equation, paste TeX code into it <i>as text</i> and press <ComputerUI>Return</ComputerUI> to render. Switch between <ComputerUI>Professional</ComputerUI> and <ComputerUI>Linear</ComputerUI> to show fully rendered or TeX source.</Paragraph>
+         <Paragraph>If you create or edit an equation using Word Equation Editor, copy/paste it <i>as text</i> to a styled line. If a pasted equation doesn’t produce TeX, change Word Equation Options, choosing <ComputerUI>Copy Linear Format to clipboard as plain text</ComputerUI>. </Paragraph>
+         <Paragraph>Examples: an equation inserted using Word equation editor inline <InlineEquation> <TeX>\frac{a}{b}</TeX> </InlineEquation> with <i>InlineEquation</i> version following. Then an equation inserted as display equation in Word and then copied as <i>Equation</i>:</Paragraph>
+         <Equation>
+            <TeX>\left(x+a\right)^n=\sum_{k=0}^{n}{\binom{n}{k}x^ka^{n-k}}</TeX>
+         </Equation>
+         <Paragraph><i>Limitation</i>: The Word equations are lost in conversion but the TeX versions are passed to structured content. Unfortunately it is a manual job to keep them in sync.</Paragraph>
+         <Paragraph><i>Gotcha</i>: If you encounter an error 'Warning: The image source (src attribute) has not been specified' when rendering, this may relate to an empty <i>InlineEquation</i>. The culprit may be an end-of-line character in Word that is styled as TeX, most likely within a list. Highlight the end-of-line and press <ComputerUI>Ctrl+Space</ComputerUI>.</Paragraph>
+         <Paragraph>Note 1: I don’t know what current practice is for editors handling maths, but I believe it used to involve a MathFlow plugin, both in Word and oXygen. This produces MathML, as can Word Equation Editor. This can also be passed through to SC VLE instead of TeX but it is verbose and unreadable so I find TeX a better alternative.</Paragraph>
+         <Paragraph>Note 2: If text in equations differs in size compared to body text, the underlying reason is the VLE handling of high resolution displays. For possibly good reasons, this fudges between the actual hardware pixel size and a nominal web CSS ‘pixel’ and this fudge may not be accurate.</Paragraph>
+         <Paragraph>Note 3: The same issue with high resolution displays can make equations appear fuzzy compared to body text of a similar size: equations have been rendered as low resolution JPEG files. You can switch to better client-side MathJax rendering using your VLE profile; unfortunately the default remains JPEG for all users.</Paragraph>
+      </Session>
       <Session id="test-headings">
          <Title>Test of heading levels (level 1)</Title>
          <Paragraph>Word Heading styles are converted to Structured Content elements that reflect the major hierarchical structure of a document as follows. A session/section/subsection ends where the next section begins; unlike a box, the end of a section is not marked explicitly.</Paragraph>
@@ -820,6 +833,36 @@
                </SubSubSection>
             </SubSection>
          </Section>
+      </Session>
+      <Session id="numbering">
+         <Title>Numbering</Title>
+         <InternalSection>
+            <SubHeading>Numbering the really easy way</SubHeading>
+            <Paragraph>The simplest approach is to do no numbering whatsoever in your Word document, convert your document to XML, and then run my numbering script (<ComputerCode>number-sc.xsl</ComputerCode>). This will number your document – Sessions / Sections / SubSections, Figures, Tables – in OU house style. You may then go home early.</Paragraph>
+            <Paragraph>I recommend that in text you only refer to ‘the figure below’ or ‘the figure above’ rather than ‘Figure 9’. If absolutely essential, refer to ‘Figure X’ and then search and manually fix references after automatic numbering. For distant references you should in any case use a &lt;CrossRef&gt; link with the destination title (not numbered).</Paragraph>
+            <Paragraph>A downside is that your Word document will remain unnumbered but you will soon get used to that ;-)</Paragraph>
+            <Paragraph>In detail, the numbering transform does the following:</Paragraph>
+            <BulletedList>
+               <ListItem>Strips any existing &lt;Number&gt; tags from previous numbering</ListItem>
+               <ListItem>Places &lt;Number&gt; at the start of &lt;Title&gt; for Session/Section/SubSection, &lt;Figure&gt;&lt;Caption&gt;, and &lt;Table&gt;&lt;TableHead&gt;</ListItem>
+               <ListItem>Inserts a number in outline style for sections, and in simple sequence for figures and tables.</ListItem>
+            </BulletedList>
+            <Paragraph><i>Limitation</i>: The numbering script doesn’t currently number activities since I don’t know how best to deal with the many variants. But it can be easily added once decided whether Activities, Exercises, SAQs, ITQs... should be numbered in a single or several sequences.</Paragraph>
+            <Paragraph><i>Limitation</i>: Equations probably have to be manually numbered, at least to use explicit tag/style (actually <i>Label</i> rather than <i>Number</i>) because typically only some steps are numbered, but could perhaps be renumbered automatically to cope with changes. References would still break, though, so perhaps this is a case for using Word SEQ numbering described next?</Paragraph>
+            <Paragraph>See later to <CrossRef idref="setupscripts">set up script</CrossRef> for numbering.</Paragraph>
+            <SubHeading>Numbering the less easy way</SubHeading>
+            <Paragraph>If you find it essential to number your Word document as you write, then you can insert numbering fields which Word will update automatically. On conversion to XML, these will be converted to literal text. With the appropriate use of fields, you can number figures, tables, and headings in (more or less) OU house style.</Paragraph>
+            <BulletedList>
+               <ListItem><Paragraph>To insert a Word field, use toolbar <ComputerUI>Insert &gt; Quick parts &gt; Field</ComputerUI> and choose <ComputerUI>SEQ</ComputerUI>. Give an identifier to keep sequences separate, for example use ‘Figures’ to get <ComputerCode>{SEQ Figures}</ComputerCode> and similarly for ‘Tables’ and ‘Activities’.</Paragraph></ListItem>
+               <ListItem><Paragraph>To achieve OU style outline numbering for headings, insert <ComputerUI>Insert &gt; Quick parts &gt; Field</ComputerUI> and choose <ComputerUI>LISTNUM</ComputerUI> with option <ComputerUI>LegalDefault</ComputerUI>, ie <ComputerCode>{LISTNUM LegalDefault}</ComputerCode>.</Paragraph></ListItem>
+               <ListItem><Paragraph>To show existing Word fields, select all <ComputerUI>Ctrl+A</ComputerUI> and <ComputerUI>Shift+F9</ComputerUI>. <ComputerUI>F9</ComputerUI> updates a field; select all <ComputerUI>Ctrl+A</ComputerUI> to update the whole document.</Paragraph></ListItem>
+            </BulletedList>
+            <Paragraph>Copy an existing figure caption or heading to make life somewhat easier!</Paragraph>
+            <Paragraph><i>Limitation</i>: Word fields are lost when a document is converted to XML, so round-tripping converts auto to manual numbering.</Paragraph>
+            <Paragraph><i>Limitation</i>: Strictly, figure and table numbers should be surrounded by a &lt;Number&gt; tag, and appearance improves if this is done. Heading numbers should also be wrapped in &lt;Number>; I believe this has no visual effect on the VLE, although it does in print. Practice seems to vary. The script will do it for you ;-)</Paragraph>
+            <SubHeading>Numbering another easy way</SubHeading>
+            <Paragraph>The automatic numbering features of Word <i>styles</i> are easy to set up and will give you numbering when authoring. However, the numbers do not transfer as text and will be lost on conversion. Subsequent use of my numbering script will provide numbers; this numbering should be identical but I can’t guarantee that will always be the case. Should be worth the gamble...</Paragraph>
+         </InternalSection>
       </Session>
       <Session>
          <Title>Using the converter</Title>
