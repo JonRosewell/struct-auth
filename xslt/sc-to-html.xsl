@@ -309,7 +309,7 @@
     
     
     <!-- th will likely be converted to td on pass through Word, so also preserve as a span -->    
-    <xsl:template match="th">
+    <xsl:template match="th[not(Paragraph)]">
         <th>
             <xsl:apply-templates select="@*"/>
             <span class="th">
@@ -317,8 +317,20 @@
             </span>
         </th>
     </xsl:template>
-    
-    
+    <xsl:template match="th[Paragraph]">
+<!--        <xsl:message expand-text="true">th/p: name[{name()}] .[{.}]</xsl:message>-->
+        <th>
+            <xsl:apply-templates select="@*"/>
+            <p>
+                <span class="th">
+                    <xsl:apply-templates select="Paragraph/node()"/>
+                </span>
+            </p>
+        </th>
+    </xsl:template>
+
+
+
     <!-- image related -->
     <xsl:template match="Figure">
         <!-- may have @id but attach that to para containing visible image -->

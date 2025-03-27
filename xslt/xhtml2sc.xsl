@@ -74,7 +74,6 @@
     </xsl:template>
 
     <!-- TODO:
-        Think about supporting more attributes? Table styles? Activity icons?
         Multipart activities not supported: worth doing or not?
     -->
 
