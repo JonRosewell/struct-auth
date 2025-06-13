@@ -10,9 +10,12 @@
         number-sc.xsl: autonumbers sections, figures etc in OU structured content XML
     -->
     
-    <!-- strip any existing numbers -->
+    <!-- strip any existing Numbers -->
     <xsl:template match="Number" />
+
+    <!-- don't strip any existing Labels (eg typically only some equations are numbered -->
     
+    <!-- following templates all replace existing numbers with value from appropriate sequence -->
     <xsl:template match="Session/Title" >
         <xsl:copy>
             <Number><xsl:number count="Session" level="multiple" format="1"/></Number>
@@ -48,6 +51,39 @@
         </xsl:copy>
     </xsl:template>
     
+    <xsl:template match="Activity/Heading" >
+        <xsl:copy>
+            <Number>Activity&#x00a0;<xsl:number count="Activity" level="any" format="1"/></Number>
+            <xsl:apply-templates />         
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="Exercise/Heading" >
+        <xsl:copy>
+            <Number>Exercise&#x00a0;<xsl:number count="Exercise" level="any" format="1"/></Number>
+            <xsl:apply-templates />         
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="SAQ/Heading" >
+        <xsl:copy>
+            <Number>SAQ&#x00a0;<xsl:number count="SAQ" level="any" format="1"/></Number>
+            <xsl:apply-templates />         
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="ITQ/Heading" >
+        <xsl:copy>
+            <Number>ITQ&#x00a0;<xsl:number count="ITQ" level="any" format="1"/></Number>
+            <xsl:apply-templates />         
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="Label" >
+        <xsl:copy>(<xsl:number count="Label" level="any" format="1"/>)</xsl:copy>
+    </xsl:template>
+    
+    <!-- default copy template -->    
     <xsl:template match="@*|node()">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>

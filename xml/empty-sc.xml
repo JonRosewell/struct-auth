@@ -7,12 +7,12 @@
     <ItemID/>
     <ItemTitle>Item title</ItemTitle>
     <Unit>
-        <UnitID/>
+        <UnitID>Unit id</UnitID>
         <UnitTitle>Unit title</UnitTitle>
         <ByLine>A N Author</ByLine>
         <Session>
-            <Title>Session Title</Title>
-            <Paragraph>text here</Paragraph>
+            <Title>Session title</Title>
+            <Paragraph>Text here</Paragraph>
         </Session>
     </Unit>
 </Item>

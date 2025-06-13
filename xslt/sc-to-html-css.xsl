@@ -273,7 +273,7 @@
             span.Number { background: #F2F2F2; font-weight: bold; mso-no-proof: yes;}
             span.SideNote, span.SideNoteHeading, span.SideNoteParagraph { background: #FFFF99; } 
             span.SideNoteHeading { font-weight: bold; } 
-            span.Label { font-weight: bold; } 
+            span.Label { font-weight: bold; color: grey; background: #FFFF99; } 
             span.th { font-weight: bold; background: #DEEAF6; } 
             
             p.UnitTitle { font-size: 24pt; }

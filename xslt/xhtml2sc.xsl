@@ -149,12 +149,22 @@
         </smallCaps>
     </xsl:template>
 
-    <xsl:template mode="styling" match="h:span[@class = 'SideNoteHeading']">
-        <Heading>
-            <xsl:apply-templates mode="styling"/>
-        </Heading>
+    <xsl:template mode="styling" match="h:span[@class = 'SideNoteParagraph']">
+        <SideNote>
+            <SideNoteParagraph>
+                <xsl:apply-templates mode="styling"/>
+            </SideNoteParagraph>
+        </SideNote>
     </xsl:template>
-
+    
+    <xsl:template mode="styling" match="h:span[@class = 'SideNoteHeading']">
+        <SideNote>
+            <Heading>
+                <xsl:apply-templates mode="styling"/>
+            </Heading>
+        </SideNote>
+    </xsl:template>
+    
     <xsl:template mode="styling" match="h:p[@class = 'MsoCaption']">
         <Caption>
             <xsl:apply-templates mode="styling"/>

@@ -10,7 +10,7 @@
    <Unit>
       <UnitID>Jons converter</UnitID>
       <UnitTitle>Jon’s Word-to-SC converter</UnitTitle>
-      <ByLine>Jon Rosewell, Feb 2025</ByLine>
+      <ByLine>Jon Rosewell, May 2025</ByLine>
       <Session id="first">
          <Title>Introduction</Title>
          <Section>
@@ -48,6 +48,7 @@
          <Paragraph>This is a paragraph with some direct character formatting for: <b>bold</b>, <i>italic</i>, <u>underline</u>, <sup>sub</sup>/<sub>sup</sub>, <smallCaps>small caps</smallCaps>, <b>strong</b>, <i>emphasis</i>, created with standard Word buttons.</Paragraph>
          <Paragraph>And some standard OU character styles: <ComputerCode>ComputerCode</ComputerCode>, <ComputerUI>ComputerUI</ComputerUI>, <GlossaryTerm>GlossaryTerm</GlossaryTerm>, <SecondVoice>second voice</SecondVoice> (to show thought processes in mathematical arguments).</Paragraph>
          <Paragraph>Paragraphs can contain <AuthorComment>author comments </AuthorComment>and <EditorComment>editor comments</EditorComment>.</Paragraph>
+         <Paragraph>A paragraph with a side note.<SideNote><SideNoteParagraph>Remember to save your work!</SideNoteParagraph></SideNote> Text following the side note.</Paragraph>
          <Paragraph>Paragraphs can contain several sorts of link. For example, an external hyperlink to <a href="https://www.google.com/">Google</a> can be created in Word in the normal way. For references to other documents or parts of the website, it is better to use an &lt;olink&gt; which refers to a document and section names, for example to the <olink targetdoc="Course Guide" targetptr="11">Course guide</olink>. Use &lt;CrossRef> to refer to the <CrossRef idref="lists">next session</CrossRef> or other parts of the <i>same</i> document; this requires placing ids on destinations. See the SC reference about <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185750&amp;section=6">links</a>.</Paragraph>
          <Paragraph>A paragraph can contain an equation such as <InlineEquation><TeX>e = m c^2</TeX></InlineEquation> inline. Equations can also be shown as display:</Paragraph>
          <Equation>
@@ -60,9 +61,6 @@
          </ProgramListing>
          <Paragraph>In a program listing, whitespace is (or should be!) preserved so indentation can be achieved, but it is safest to use non-breaking space! There is no syntax highlighting but a bit of bold and italic can help.</Paragraph>
          <Paragraph>XSLT is powerful: this is what is required to do automatic tagging:</Paragraph>
-         <ProgramListing>
-            <Paragraph/>
-         </ProgramListing>
          <ProgramListing>
             <Paragraph>&lt;!-- default: para with class (= Word para style) or span with class (= Word char style) become an element of same name --&gt;<br/>&lt;<b>xsl:template</b> <i>mode</i>="styling" <i>match</i>="h:p[@class] | h:span[@class]" <i>priority</i>="0.4"&gt;<br/>    &lt;<b>xsl:element </b> <i>name</i>="{@class}"&gt; <br/>        &lt;<b>xsl:apply-templates </b> <i>mode</i>="styling"/&gt;<br/>    &lt;/xsl:element&gt;<br/>&lt;/xsl:template&gt;</Paragraph>
          </ProgramListing>
@@ -193,7 +191,7 @@
             </tbody>
          </Table>
          <Paragraph>Plain vanilla tables will work, including left/centre/right alignment (use <ComputerUI>Paragraph > Align</ComputerUI> toolbar buttons) and decimal alignment (use <ComputerUI>Paragraph > Tabs > Decimal</ComputerUI>). </Paragraph>
-         <Paragraph><i>Limitation</i>: alignment requires heuristics; let me know if unreliable. Decimal alignment likely to be lost on round-trip conversions; recreate decimal tab stop if necessary.</Paragraph>
+         <Paragraph><i>Limitation</i>: alignment requires heuristics; let me know if unreliable. Decimal alignment is likely to be lost on round-trip conversions; recreate a decimal tab stop if necessary.</Paragraph>
          <Table>
             <TableHead>Cell alignment</TableHead>
             <tbody>
@@ -514,7 +512,7 @@
          <NumberedList class="decimal">
             <ListItem><Paragraph><i>Figure</i> for a paragraph in which the image is pasted (but note this image is a visual placeholder; the render will use the file at the URL given as <i>FigureSrc</i>).</Paragraph></ListItem>
             <ListItem><Paragraph><i>FigureSrc</i> for the URL of the image file on a web server (or pathname if on a file server)</Paragraph></ListItem>
-            <ListItem><Paragraph><i>Caption</i> for text of caption (see earlier section for advice on figure <CrossRef idref="numbering">numbering</CrossRef>)</Paragraph></ListItem>
+            <ListItem><Paragraph><i>Caption</i> for text of caption (see advice on <CrossRef idref="numbering">numbering</CrossRef>)</Paragraph></ListItem>
             <ListItem><Paragraph><i>Alternative</i> for alt text if required</Paragraph></ListItem>
             <ListItem><Paragraph><i>SourceReference</i> to show where the figure originated (LDS don’t do this; they extract from rights database, insert at end of each document and keep themselves busy checking numbering)</Paragraph></ListItem>
             <ListItem><Paragraph><i>Description</i> for long description (one or more lines)</Paragraph></ListItem>
@@ -528,7 +526,6 @@
             <Caption>Magnified screen showing individual pixels of an icon</Caption>
             <SourceReference>© The Open University</SourceReference>
          </Figure>
-         <Paragraph> </Paragraph>
          <Paragraph>Another image, this time with description.</Paragraph>
          <Figure>
             <Image src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmimages/tg089_wk05_f019.tif.jpg"/>
@@ -565,18 +562,22 @@
             <Description> <Paragraph/> <Paragraph>A close-up of a rock rose with white petals and yellow centre. The centre of the flower is on the right rule of thirds. Two more blooms on the left top and bottom rule of thirds are out of focus in the background.</Paragraph> </Description>
          </Figure>
          <Paragraph>Back to a normal paragraph.</Paragraph>
-         <Paragraph>&lt;<i>hobbyhorse</i>&gt; The issue noted earlier with regard to fuzzy equations on high resolution displays may also currently be apparent as fuzzy text in images, for example in hand-drawn figures and screen dumps. Worth a discussion with LDS staff to see if there has been any progress in this area…&lt;/<i>hobbyhorse</i>&gt;</Paragraph>
+         <Paragraph>&lt;<i>hobbyhorse</i>&gt; The issue noted elsewhere with regard to fuzzy equations on high resolution displays may also currently be apparent as fuzzy text in images, for example in hand-drawn figures and screen dumps. Worth a discussion with LDS staff to see if there has been any progress in this area…&lt;/<i>hobbyhorse</i>&gt;</Paragraph>
          <Paragraph>&lt;<i>hobbyhorse</i>&gt; And don’t get me started on how LDS processes result in poor image quality, lost colour spaces… Although I believe the handling of large images has now been improved – thanks, Tammy!&lt;/<i>hobbyhorse</i>&gt;</Paragraph>
          <StudyNote>
             <Heading>Caption appearance</Heading>
             <Paragraph>The intended appearance of a figure caption on the VLE is for the number to be bold but the caption itself to not be bold. This is controlled by the SC &lt;Caption> and &lt;Number> tags; you should not apply bold directly. I suggest doing no manual styling or numbering and using the numbering script.</Paragraph>
          </StudyNote>
-         <Paragraph>Inline images can be used as well. Here are some examples: calculator icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\calculator.png" alt="calculator" longdesc=""/></InlineFigure>, reading icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\reading.png" alt="reading"/></InlineFigure>, external link icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\external.png" alt="external"/></InlineFigure>. As with normal figures, the file must exist on a server and the path given in this form: [alt text](file path) and styling as <i>InlineFigure</i>. The image inserted in Word is ignored.</Paragraph>
+         <Paragraph>A figure without a caption:</Paragraph>
+         <Figure>
+            <Image src="https://openuniv.sharepoint.com/sites/tmodules/tg089/session1e1/t189s01_f05-03.jpg"/>
+         </Figure>
+         <Paragraph>...won’t be numbered by script. A figure with a blank caption will be numbered.</Paragraph>
+         <Paragraph>Inline images can be used as well. Here are some examples: calculator icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\calculator.png" alt="calculator" longdesc=""/></InlineFigure>, reading icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\reading.png" alt="reading"/></InlineFigure>, external link icon <InlineFigure><Image src="\\dog\units_non_course\TG089\jpr2\external.png" alt="external"/></InlineFigure>. As with normal figures, the file must exist on a server and the path given in this form: [alt text](file path) styled as <i>InlineFigure</i>. The image inserted in Word is ignored.</Paragraph>
       </Session>
       <Session>
          <Title>Media content</Title>
          <Paragraph>Some examples of rich media are given here and an explanation follows.</Paragraph>
-         <Paragraph>An introductory video.</Paragraph>
          <Paragraph>Watch the following video to discover what the focus of Week 5 will be.</Paragraph>
          <MediaContent
             src="https://openuniv.sharepoint.com/sites/tmodules/tg089/lmaudio/tg089_2022c_vsc019_1920x1080.mp4"
@@ -711,7 +712,7 @@
             <TeX>\left(x+a\right)^n=\sum_{k=0}^{n}{\binom{n}{k}x^ka^{n-k}}</TeX>
          </Equation>
          <Paragraph><i>Limitation</i>: The Word equations are lost in conversion but the TeX versions are passed to structured content. Unfortunately it is a manual job to keep them in sync.</Paragraph>
-         <Paragraph><i>Gotcha</i>: If you encounter an error 'Warning: The image source (src attribute) has not been specified' when rendering, this may relate to an empty <i>InlineEquation</i>. The culprit may be an end-of-line character in Word that is styled as TeX, most likely within a list. Highlight the end-of-line and press <ComputerUI>Ctrl+Space</ComputerUI>.</Paragraph>
+         <Paragraph><i>Gotcha</i>: If you encounter an error 'Warning: The image source (src attribute) has not been specified' when rendering, this may relate to an empty <i>InlineEquation</i>. The culprit may be an end-of-line character in Word that is styled as <i>TeX</i>, most likely within a list. Highlight the end-of-line and press <ComputerUI>Ctrl+Space</ComputerUI>.</Paragraph>
          <Paragraph>Note 1: I don’t know what current practice is for editors handling maths, but I believe it used to involve a MathFlow plugin, both in Word and oXygen. This produces MathML, as can Word Equation Editor. This can also be passed through to SC VLE instead of TeX but it is verbose and unreadable so I find TeX a better alternative.</Paragraph>
          <Paragraph>Note 2: If text in equations differs in size compared to body text, the underlying reason is the VLE handling of high resolution displays. For possibly good reasons, this fudges between the actual hardware pixel size and a nominal web CSS ‘pixel’ and this fudge may not be accurate.</Paragraph>
          <Paragraph>Note 3: The same issue with high resolution displays can make equations appear fuzzy compared to body text of a similar size: equations have been rendered as low resolution JPEG files. You can switch to better client-side MathJax rendering using your VLE profile; unfortunately the default remains JPEG for all users.</Paragraph>
@@ -838,18 +839,39 @@
          <Title>Numbering</Title>
          <InternalSection>
             <SubHeading>Numbering the really easy way</SubHeading>
-            <Paragraph>The simplest approach is to do no numbering whatsoever in your Word document, convert your document to XML, and then run my numbering script (<ComputerCode>number-sc.xsl</ComputerCode>). This will number your document – Sessions / Sections / SubSections, Figures, Tables – in OU house style. You may then go home early.</Paragraph>
+            <Paragraph>The simplest approach is to do no numbering whatsoever in your Word document, convert your document to XML, and then run my numbering script (<ComputerCode>number-sc.xsl</ComputerCode>). This will number your document – Sessions / Sections / SubSections, Figures, Tables, Activities, Equations – in OU house style. You may then go home early.</Paragraph>
+            <Paragraph>See later to <CrossRef idref="setupscripts">set up script</CrossRef> for numbering.</Paragraph>
             <Paragraph>I recommend that in text you only refer to ‘the figure below’ or ‘the figure above’ rather than ‘Figure 9’. If absolutely essential, refer to ‘Figure X’ and then search and manually fix references after automatic numbering. For distant references you should in any case use a &lt;CrossRef&gt; link with the destination title (not numbered).</Paragraph>
             <Paragraph>A downside is that your Word document will remain unnumbered but you will soon get used to that ;-)</Paragraph>
             <Paragraph>In detail, the numbering transform does the following:</Paragraph>
             <BulletedList>
                <ListItem>Strips any existing &lt;Number&gt; tags from previous numbering</ListItem>
                <ListItem>Places &lt;Number&gt; at the start of &lt;Title&gt; for Session/Section/SubSection, &lt;Figure&gt;&lt;Caption&gt;, and &lt;Table&gt;&lt;TableHead&gt;</ListItem>
-               <ListItem>Inserts a number in outline style for sections, and in simple sequence for figures and tables.</ListItem>
+               <ListItem>Inserts a number in outline style for sections, and in simple sequence for figures, tables, activities and equations.</ListItem>
             </BulletedList>
-            <Paragraph><i>Limitation</i>: The numbering script doesn’t currently number activities since I don’t know how best to deal with the many variants. But it can be easily added once decided whether Activities, Exercises, SAQs, ITQs... should be numbered in a single or several sequences.</Paragraph>
-            <Paragraph><i>Limitation</i>: Equations probably have to be manually numbered, at least to use explicit tag/style (actually <i>Label</i> rather than <i>Number</i>) because typically only some steps are numbered, but could perhaps be renumbered automatically to cope with changes. References would still break, though, so perhaps this is a case for using Word SEQ numbering described next?</Paragraph>
-            <Paragraph>See later to <CrossRef idref="setupscripts">set up script</CrossRef> for numbering.</Paragraph>
+            <Paragraph><i>Note</i>: The numbering script numbers Activities, Exercises, SAQs,  and ITQs in separate sequences.</Paragraph>
+            <Paragraph><i>Note</i>: For equations, you must give an explicit <i>Label</i> if you wish that equation to be numbered; equations without <i>Label </i>are not numbered.</Paragraph>
+            <Paragraph>To test equation numbering, the expression</Paragraph>
+            <Equation>
+               <TeX>a+b\div c</TeX>
+            </Equation>
+            <Paragraph>can be written as</Paragraph>
+            <Equation>
+               <TeX>a+\frac{b}{c}</TeX>
+               <Label>1</Label>
+            </Equation>
+            <Paragraph>Expression (1) shows the preferred style.</Paragraph>
+            <Paragraph>Similarly, the expression</Paragraph>
+            <Equation>
+               <TeX>(8a+3)\div (2a)</TeX>
+            </Equation>
+            <Paragraph>can be written in fraction notation as</Paragraph>
+            <Equation id="u5eqn4">
+               <TeX> \frac{8a+3}{2a}</TeX>
+               <Label>2</Label>
+            </Equation>
+            <Paragraph>Expression (<CrossRef idref="u5eqn4">2</CrossRef>) is also in the preferred style.</Paragraph>
+            <Paragraph><i>Limitation</i>: A cross reference will generate a link but the text has to be maintained manually, sorry.</Paragraph>
             <SubHeading>Numbering the less easy way</SubHeading>
             <Paragraph>If you find it essential to number your Word document as you write, then you can insert numbering fields which Word will update automatically. On conversion to XML, these will be converted to literal text. With the appropriate use of fields, you can number figures, tables, and headings in (more or less) OU house style.</Paragraph>
             <BulletedList>
@@ -925,7 +947,7 @@
             </BulletedList>
             <Paragraph>I can offer a (semi-)automated down conversion from an existing XML master document to styled Word. This preserves all content, including rich content such as images, video and interactions, and styles the Word document so that it can immediately be previewed and published. You can then edit the Word document, taking advantage of quick preview and even publish the final document.</Paragraph>
             <Paragraph><i>Limitation</i>: The automated down conversion turns XML to styled HTML which can be opened and edited in Word. However, there are additional steps required, firstly to set up oXygen and then, for every file converted, to embed external images into Word .docx. This is a pain, so I am happy to do this myself for occasional files on request. If you expect to do this for many documents, <CrossRef idref="setupscripts">set up the script</CrossRef> for <ComputerCode>sc-to-html.xsl</ComputerCode> and run it against the master XML document. Open the resulting HTML file in Word and <CrossRef idref="embedimages">embed the image files</CrossRef>.</Paragraph>
-            <Paragraph><i>Limitation</i>: Although having both down- and up-conversions between Word and XML provides the potential for round-trip working, I can’t claim this would make sense as a routine way of working. There may be limitations on what can be written in Word and additional effort is required to convert into .docx. But it is worth doing when it is time for a rewrite of existing material.</Paragraph>
+            <Paragraph><i>Limitation</i>: Having both down- and up-conversions between Word and XML provides the potential for round-trip working. This is largely faithful, but there may be some limitations and there is effort required to deal with images (noted above) which means it cannot be entirely automated. But it is worth doing when it is time for a rewrite of existing material.</Paragraph>
          </Section>
          <Section id="setupscripts">
             <Title>Setting up scripts</Title>
