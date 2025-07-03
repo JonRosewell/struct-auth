@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:h="http://www.w3.org/1999/xhtml" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:h="http://www.w3.org/1999/xhtml"
     xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml"
     exclude-result-prefixes="h o v xs">
 
@@ -37,10 +36,10 @@
     <!-- starting point of transform -->
     <xsl:template match="/">
         <!-- to show input: -->
-<!--        <xsl:variable name="identity-result">
+        <!--        <xsl:variable name="identity-result">
             <xsl:apply-templates mode="identity" select="/"/>
         </xsl:variable>-->
-        
+
         <xsl:variable name="styling-result">
             <xsl:apply-templates mode="styling" select="h:html/h:body"/>
         </xsl:variable>
@@ -111,7 +110,7 @@
     <xsl:template mode="styling" match="h:body">
         <xsl:apply-templates mode="styling"/>
     </xsl:template>
-    
+
     <!-- Default: para with class (= Word para style) or span with class (= Word char style)
         become an element of same name. 
         This is lower than normal priority (would be 0.5) to ensure special cases will override -->
@@ -156,7 +155,7 @@
             </SideNoteParagraph>
         </SideNote>
     </xsl:template>
-    
+
     <xsl:template mode="styling" match="h:span[@class = 'SideNoteHeading']">
         <SideNote>
             <Heading>
@@ -164,11 +163,27 @@
             </Heading>
         </SideNote>
     </xsl:template>
-    
+
     <xsl:template mode="styling" match="h:p[@class = 'MsoCaption']">
         <Caption>
             <xsl:apply-templates mode="styling"/>
         </Caption>
+    </xsl:template>
+
+    <!-- KLUDGE: 'caption1' seen in OU Word download, without preceding Figure -->
+    <xsl:template mode="styling" match="h:p[@class = 'Caption1']">
+        <Figure/>
+        <!-- insert placeholder Figure -->
+        <Caption>
+            <xsl:apply-templates mode="styling"/>
+        </Caption>
+    </xsl:template>
+
+    <!-- KLUDGE: 'navbutton' seen in OU Word download, just treat as para -->
+    <xsl:template mode="styling" match="h:p[@class = 'navbutton']">
+        <Paragraph>
+            <xsl:apply-templates mode="styling"/>
+        </Paragraph>
     </xsl:template>
 
     <xsl:template mode="styling" match="h:strong">
@@ -182,6 +197,19 @@
             <xsl:apply-templates mode="styling"/>
         </i>
     </xsl:template>
+
+    <xsl:template mode="styling" match="h:code">
+        <ComputerCode>
+            <xsl:apply-templates mode="styling"/>
+        </ComputerCode>
+    </xsl:template>
+
+    <xsl:template mode="styling" match="h:dfn">
+        <GlossaryTerm>
+            <xsl:apply-templates mode="styling"/>
+        </GlossaryTerm>
+    </xsl:template>
+
 
     <!-- strip office namespace tags; o: seems to be used to prevent empty html paras but have no content
         v: is vector markup language eg used to wrap images in borders -->
@@ -199,6 +227,27 @@
         <xsl:apply-templates mode="styling"/>
     </xsl:template>
 
+    <!-- KLUDGE: look for Start/End markers -->
+<!--    <xsl:template mode="styling" match="h:p[. = 'Start of Activity']" priority="0.7">
+        <ActivityHead>
+            <xsl:apply-templates mode="styling"/>
+        </ActivityHead>
+    </xsl:template>
+
+    <xsl:template mode="styling" match="h:p[. = 'End of Activity']" priority="0.7">
+        <ActivityEnd>
+            <xsl:apply-templates mode="styling"/>
+        </ActivityEnd>
+    </xsl:template>
+-->    
+    
+    <!-- strip spans styled as hidden, including content -->
+    <xsl:template mode="styling" match="h:span[contains(@style, 'display:none')]" />
+    <!-- preserve hidden spans as editor comment -->
+<!--    <xsl:template mode="styling" match="h:span[contains(@style, 'display:none')]" >
+        <EditorComment><xsl:apply-templates mode="styling"/></EditorComment>
+    </xsl:template>
+-->    
     <!-- strip other (unnamed) spans, preserving content -->
     <xsl:template mode="styling" match="h:span">
         <xsl:apply-templates mode="styling"/>
@@ -230,7 +279,8 @@
     <!-- strip anchor of back link from comment, deleting the inserted text -->
     <xsl:template mode="styling" match="h:a[@class='msocomanchor']" priority="0.6"/>
     <!-- strip anchor on commented text, preserving content -->
-    <xsl:template mode="styling" match="h:a[contains(@style, 'mso-comment-reference')]" priority="0.6">
+    <xsl:template mode="styling" match="h:a[contains(@style, 'mso-comment-reference')]"
+        priority="0.6">
         <xsl:apply-templates mode="styling"/>
     </xsl:template>
 
@@ -244,10 +294,13 @@
         <xsl:param name="leader"/>
         <xsl:param name="style"/>
         <!-- clue is first char after stripping leading white space *and nbsp* -->
-        <xsl:variable name="clue" select="substring(normalize-space(translate($leader, '&#xA0;', '')), 1 ,1)"/>
+        <xsl:variable name="clue"
+            select="substring(normalize-space(translate($leader, '&#xA0;', '')), 1 ,1)"/>
         <!-- level & margin may be in style; NB if missing take value NaN -->
-        <xsl:variable name="_level" select="number(substring-before(substring-after($style, 'level'), ' '))"/>
-        <xsl:variable name="_margin" select="number(substring-before(substring-after($style, 'margin-left:'), 'pt'))"/>
+        <xsl:variable name="_level"
+            select="number(substring-before(substring-after($style, 'level'), ' '))"/>
+        <xsl:variable name="_margin"
+            select="number(substring-before(substring-after($style, 'margin-left:'), 'pt'))"/>
         <!-- use level if explicit, otherwise infer from margin if given, else assume 1 -->
         <xsl:variable name="level" select="if ($_level &gt; 1) then 2 
                                             else if ($_level=1) then 1 
@@ -298,7 +351,8 @@
         NB level clues assume lists are styled carefully in Word: probably ok for single 
         type list or outline type, but changing type of sublist will reset level. 
     -->
-    <xsl:template mode="styling" match="h:p[contains(@style, 'mso-list:') or contains(@class, 'MsoList')]" priority="0.6">
+    <xsl:template mode="styling"
+        match="h:p[contains(@style, 'mso-list:') or contains(@class, 'MsoList')]" priority="0.6">
         <xsl:variable name="leader" select=".//h:span[contains(@style, 'mso-list:Ignore')]"/>
         <xsl:variable name="info">
             <xsl:call-template name="getListInfo">
@@ -326,7 +380,8 @@
         Preserve spans, infer alignment using heuristics, and make a stab at borders.
     -->
     <xsl:template name="stylingTableCell">
-        <xsl:param name="cell" />   <!-- expect td or th -->
+        <xsl:param name="cell"/>
+        <!-- expect td or th -->
         <xsl:variable name="prefix" select="if ($cell='th') then 'ColumnHead' else 'Table'"/>
         <xsl:element name="{$cell}">
             <!-- colspan/rowspan: would get default value=1 (from schema?) unless ignored -->
@@ -360,22 +415,22 @@
             <xsl:apply-templates mode="styling" select="node()"/>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template mode="styling" match="h:td">
         <xsl:call-template name="stylingTableCell">
             <xsl:with-param name="cell" select="'td'"/>
         </xsl:call-template>
     </xsl:template>
-    
+
     <!-- td and th similar, but Word seems to export only td, so have added 'th' 
-    char style / span to flag which cells are intended as th rather than td. -->    
+    char style / span to flag which cells are intended as th rather than td. -->
     <xsl:template mode="styling" match="h:th | h:td[h:p/h:span[@class='th']]">
         <xsl:call-template name="stylingTableCell">
             <xsl:with-param name="cell" select="'th'"/>
         </xsl:call-template>
     </xsl:template>
-    
-    
+
+
 
     <!-- Attributing ======================================================== -->
 
@@ -390,7 +445,8 @@
         <xsl:param name="attStr"/>
         <xsl:variable name="pair" select="substring-before(substring-after($attStr, '{'), '}')"/>
         <xsl:variable name="attName" select="normalize-space(substring-before($pair, '='))"/>
-        <xsl:variable name="attValue" select="substring-before(substring-after($pair, '=&quot;'), '&quot;')"/>
+        <xsl:variable name="attValue"
+            select="substring-before(substring-after($pair, '=&quot;'), '&quot;')"/>
         <xsl:if test="$attName ne ''">
             <xsl:attribute name="{$attName}" select="$attValue"/>
             <xsl:call-template name="makeAttributes">
@@ -398,13 +454,13 @@
             </xsl:call-template>
         </xsl:if>
     </xsl:template>
-    
+
     <xsl:template mode="attributing" match="attribute">
         <xsl:call-template name="makeAttributes">
             <xsl:with-param name="attStr" select="."/>
         </xsl:call-template>
     </xsl:template>
-    
+
     <!-- default identity: copy attributes unchanged -->
     <xsl:template mode="attributing" match="@*">
         <xsl:copy-of select="."/>
@@ -450,7 +506,8 @@
         </InlineEquation>
     </xsl:template>
 
-    <xsl:template mode="objecting" match="TeX[not(parent::InlineEquation) and not(parent::Equation)]">
+    <xsl:template mode="objecting"
+        match="TeX[not(parent::InlineEquation) and not(parent::Equation)]">
         <InlineEquation>
             <TeX>
                 <xsl:value-of select="."/>
@@ -458,7 +515,8 @@
         </InlineEquation>
     </xsl:template>
 
-    <xsl:template mode="objecting" match="MathML[not(parent::InlineEquation) and not(parent::Equation)]">
+    <xsl:template mode="objecting"
+        match="MathML[not(parent::InlineEquation) and not(parent::Equation)]">
         <InlineEquation>
             <MathML>
                 <xsl:copy-of select="parse-xml(.)"/>
@@ -549,7 +607,8 @@
         <MultiColumnText>
             <MultiColumnHead>
                 <!-- if there is a preceding MultiColumnHead, process its content -->
-                <xsl:apply-templates mode="objecting" select="../preceding-sibling::*[1][self::MultiColumnHead]/node()"/>
+                <xsl:apply-templates mode="objecting"
+                    select="../preceding-sibling::*[1][self::MultiColumnHead]/node()"/>
             </MultiColumnHead>
             <MultiColumnBody>
                 <Table>
@@ -610,7 +669,8 @@
     </xsl:template>
 
     <!-- Suppress these in normal mode since dealt with by Figure -->
-    <xsl:template mode="objecting" match="FigureSrc | Caption | Alternative | SourceReference | Description | img"/>
+    <xsl:template mode="objecting"
+        match="FigureSrc | Caption | Alternative | SourceReference | Description | img"/>
 
 
     <!-- Itemising =========================================================== -->
@@ -634,7 +694,9 @@
 
     <xsl:template name="itemiseExtendedSubItems">
         <!-- ignore SubListHead and SubListEnd before further grouping -->
-        <xsl:for-each-group select="current-group() except (self::SubListHead | following::SubListEnd)" group-starting-with="SubListItem">
+        <xsl:for-each-group
+            select="current-group() except (self::SubListHead | following::SubListEnd)"
+            group-starting-with="SubListItem">
             <xsl:choose>
                 <xsl:when test=". = self::SubListItem">
                     <xsl:copy>
@@ -651,10 +713,11 @@
             </xsl:choose>
         </xsl:for-each-group>
     </xsl:template>
-    
+
     <xsl:template name="itemiseExtendedItems">
         <!-- ignore ListHead and ListEnd before further grouping -->
-        <xsl:for-each-group select="current-group() except (self::ListHead | following::ListEnd)" group-starting-with="ListItem">
+        <xsl:for-each-group select="current-group() except (self::ListHead | following::ListEnd)"
+            group-starting-with="ListItem">
             <xsl:choose>
                 <xsl:when test=". = self::ListItem">
                     <xsl:copy>
@@ -662,7 +725,7 @@
                         <Paragraph>
                             <xsl:copy-of select="current-group()/self::ListItem/node()"/>
                         </Paragraph>
-                        <xsl:call-template name="itemiseSubLists" />
+                        <xsl:call-template name="itemiseSubLists"/>
                     </xsl:copy>
                 </xsl:when>
                 <xsl:otherwise>
@@ -671,42 +734,44 @@
             </xsl:choose>
         </xsl:for-each-group>
     </xsl:template>
-    
-    
+
+
     <xsl:template name="itemiseSubLists">
         <!-- only called when outer list is boxed, so always treat SubListItems as extended -->
         <!-- ignore ListItem before further grouping -->
-        <xsl:for-each-group select="current-group() except self::ListItem" group-starting-with="SubListHead">
+        <xsl:for-each-group select="current-group() except self::ListItem"
+            group-starting-with="SubListHead">
             <xsl:for-each-group select="current-group()" group-ending-with="SubListEnd">
-                <xsl:call-template name="itemiseExtendedSubItems" />
+                <xsl:call-template name="itemiseExtendedSubItems"/>
             </xsl:for-each-group>
         </xsl:for-each-group>
     </xsl:template>
-    
-    
+
+
     <xsl:template name="itemiseLists">
         <!-- care: assumes * rather than previous current-group() -->
         <xsl:for-each-group select="*" group-starting-with="ListHead">
             <xsl:for-each-group select="current-group()" group-ending-with="ListEnd">
                 <xsl:choose>
-                    <xsl:when test=". = self::ListHead"> 
-                        <xsl:call-template name="itemiseExtendedItems" />
+                    <xsl:when test=". = self::ListHead">
+                        <xsl:call-template name="itemiseExtendedItems"/>
                     </xsl:when>
-                    <xsl:otherwise> <!-- not in complex list -->
+                    <xsl:otherwise>
+                        <!-- not in complex list -->
                         <xsl:copy-of select="current-group()"/>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:for-each-group>
         </xsl:for-each-group>
     </xsl:template>
-    
-    
+
+
     <xsl:template mode="itemising" match="/">
         <xsl:copy>
             <xsl:call-template name="itemiseLists"/>
         </xsl:copy>
     </xsl:template>
-    
+
 
 
     <!-- Listing =========================================================== -->
@@ -720,7 +785,7 @@
         NB sublists may occur between list items, rather than enclosed in prev list item, which 
         adds permutations here and must be fixed in later pass.
     -->
-    
+
     <!-- default identity: copy elements and attributes unchanged -->
     <xsl:template mode="listing" match="* | @* ">
         <xsl:copy>
@@ -729,7 +794,7 @@
     </xsl:template>
 
     <!-- set of templates below to convert html tagged lists into SC elements -->
-    
+
     <xsl:template mode="listing" match="ul">
         <xsl:choose>
             <xsl:when test="@type='none'">
@@ -767,7 +832,9 @@
                 <xsl:attribute name="start" select="@start"/>
             </xsl:if>
             <xsl:if test="@type">
-                <xsl:attribute name="class" select="if (@type='i') then 'lower-roman' else if (@type='I') then 'upper-roman' else if (@type='a') then 'lower-alpha' else if (@type='A') then 'upper-alpha' else 'decimal'"/>
+                <xsl:attribute name="class"
+                    select="if (@type='i') then 'lower-roman' else if (@type='I') then 'upper-roman' else if (@type='a') then 'lower-alpha' else if (@type='A') then 'upper-alpha' else 'decimal'"
+                />
             </xsl:if>
             <xsl:apply-templates mode="listing"/>
         </NumberedList>
@@ -779,7 +846,9 @@
                 <xsl:attribute name="start" select="@start"/>
             </xsl:if>
             <xsl:if test="@type">
-                <xsl:attribute name="class" select="if (@type='i') then 'lower-roman' else if (@type='I') then 'upper-roman' else if (@type='a') then 'lower-alpha' else if (@type='A') then 'upper-alpha' else 'decimal'"/>
+                <xsl:attribute name="class"
+                    select="if (@type='i') then 'lower-roman' else if (@type='I') then 'upper-roman' else if (@type='a') then 'lower-alpha' else if (@type='A') then 'upper-alpha' else 'decimal'"
+                />
             </xsl:if>
             <xsl:apply-templates mode="listing"/>
         </NumberedSubsidiaryList>
@@ -791,7 +860,8 @@
         </ListItem>
     </xsl:template>
 
-    <xsl:template mode="listing" match="li/ul/li | li/ol/li | ul/ul/li | ul/ol/li | ol/ul/li | ol/ol/li">
+    <xsl:template mode="listing"
+        match="li/ul/li | li/ol/li | ul/ul/li | ul/ol/li | ol/ul/li | ol/ol/li">
         <SubListItem>
             <xsl:apply-templates mode="listing"/>
         </SubListItem>
@@ -799,19 +869,20 @@
 
 
     <!-- set of templates below will create list structure from runs of ListItem/SubListItem -->
-    
+
     <!-- NB care needed with group-adjacent: must generate a key, so use 
             "exists(self::SubListItem)": T or F
          rather than
             "self:SubListItem": SubListItem or nil (which causes error)
     -->
-    
+
     <xsl:template name="makeOneSubList">
         <!-- current-group first should be SubListItem; check it for class of list and start -->
         <xsl:variable name="class" select="current-group()[1]/@listType"/>
         <xsl:variable name="start" select="current-group()[1]/@start"/>
         <!-- make appropriate element to contain the SubListItems -->
-        <xsl:element name="{if ($class='bulleted') then 'BulletedSubsidiaryList' else if ($class='unnumbered') then 'UnNumberedSubsidiaryList' else 'NumberedSubsidiaryList'}">
+        <xsl:element
+            name="{if ($class='bulleted') then 'BulletedSubsidiaryList' else if ($class='unnumbered') then 'UnNumberedSubsidiaryList' else 'NumberedSubsidiaryList'}">
             <xsl:if test="($class != 'bulleted') and ($class != 'unnumbered')">
                 <xsl:attribute name="class" select="$class"/>
                 <xsl:if test="number($start) != 1">
@@ -822,13 +893,14 @@
             <xsl:apply-templates mode="listing" select="current-group()"/>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template name="makeOneList">
         <!-- current-group first should be ListItem; check it for class of list and start -->
         <xsl:variable name="class" select="current-group()[1]/@listType"/>
         <xsl:variable name="start" select="current-group()[1]/@start"/>
         <!-- make appropriate element to contain the ListItems -->
-        <xsl:element name="{if ($class='unnumbered') then 'UnNumberedList' else if ($class='bulleted') then 'BulletedList' else 'NumberedList'}">
+        <xsl:element
+            name="{if ($class='unnumbered') then 'UnNumberedList' else if ($class='bulleted') then 'BulletedList' else 'NumberedList'}">
             <xsl:if test="($class != 'bulleted') and ($class != 'unnumbered')">
                 <xsl:attribute name="class" select="$class"/>
                 <xsl:if test="number($start) != 1">
@@ -839,49 +911,53 @@
             <xsl:for-each-group select="current-group()" group-adjacent="exists(self::SubListItem)">
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
-                        <xsl:call-template name="makeOneSubList" />
+                        <xsl:call-template name="makeOneSubList"/>
                     </xsl:when>
-                    <xsl:otherwise> <!-- in list but not sublist -->
+                    <xsl:otherwise>
+                        <!-- in list but not sublist -->
                         <xsl:apply-templates mode="listing" select="current-group()"/>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:for-each-group>
         </xsl:element>
     </xsl:template>
-    
-    
+
+
     <!-- a list item may contain SubListItems that need collecting into a SubList -->
     <xsl:template mode="listing" match="ListItem">
         <xsl:copy>
             <xsl:for-each-group select="node()" group-adjacent="exists(self::SubListItem)">
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
-                        <xsl:call-template name="makeOneSubList" />
+                        <xsl:call-template name="makeOneSubList"/>
                     </xsl:when>
-                    <xsl:otherwise> <!-- in ListItem but not sublist -->
+                    <xsl:otherwise>
+                        <!-- in ListItem but not sublist -->
                         <xsl:apply-templates mode="listing" select="current-group()"/>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:for-each-group>
         </xsl:copy>
     </xsl:template>
-    
-    
+
+
     <xsl:template mode="listing" match="/">
         <xsl:copy>
-            <xsl:for-each-group select="*" group-adjacent="exists(self::ListItem | self::SubListItem)">
+            <xsl:for-each-group select="*"
+                group-adjacent="exists(self::ListItem | self::SubListItem)">
                 <xsl:choose>
                     <xsl:when test="current-grouping-key()">
-                        <xsl:call-template name="makeOneList" />
+                        <xsl:call-template name="makeOneList"/>
                     </xsl:when>
-                    <xsl:otherwise> <!-- not in a list at all -->
+                    <xsl:otherwise>
+                        <!-- not in a list at all -->
                         <xsl:apply-templates mode="listing" select="current-group()"/>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:for-each-group>
         </xsl:copy>
     </xsl:template>
-    
+
     <!-- can now strip attribs temporarily added to ListItem and SubListItem -->
     <xsl:template mode="listing" match="ListItem/@* | SubListItem/@*"/>
 
@@ -909,7 +985,8 @@
         retest always needed. -->
     <xsl:template mode="boxing" match="/" name="buildBoxes">
         <xsl:copy>
-            <xsl:for-each-group select="*" group-starting-with="*[contains(name(), 'Head') and not(contains(name(), 'Heading')) and not(name() = 'TableHead') and not(name() = 'MultiColumnHead')]">
+            <xsl:for-each-group select="*"
+                group-starting-with="*[contains(name(), 'Head') and not(contains(name(), 'Heading')) and not(name() = 'TableHead') and not(name() = 'MultiColumnHead')]">
                 <xsl:variable name="boxHead" select="name(current-group()[1])"/>
                 <xsl:variable name="boxType" select="substring-before($boxHead, 'Head')"/>
                 <xsl:variable name="boxEnd" select="concat($boxType, 'End')"/>
@@ -923,7 +1000,8 @@
                                 <xsl:when test="current-group()[1][name() = $boxHead]">
                                     <xsl:element name="{$boxType}">
                                         <xsl:apply-templates mode="boxing" select="@*"/>
-                                        <xsl:apply-templates mode="boxing" select="current-group()"/>
+                                        <xsl:apply-templates mode="boxing" select="current-group()"
+                                        />
                                     </xsl:element>
                                 </xsl:when>
                                 <xsl:otherwise>
@@ -942,7 +1020,8 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template mode="boxing" match="*[contains(name(), 'Head') and not(contains(name(), 'Heading')) and not(name() = 'TableHead') and not(name() = 'MultiColumnHead')]">
+    <xsl:template mode="boxing"
+        match="*[contains(name(), 'Head') and not(contains(name(), 'Heading')) and not(name() = 'TableHead') and not(name() = 'MultiColumnHead')]">
         <xsl:if test=". != '&#x00a0;'">
             <!-- nbsp added by Word or sc-to-html for otherwise empty heading -->
             <Heading>
@@ -951,7 +1030,8 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template mode="boxing" match="*[contains(name(), 'End') and not(contains(name(), 'Append'))]"/>
+    <xsl:template mode="boxing"
+        match="*[contains(name(), 'End') and not(contains(name(), 'Append'))]"/>
 
 
 
@@ -973,7 +1053,8 @@
             <xsl:apply-templates mode="questioning" select="@*"/>
             <xsl:apply-templates mode="questioning" select="Heading"/>
             <xsl:apply-templates mode="questioning" select="Timing"/>
-            <xsl:for-each-group select="*[not(self::Heading) and not(self::Timing)]" group-starting-with="Interaction | Answer | Discussion">
+            <xsl:for-each-group select="*[not(self::Heading) and not(self::Timing)]"
+                group-starting-with="Interaction | Answer | Discussion">
                 <xsl:choose>
                     <xsl:when test="current-group()[1][self::Interaction]">
                         <Interaction>
@@ -1129,26 +1210,31 @@
     </xsl:template>
 
     <!-- find list items immediately followed by sublist -->
-    <xsl:template mode="fixing" match="ListItem[following-sibling::*[1][self::BulletedSubsidiaryList | self::NumberedSubsidiaryList | self::UnNumberedSubsidiaryList]]">
+    <xsl:template mode="fixing"
+        match="ListItem[following-sibling::*[1][self::BulletedSubsidiaryList | self::NumberedSubsidiaryList | self::UnNumberedSubsidiaryList]]">
         <ListItem>
             <xsl:apply-templates mode="fixing" select="node()"/>
             <!-- force copy out of order with special mode -->
-            <xsl:apply-templates mode="fixing-force" select="following-sibling::*[1][self::BulletedSubsidiaryList | self::NumberedSubsidiaryList | self::UnNumberedSubsidiaryList]"/>
+            <xsl:apply-templates mode="fixing-force"
+                select="following-sibling::*[1][self::BulletedSubsidiaryList | self::NumberedSubsidiaryList | self::UnNumberedSubsidiaryList]"
+            />
         </ListItem>
     </xsl:template>
 
     <!-- suppress sublists not inside ListItem since dealt with above -->
-    <xsl:template mode="fixing" match="(BulletedSubsidiaryList | NumberedSubsidiaryList | UnNumberedSubsidiaryList)[preceding-sibling::*[1][self::ListItem]]"/>
+    <xsl:template mode="fixing"
+        match="(BulletedSubsidiaryList | NumberedSubsidiaryList | UnNumberedSubsidiaryList)[preceding-sibling::*[1][self::ListItem]]"/>
 
     <!-- Split ListItem and SubListItem paragaphs containing br -->
-    <xsl:template mode="fixing" match="Paragraph[(parent::ListItem or parent::SubListItem) and child::br]">
+    <xsl:template mode="fixing"
+        match="Paragraph[(parent::ListItem or parent::SubListItem) and child::br]">
         <xsl:for-each-group select="node()" group-ending-with="br">
             <Paragraph>
                 <xsl:apply-templates mode="fixing" select="current-group()[not(self::br)]"/>
             </Paragraph>
         </xsl:for-each-group>
     </xsl:template>
-    
+
     <!-- Split ListItem and SubListItem containing br -->
     <xsl:template mode="fixing" match="ListItem[child::br] | SubListItem[child::br]">
         <xsl:copy>
@@ -1159,12 +1245,30 @@
             </xsl:for-each-group>
         </xsl:copy>
     </xsl:template>
-    
+
     <!-- Have used a th span/char style to mark td that should be th, so need to strip any 
         remaining trace within Paragraph  -->
     <xsl:template mode="fixing" match="Paragraph/th | th/th">
         <xsl:apply-templates mode="fixing" select="node()"/>
     </xsl:template>
-    
+
+    <!-- KLUDGE:  OU Word download has bad structure, so mend as well as possible -->
+    <xsl:template mode="fixing" match="Session/Heading | Section/Heading | SubSection/Heading">
+        <Paragraph>
+            <EditorComment>[Heading:]</EditorComment>
+            <b><xsl:apply-templates mode="fixing" select="node()"/></b>
+        </Paragraph>
+    </xsl:template>
+
+    <!-- KLUDGE:  OU Word download has internal links, try converting to CrossRef 
+        Not useful unless can create matching id also, but typically should be on Figure/Activity 
+        which hasn't been created.
+    -->
+<!--    <xsl:template mode="fixing" match="a[starts-with(@href, '#')]">
+        <CrossRef idref="{substring-after(@href, '#')}">
+            <xsl:apply-templates mode="fixing" select="node()"/>
+        </CrossRef>
+    </xsl:template>
+-->    
     
 </xsl:stylesheet>

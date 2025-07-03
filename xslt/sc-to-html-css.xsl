@@ -148,7 +148,7 @@
             span.EditorComment  { mso-style-name: EditorComment; }
             p.Equation  { mso-style-name: Equation; }
             p.Figure  { mso-style-name: Figure; }
-            p.footnote  { mso-style-name: footnote; }
+            span.footnote  { mso-style-name: footnote; }
             p.FreeResponse  { mso-style-name: FreeResponse; }
             p.FreeResponseDisplay  { mso-style-name: FreeResponseDisplay; }
             span.GlossaryTerm  { mso-style-name: GlossaryTerm; }
@@ -250,9 +250,14 @@
             p.ListEnd  { mso-style-name: ListEnd; }            
             p.SubListEnd  { mso-style-name: SubListEnd; }            
             
+<!--            commonly used, add to Word style gallery -->
+            p.ActivityHead, p.ActivityEnd, p.Caption, span.ComputerCode, span.ComputerUI, p.Figure,
+            p.StudyNoteHead, p.StudyNoteEnd, span.TeX { mso-style-qformat:yes; }
+<!--            unfortunately don't know how to stop unhelpful Word styles appearing in gallery... -->
+            
 <!--            appearance -->
             p, li, div, p.MsoNormal, li.MsoNormal, div.MsoNormal, table { font-size:11.0pt; font-family:"Calibri",sans-serif; }
-            h1, h2, h3, h4, h5, h6 { font-family:"Calibri Light",sans-serif; color:#2F5496; }
+            h1, h2, h3, h4, h5, h6 { mso-style-next: Normal; font-family:"Calibri Light",sans-serif; color:#2F5496; }
             h1 { font-size: 18pt; } 
             h2 { font-size: 15pt; margin-left: 11pt; } 
             h3 { font-size: 13pt; margin-left: 22pt; } 
@@ -271,7 +276,7 @@
             span.InlineFigure { color: blue; text-decoration: underline; mso-no-proof: yes; }
             span.attribute { color: lightgrey; mso-no-proof: yes; font-size: 8pt; }
             span.Number { background: #F2F2F2; font-weight: bold; mso-no-proof: yes;}
-            span.SideNote, span.SideNoteHeading, span.SideNoteParagraph { background: #FFFF99; } 
+            span.footnote, span.SideNote, span.SideNoteHeading, span.SideNoteParagraph { background: #FFFF99; } 
             span.SideNoteHeading { font-weight: bold; } 
             span.Label { font-weight: bold; color: grey; background: #FFFF99; } 
             span.th { font-weight: bold; background: #DEEAF6; } 

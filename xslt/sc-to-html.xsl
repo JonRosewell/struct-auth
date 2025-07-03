@@ -339,7 +339,12 @@
     
     <xsl:template match="Figure/Image">
         <p class="Figure">
-            <img src="{@src}"/>     <!-- image will show in browser or Word (if permission allows) -->
+            <!-- hack: src may be to artwork (eg fig01.eps or .tif or unspecified) on SharePoint. 
+                But Word will likely choke on import, so hope there is also fig01.eps.jpg version -->
+            <xsl:variable name="_src"
+                select="if (not (ends-with(@src, '.jpg') or ends-with(@src, '.png') or ends-with(@src, '.gif'))) 
+                then concat(@src, '.jpg') else @src"/>
+            <img src="{$_src}"/>    <!-- image will show in browser or Word (if permission allows) -->
             <xsl:apply-templates select="parent::Figure/@id"/> <!-- tag on id (maybe used by crossref) -->
         </p>
         <p class="FigureSrc">       <!-- but rely on source as text of separate para -->
