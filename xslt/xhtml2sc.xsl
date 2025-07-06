@@ -17,6 +17,7 @@
     -->
 
     <xsl:strip-space elements="*"/>
+    <xsl:preserve-space elements="ProgramListing ComputerDisplay"/> <!-- any others? -->
     <xsl:output method="xml" version="1.0" indent="no"/>
 
     <!-- Overall organisation into several passes (using modes) allows each to solve a single 
@@ -243,7 +244,7 @@
     
     <!-- strip spans styled as hidden, including content -->
     <xsl:template mode="styling" match="h:span[contains(@style, 'display:none')]" />
-    <!-- preserve hidden spans as editor comment -->
+    <!-- alternative: preserve hidden spans as editor comment -->
 <!--    <xsl:template mode="styling" match="h:span[contains(@style, 'display:none')]" >
         <EditorComment><xsl:apply-templates mode="styling"/></EditorComment>
     </xsl:template>
@@ -293,45 +294,45 @@
     <xsl:template name="getListInfo">
         <xsl:param name="leader"/>
         <xsl:param name="style"/>
-        <!-- clue is first char after stripping leading white space *and nbsp* -->
-        <xsl:variable name="clue"
-            select="substring(normalize-space(translate($leader, '&#xA0;', '')), 1 ,1)"/>
+        <!-- start string: strip space / nbsp / parentheses / dot -->
+        <xsl:variable name="start_str" select="normalize-space(translate($leader, '&#xA0;()[].', ''))"/>
+        <!-- clue is first char of start string -->
+        <xsl:variable name="clue" select="substring($start_str, 1, 1)"/>
         <!-- level & margin may be in style; NB if missing take value NaN -->
-        <xsl:variable name="_level"
+        <xsl:variable name="_level" 
             select="number(substring-before(substring-after($style, 'level'), ' '))"/>
-        <xsl:variable name="_margin"
+        <xsl:variable name="_margin" 
             select="number(substring-before(substring-after($style, 'margin-left:'), 'pt'))"/>
         <!-- use level if explicit, otherwise infer from margin if given, else assume 1 -->
         <xsl:variable name="level" select="if ($_level &gt; 1) then 2 
                                             else if ($_level=1) then 1 
                                             else if ($_margin>50) then 2 else 1"/>
+        <!-- cop-out roman-to-decimal conversion! -->
+        <xsl:variable name="rom_numbs" 
+            select="('i','ii','iii','iv','v','vi','vii','viii','ix','x', 'xi','xii','xiii','xiv','xv','xvi','xvii','xviii','xix','xx','xxi','xxii','xxiii','xxiv','xxv','xxvi')"/>
+        
         <xsl:choose>
             <xsl:when test="$clue = ''">
                 <__listInfo level="{$level}" type="unnumbered" start="0"/>
             </xsl:when>
             <xsl:when test="contains('1234567890', $clue)">
-                <__listInfo level="{$level}" type="decimal"
-                    start="{string-length(substring-before('1234567890', $clue))+1}"/>
+                <__listInfo level="{$level}" type="decimal" start="{number($start_str)}"/>
             </xsl:when>
             <xsl:when test="contains('ivx', $clue)">
-                <!-- cop out roman-to-decimal conversion! -->
-                <__listInfo level="{$level}" type="lower-roman"
-                    start="{if ($clue='x') then 10 else if ($clue='v') then 5 else 1}"/>
+                <__listInfo level="{$level}" type="lower-roman" 
+                    start="{index-of($rom_numbs, lower-case($start_str))}"/>
             </xsl:when>
             <xsl:when test="contains('IVX', $clue)">
-                <__listInfo level="{$level}" type="upper-roman"
-                    start="{if ($clue='X') then 10 else if ($clue='V') then 5 else 1}"/>
+                <__listInfo level="{$level}" type="upper-roman" 
+                    start="{index-of($rom_numbs, lower-case($start_str))}"/>
             </xsl:when>
-            <xsl:when test="contains('abcdefghijklmn_pqrstuvwxyz', $clue)">
-                <!-- 'o' may be bullet! -->
+            <xsl:when test="contains('abcdefghijklmn_pqrstuvwxyz', $clue)"> <!-- 'o' may be bullet! -->
                 <__listInfo level="{$level}" type="lower-alpha"
-                    start="{string-length(substring-before('abcdefghijklmnopqrstuvwxyz', $clue))+1}"
-                />
+                    start="{string-length(substring-before('abcdefghijklmnopqrstuvwxyz', $clue))+1}" />
             </xsl:when>
             <xsl:when test="contains('ABCDEFGHIJKLMN_PQRSTUVWXYZ', $clue)">
                 <__listInfo level="{$level}" type="upper-alpha"
-                    start="{string-length(substring-before('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $clue))+1}"
-                />
+                    start="{string-length(substring-before('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $clue))+1}" />
             </xsl:when>
             <xsl:otherwise>
                 <__listInfo level="{$level}" type="bulleted" start="0"/>
@@ -531,7 +532,7 @@
     </xsl:template>
 
 
-    <xsl:template mode="objecting" match="ProgramListing">
+    <xsl:template mode="objecting" match="ProgramListing | ComputerDisplay">
         <xsl:copy>
             <Paragraph>
                 <xsl:apply-templates mode="objecting" select="@* | node()"/>
@@ -632,7 +633,8 @@
 
     <!-- Figure is required, other related tags are optional -->
     <xsl:template mode="objecting" match="Figure">
-        <xsl:variable name="figSrc" select="following-sibling::*[1][self::FigureSrc]"/>
+        <!-- get src, stripping any existing quotes -->
+        <xsl:variable name="figSrc" select="translate(following-sibling::*[1][self::FigureSrc], '&#x22;', '')"/>
         <Figure>
             <xsl:apply-templates mode="objecting" select="@*"/>
             <Image src="{if ($figSrc!='') then $figSrc else $missing-image}"/>

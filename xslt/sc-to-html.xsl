@@ -14,22 +14,26 @@
     <!-- Namespaces: OU SC xml files have no namespace declaration
         Output in default namespace which is Word html so can be input to html-to-sc for round trip
     -->
-    <xsl:output method="html"/>
     <xsl:strip-space elements="*"/>
+    <xsl:preserve-space elements="ProgramListing ComputerDisplay"/> <!-- any others? -->
+    <xsl:output method="html"/>
     
     <xsl:include href="sc-to-html-css.xsl"/>
     
     <!-- TODO:
         ??? More section-like things: FrontMatter, BackMatter, References, 
-        Some Word quirks catered for but maybe need checking for consistency, eg avoiding blank lines which could be lost in html stage or Word input (use nbsp or maybe <o:p/> as Word does?) 
         Attributes: piecemeal so far, but maybe just turn all into styled text? Generic may be less code, as well as better round-trip
+        Some kludges added to accomodate OU practices, eg incomplete image src
+        
+        NB useful for debugging: 
+        <xsl:message expand-text="true">myvar: {$myVar}</xsl:message>
     -->
     
     <!-- ===== default cases should do the bulk of the work ===== -->
     
     <!-- Copy attributes (not many in SC) where make sense in html. 
         Other attribs are instead copied into text so they can be perserved and edited in Word (see below)
-        Slightly risky that same attribute name can be used for diff purposes, eg type for lists and boxes, and
+        Slightly risky that same attribute name can be used for diff purposes, eg 'type' for lists and boxes, and
         sometimes needs handling differently, eg for list type, act on it rather than output as attribute span.
         NB need to be careful to apply select="@* | node()" or attribs won't be selected anyway;
         needed even at Paragraph level eg for links.
@@ -127,41 +131,52 @@
     
     <!-- list elements -->
 
-    <!-- Conversion of SC lists to html tags should be straightforward, but some tweaks help 
-        to round-trip cleanly through Word:
-        * if some list items have extended content, then whole list should be wrapped in 
-        ListHead/ListEnd to avoid ambiguity over where items end 
-        * ...not required for simpler lists where each item is a single paragraph
-        * ...limitation: not detecting occasions when item has content *following* a 
-        sub list; if so, a SubListHead/SubListEnd around sublist would also be needed.
-        * avoid list items with no text by inserting nbsp
+    <!-- Conversion of SC lists to html tags should be very straightforward, but some tweaks 
+        help to round-trip cleanly through Word:
+        * if some list or sublist items have extended content, then whole list should be top/tailed 
+        in ListHead/ListEnd to avoid ambiguity over where items end 
+        * (but not required for simpler lists where each item is a single paragraph)
+        * if a sub list isn't the last child in its parent item, then sub list should be wrapped in 
+        SubListHead/SubListEnd to avoid ambiguity over where sub list ends 
+        * avoid losing list items with no text by inserting nbsp
+        Unfortunately, with these tweaks code is now lengthy and messy...
     -->
     
-    <!-- look for items/subitems that extend to include more than one para, figures, tables etc -->
-    <!-- nb not quite perfect since test for children doesn't distinguish tags within 
-        para (b, i, sup etc) from tags that are para-like (Paragraph, Figure etc). But too messy to
-        exclude long list of things -->
+    <!-- look for items/subitems that extend to include more than one para, figures, equations etc
+        (or where item has any content that follows a sub list) -->
     <xsl:template name="checkForExtendedItems" as="xs:boolean">
-        <!-- count lines (ie elements that are not sublists) within each list item of current list -->
-        <xsl:variable name="lineCounts" select="ListItem/count(*[not(contains(name(), 'Subsidiary'))])"/>
+        <!-- count lines (ie para-like elements, not sublists or spans) within each list item of current list -->
+        <xsl:variable name="lineCounts" select="ListItem/count(Paragraph | Figure | Equation | Chemistry | ProgramListing | ComputerDisplay | Table)"/>
+        <!-- count trailing lines (any element following a sublist) -->
+        <xsl:variable name="trailLineCounts" select="ListItem/*[contains(name(), 'Subsidiary')]/count(following-sibling::*)"/>
         <!-- count lines within sublists of current list -->    
-        <xsl:variable name="innerLineCounts" select="ListItem/*[contains(name(), 'Subsidiary')]/SubListItem/count(*)"/>
-        <!-- has extended content if any count is greater than one -->
-        <xsl:value-of select="max(($lineCounts, $innerLineCounts)) gt 1"/>
+        <xsl:variable name="innerLineCounts" select="ListItem/*[contains(name(), 'Subsidiary')]/SubListItem/count(Paragraph | Figure | Equation | Chemistry | ProgramListing | ComputerDisplay | Table)"/>
+        <!-- list item has extended content if any line count greater than one or if some trail -->
+        <xsl:value-of select="(max(($lineCounts, $innerLineCounts)) gt 1) or (max($trailLineCounts) gt 0)"/>
+    </xsl:template>
+    
+    <!-- check for trailing content: ie if a sublist is not the last child of its parent item -->
+    <xsl:template name="checkForTrailingContent" as="xs:boolean">
+        <!-- get position of current (assumed a sub list) within parent and total count -->
+        <xsl:variable name="subListPos" select="position()"/>
+        <xsl:variable name="childCount" select="count(../*)"/>
+        <!-- parent has trailing content if sublist is not last child in parent -->
+        <xsl:value-of select="$subListPos lt $childCount"/>
     </xsl:template>
     
     <xsl:template match="ListItem | SubListItem">
         <li>
             <!-- tweaks to encourage more consistent Word list structure: -->
             <xsl:choose>
-                <xsl:when test="text()">    <!-- has raw text, wrap it in Paragraph -->
-                    <p><xsl:apply-templates select="@* | node()"/></p>
-                </xsl:when>                 <!-- has content children (ignoring any sublists) -->
-                <xsl:when test="exists(*[not(contains(name(), 'Subsidiary'))])">
+                <xsl:when test="node()[1][contains(name(), 'Subsidiary')]">  
+                    <!-- if first node is sublist, generate nbsp to preserve blank line in Word -->
+                    <p><xsl:text>&#x00a0;</xsl:text></p>
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:when>
-                <xsl:otherwise>             <!-- has no content (except maybe sublist), generate nbsp -->
-                    <p><xsl:text>&#x00a0;</xsl:text></p>
+                <xsl:when test="text()">    <!-- has raw text, wrap it in Paragraph -->
+                    <p><xsl:apply-templates select="@* | node()"/></p>
+                </xsl:when>
+                <xsl:otherwise>
                     <xsl:apply-templates select="@* | node()"/>
                 </xsl:otherwise>
             </xsl:choose>
@@ -169,10 +184,10 @@
     </xsl:template>
     
     <xsl:template match="NumberedList">
-        <xsl:variable name="extended" as="xs:boolean">
+        <xsl:variable name="toptail" as="xs:boolean">
             <xsl:call-template name="checkForExtendedItems"/>
         </xsl:variable>
-        <xsl:if test="$extended">
+        <xsl:if test="$toptail">
             <p class="ListHead"><xsl:text>&#x00a0;[list head]</xsl:text></p>
         </xsl:if>
         <ol>
@@ -187,12 +202,18 @@
             </xsl:attribute>
             <xsl:apply-templates select="@* | node()"/>
         </ol>
-        <xsl:if test="$extended">
+        <xsl:if test="$toptail">
             <p class="ListEnd"><xsl:text>&#x00a0;[list end]</xsl:text></p>
         </xsl:if>
     </xsl:template>
     
     <xsl:template match="NumberedSubsidiaryList">
+        <xsl:variable name="toptail" as="xs:boolean">
+            <xsl:call-template name="checkForTrailingContent"/>
+        </xsl:variable>
+        <xsl:if test="$toptail">
+            <p class="SubListHead"><xsl:text>&#x00a0;[sub-list head]</xsl:text></p>
+        </xsl:if>
         <ol>
             <xsl:attribute name="type">
                 <xsl:choose>
@@ -205,49 +226,70 @@
             </xsl:attribute>
             <xsl:apply-templates select="@* | node()"/>
         </ol>
+        <xsl:if test="$toptail">
+            <p class="SubListEnd"><xsl:text>&#x00a0;[sub-list end]</xsl:text></p>
+        </xsl:if>
     </xsl:template>
     
     
     <xsl:template match="BulletedList">
-        <xsl:variable name="extended" as="xs:boolean">
+        <xsl:variable name="toptail" as="xs:boolean">
             <xsl:call-template name="checkForExtendedItems"/>
         </xsl:variable>
-        <xsl:if test="$extended">
+        <xsl:if test="$toptail">
             <p class="ListHead"><xsl:text>&#x00a0;</xsl:text></p>
         </xsl:if>
         <ul>
             <xsl:apply-templates select="@* | node()"/>
         </ul>
-        <xsl:if test="$extended">
+        <xsl:if test="$toptail">
             <p class="ListEnd"><xsl:text>&#x00a0;</xsl:text></p>
         </xsl:if>
     </xsl:template>
     
     <xsl:template match="BulletedSubsidiaryList">
+        <xsl:variable name="toptail" as="xs:boolean">
+            <xsl:call-template name="checkForTrailingContent"/>
+        </xsl:variable>
+        <xsl:if test="$toptail">
+            <p class="SubListHead"><xsl:text>&#x00a0;[sub-list head]</xsl:text></p>
+        </xsl:if>
         <ul>
             <xsl:apply-templates select="@* | node()"/>
         </ul>
+        <xsl:if test="$toptail">
+            <p class="SubListEnd"><xsl:text>&#x00a0;[sub-list end]</xsl:text></p>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="UnNumberedList">
-        <xsl:variable name="extended" as="xs:boolean">
+        <xsl:variable name="toptail" as="xs:boolean">
             <xsl:call-template name="checkForExtendedItems"/>
         </xsl:variable>
-        <xsl:if test="$extended">
+        <xsl:if test="$toptail">
             <p class="ListHead"><xsl:text>&#x00a0;[list head]</xsl:text></p>
         </xsl:if>
         <ul type="none">
             <xsl:apply-templates select="@* | node()"/>
         </ul>
-        <xsl:if test="$extended">
+        <xsl:if test="$toptail">
             <p class="ListEnd"><xsl:text>&#x00a0;[list end]</xsl:text></p>
         </xsl:if>
     </xsl:template>
     
     <xsl:template match="UnNumberedSubsidiaryList">
+        <xsl:variable name="toptail" as="xs:boolean">
+            <xsl:call-template name="checkForTrailingContent"/>
+        </xsl:variable>
+        <xsl:if test="$toptail">
+            <p class="SubListHead"><xsl:text>&#x00a0;[sub-list head]</xsl:text></p>
+        </xsl:if>
         <ul type="none">
             <xsl:apply-templates select="@* | node()"/>
         </ul>
+        <xsl:if test="$toptail">
+            <p class="SubListEnd"><xsl:text>&#x00a0;[sub-list end]</xsl:text></p>
+        </xsl:if>
     </xsl:template>
     
     
@@ -318,7 +360,6 @@
         </th>
     </xsl:template>
     <xsl:template match="th[Paragraph]">
-<!--        <xsl:message expand-text="true">th/p: name[{name()}] .[{.}]</xsl:message>-->
         <th>
             <xsl:apply-templates select="@*"/>
             <p>
@@ -339,7 +380,7 @@
     
     <xsl:template match="Figure/Image">
         <p class="Figure">
-            <!-- hack: src may be to artwork (eg fig01.eps or .tif or unspecified) on SharePoint. 
+            <!-- KLUDGE: src may be to artwork (eg fig01.eps or .tif or unspecified) on SharePoint. 
                 But Word will likely choke on import, so hope there is also fig01.eps.jpg version -->
             <xsl:variable name="_src"
                 select="if (not (ends-with(@src, '.jpg') or ends-with(@src, '.png') or ends-with(@src, '.gif'))) 
@@ -367,6 +408,11 @@
     <!-- program listing -->
     <xsl:template match="ProgramListing | ProgramListing/Paragraph">
         <p class="ProgramListing">
+            <xsl:apply-templates />
+        </p>
+    </xsl:template>
+    <xsl:template match="ComputerDisplay | ComputerDisplay/Paragraph">
+        <p class="ComputerDisplay">
             <xsl:apply-templates />
         </p>
     </xsl:template>

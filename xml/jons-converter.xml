@@ -49,6 +49,7 @@
          <Paragraph>And some standard OU character styles: <ComputerCode>ComputerCode</ComputerCode>, <ComputerUI>ComputerUI</ComputerUI>, <GlossaryTerm>GlossaryTerm</GlossaryTerm>, <SecondVoice>second voice</SecondVoice> (to show thought processes in mathematical arguments).</Paragraph>
          <Paragraph>Paragraphs can contain <AuthorComment>author comments </AuthorComment>and <EditorComment>editor comments</EditorComment>.</Paragraph>
          <Paragraph>A paragraph with a side note.<SideNote><SideNoteParagraph>Remember to save your work!</SideNoteParagraph></SideNote> Text following the side note.</Paragraph>
+         <Paragraph>A different paragraph with a footnote.<footnote>Remember to wipe your feet!</footnote> Text following the footnote.</Paragraph>
          <Paragraph>Paragraphs can contain several sorts of link. For example, an external hyperlink to <a href="https://www.google.com/">Google</a> can be created in Word in the normal way. For references to other documents or parts of the website, it is better to use an &lt;olink&gt; which refers to a document and section names, for example to the <olink targetdoc="Course Guide" targetptr="11">Course guide</olink>. Use &lt;CrossRef> to refer to the <CrossRef idref="lists">next session</CrossRef> or other parts of the <i>same</i> document; this requires placing ids on destinations. See the SC reference about <a href="https://learn3.open.ac.uk/mod/oucontent/view.php?id=185750&amp;section=6">links</a>.</Paragraph>
          <Paragraph>A paragraph can contain an equation such as <InlineEquation><TeX>e = m c^2</TeX></InlineEquation> inline. Equations can also be shown as display:</Paragraph>
          <Equation>
@@ -59,12 +60,13 @@
          <ProgramListing>
             <Paragraph>pi@raspberry:~ $ mkdir test<br/>pi@raspberry:~ $ cd test<br/>pi@raspberry:~/test $ pwd<br/>/home/pi/test<br/>pi@raspberry:~/test $</Paragraph>
          </ProgramListing>
-         <Paragraph>In a program listing, whitespace is (or should be!) preserved so indentation can be achieved, but it is safest to use non-breaking space! There is no syntax highlighting but a bit of bold and italic can help.</Paragraph>
+         <Paragraph>In a program listing, whitespace is (or should be!) preserved so indentation can be achieved, but it is safest to use non-breaking space! (&lt;ComputerDisplay> seems identical to &lt;ProgramListing>).  There is no syntax highlighting but a bit of bold and italic can help.</Paragraph>
          <Paragraph>XSLT is powerful: this is what is required to do automatic tagging:</Paragraph>
          <ProgramListing>
             <Paragraph>&lt;!-- default: para with class (= Word para style) or span with class (= Word char style) become an element of same name --&gt;<br/>&lt;<b>xsl:template</b> <i>mode</i>="styling" <i>match</i>="h:p[@class] | h:span[@class]" <i>priority</i>="0.4"&gt;<br/>    &lt;<b>xsl:element </b> <i>name</i>="{@class}"&gt; <br/>        &lt;<b>xsl:apply-templates </b> <i>mode</i>="styling"/&gt;<br/>    &lt;/xsl:element&gt;<br/>&lt;/xsl:template&gt;</Paragraph>
          </ProgramListing>
-         <Paragraph><i>Limitation</i>: Word only allows text to be given a single named style so some permutations are messy: <SecondVoice>for example equations such as <InlineEquation><TeX>x^2</TeX></InlineEquation> within second voice</SecondVoice>. Word's built-in formatting <SecondVoice>(<b>bold</b>, <i>italic </i><b><i>etc</i></b>) </SecondVoice>doesn’t suffer the same restriction.</Paragraph>
+         <Paragraph> </Paragraph>
+         <Paragraph><i>Limitation</i>: Word only allows text to be given a single named character style so some permutations are messy: <SecondVoice>for example equations such as <InlineEquation><TeX>x^2</TeX></InlineEquation> within second voice</SecondVoice>. Word built-in formatting <SecondVoice>for example x<sup>2</sup>, <b>bold</b>, <i>italic</i>, <b><i>bold italic</i></b></SecondVoice> doesn’t suffer the same restriction.</Paragraph>
       </Session>
       <Session id="lists">
          <Title>Lists</Title>
@@ -114,23 +116,23 @@
             <ListItem>cat</ListItem>
             <ListItem>sat</ListItem>
          </NumberedList>
-         <Paragraph>A lower-roman list starting at (v):</Paragraph>
-         <NumberedList start="5" class="lower-roman">
+         <Paragraph>A lower-roman list starting at (iv):</Paragraph>
+         <NumberedList start="4" class="lower-roman">
             <ListItem>on</ListItem>
             <ListItem>the</ListItem>
             <ListItem>toadstool</ListItem>
          </NumberedList>
-         <Paragraph><i>Limitation</i>: for lists created in Word, the first digit is used to infer the list type and start number. So some start values are ambiguous (i, v, o, x) or not possible (numbers beyond 9, letters beyond z). You can fix once in XML.</Paragraph>
-         <Paragraph>The examples above are simple: each list item is only a single paragraph. These are easy to create in Word and will translate straightforwardly to structured content. See the next section for dealing with more complex list structures. </Paragraph>
+         <Paragraph><i>Limitation</i>: for lists created in Word, the first digit is used to infer the list type, making some start values ambiguous (i, v, o, x). Start values for alpha and Roman lists are limited to 1-26. You can be more ambitious once in XML.</Paragraph>
+         <Paragraph>The examples above are simple: every paragraph in the list is numbered/bulleted (or equivalently: each list item is only a single paragraph). These are easy to create in Word and will translate straightforwardly to structured content. See the next section for dealing with more complex list structures. </Paragraph>
          <Section>
             <Title>Extended lists</Title>
-            <Paragraph>Structured content allows list items to have extended content: more than one paragraph of text, figures, tables, equations etc. This is straightforward in SC since the tagging shows where each item begins and ends. However, where a Word list item has extended content, the list is broken around the additional content, and this would lead to poor structure in SC.</Paragraph>
+            <Paragraph>Structured content allows list items to have extended content: more than one paragraph of text, figures, equations etc. This is straightforward in SC since the tagging shows where each item begins and ends. However, where a list with extended content has been created in Word, some paragraphs aren’t bulleted or numbered and the list may be broken around these which would lead to poor structure in SC.</Paragraph>
             <Paragraph>For simple cases, inserting Word manual line breaks (<ComputerUI>Shift+Enter</ComputerUI>) within a list item is sufficient to achieve the desired effect:</Paragraph>
             <NumberedList class="lower-alpha">
                <ListItem><NumberedSubsidiaryList class="lower-roman"><SubListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is<br/><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX></InlineEquation><br/>(Check: The line slopes down, so the gradient should be negative.) </Paragraph></SubListItem><SubListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is<br/><InlineEquation><TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX></InlineEquation><br/>(Check: The line slopes up, so the gradient should be positive.)</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
                <ListItem><Paragraph>The rise between any two points on a horizontal line is zero. <br/>Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph></ListItem>
             </NumberedList>
-            <Paragraph>This hack isn’t possible if the extended content includes figures, tables, display equations and so on. In that case, surround the list with blank lines of <i>ListHead</i> and <i>ListEnd</i> style. Within this pair, any content following a list item is assumed to be part of the same item until the next item is reached. (Note that indentation in Word is ignored when converting to SC.)</Paragraph>
+            <Paragraph>This hack isn’t possible if the extended content includes figures, display equations and so on. In that case, surround the list with blank lines of <i>ListHead</i> and <i>ListEnd</i> style. Within this pair, any content following a list item is assumed to be part of the same item until the next item is reached. (Note that indentation in Word is ignored when converting to SC.)</Paragraph>
             <NumberedList class="lower-alpha">
                <ListItem><NumberedSubsidiaryList class="lower-roman"><SubListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is</Paragraph><Equation><TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX></Equation><Paragraph>(Check: The line slopes down, so the gradient should be negative.) </Paragraph></SubListItem><SubListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is</Paragraph><Equation><TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX></Equation><Paragraph>(Check: The line slopes up, so the gradient should be positive.)</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
                <ListItem><Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph></ListItem>
@@ -145,22 +147,19 @@
             <InternalSection>
                <SubHeading>Question 1</SubHeading>
                <SubSubHeading>(a)</SubSubHeading>
-               <NumberedList>
-                  <ListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is </Paragraph></ListItem>
+               <NumberedList class="lower-roman">
+                  <ListItem><Paragraph>The run is <InlineEquation><TeX>3-1.5=1.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-6=-4</TeX></InlineEquation>. So the gradient is </Paragraph><Equation><TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX></Equation><Paragraph>(Check: The line slopes down, so the gradient should be negative.) </Paragraph></ListItem>
+                  <ListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is</Paragraph><Equation><TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX></Equation><Paragraph>(Check: The line slopes up, so the gradient should be positive.)</Paragraph></ListItem>
                </NumberedList>
-               <Equation>
-                  <TeX>\dfrac{\text{rise}}{\text{run}}=\dfrac{-4}{1.5}=\dfrac{-40}{15}=-\tfrac{8}{3}.</TeX>
-               </Equation>
-               <Paragraph>(Check: The line slopes down, so the gradient should be negative.) </Paragraph>
-               <NumberedList start="2">
-                  <ListItem><Paragraph>The run is <InlineEquation><TeX>1-(-1.5)=1+1.5=2.5</TeX></InlineEquation>. The rise is <InlineEquation><TeX>2-(-2)=4</TeX></InlineEquation>.  So the gradient is</Paragraph></ListItem>
-               </NumberedList>
-               <Equation>
-                  <TeX>\dfrac{\text{rise}}{\text{run} }=\dfrac{4}{2.5}=1.6. </TeX>
-               </Equation>
-               <Paragraph>(Check: The line slopes up, so the gradient should be positive.)</Paragraph>
                <SubSubHeading>(b)</SubSubHeading>
                <Paragraph>The rise between any two points on a horizontal line is zero. Because the gradient is the rise divided by the run, it follows that the gradient of a horizontal line is zero.</Paragraph>
+            </InternalSection>
+            <InternalSection>
+               <Heading>When you are really desperate...</Heading>
+               <Paragraph>Fake the deepest levels of a list with manual numbering and non-breaking spaces. </Paragraph>
+               <NumberedList class="upper-alpha">
+                  <ListItem>Fruit<NumberedSubsidiaryList class="decimal"><SubListItem> <Paragraph>Apples</Paragraph><Paragraph>(a)  Bramley</Paragraph><Paragraph>      (i)    Skin</Paragraph><Paragraph>      (ii)   Flesh</Paragraph><Paragraph>      (iii)  Core</Paragraph><Paragraph>(b)  Cox</Paragraph><Paragraph>(c)  Golden delicious(sic)</Paragraph></SubListItem></NumberedSubsidiaryList></ListItem>
+               </NumberedList>
             </InternalSection>
          </Section>
       </Session>
@@ -713,7 +712,7 @@
          </Equation>
          <Paragraph><i>Limitation</i>: The Word equations are lost in conversion but the TeX versions are passed to structured content. Unfortunately it is a manual job to keep them in sync.</Paragraph>
          <Paragraph><i>Gotcha</i>: If you encounter an error 'Warning: The image source (src attribute) has not been specified' when rendering, this may relate to an empty <i>InlineEquation</i>. The culprit may be an end-of-line character in Word that is styled as <i>TeX</i>, most likely within a list. Highlight the end-of-line and press <ComputerUI>Ctrl+Space</ComputerUI>.</Paragraph>
-         <Paragraph>Note 1: I don’t know what current practice is for editors handling maths, but I believe it used to involve a MathFlow plugin, both in Word and oXygen. This produces MathML, as can Word Equation Editor. This can also be passed through to SC VLE instead of TeX but it is verbose and unreadable so I find TeX a better alternative.</Paragraph>
+         <Paragraph>Note 1: I don’t know what current practice is for editors handling maths, but I believe it used to involve a MathFlow plugin, both in Word and oXygen. This produces MathML, as can Word Equation Editor. This can also be passed through to SC VLE so MathML in existing material works as expected. However, since MathML is verbose and unreadable, I suggest TeX is a better alternative when writing in Word .</Paragraph>
          <Paragraph>Note 2: If text in equations differs in size compared to body text, the underlying reason is the VLE handling of high resolution displays. For possibly good reasons, this fudges between the actual hardware pixel size and a nominal web CSS ‘pixel’ and this fudge may not be accurate.</Paragraph>
          <Paragraph>Note 3: The same issue with high resolution displays can make equations appear fuzzy compared to body text of a similar size: equations have been rendered as low resolution JPEG files. You can switch to better client-side MathJax rendering using your VLE profile; unfortunately the default remains JPEG for all users.</Paragraph>
       </Session>

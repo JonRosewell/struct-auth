@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="3.0">
-    <xsl:output method="html"/>
 
     <!-- Structured Authoring: MS Word to OU Structured Content XML
         MS Word to OU structured content conversion, designed to replace OU IT/LDS 
@@ -251,9 +250,9 @@
             p.SubListEnd  { mso-style-name: SubListEnd; }            
             
 <!--            commonly used, add to Word style gallery -->
-            p.ActivityHead, p.ActivityEnd, p.Caption, span.ComputerCode, span.ComputerUI, p.Figure,
-            p.StudyNoteHead, p.StudyNoteEnd, span.TeX { mso-style-qformat:yes; }
-<!--            unfortunately don't know how to stop unhelpful Word styles appearing in gallery... -->
+            p.ActivityHead, p.ActivityEnd, p.Answer, p.BoxHead, p.BoxEnd, p.Caption, span.ComputerCode, span.ComputerUI, p.Figure, p.StudyNoteHead, p.StudyNoteEnd, span.TeX 
+                { mso-style-qformat:yes; }
+<!--            unfortunately don't know how to remove unhelpful Word styles from gallery... -->
             
 <!--            appearance -->
             p, li, div, p.MsoNormal, li.MsoNormal, div.MsoNormal, table { font-size:11.0pt; font-family:"Calibri",sans-serif; }
@@ -285,7 +284,7 @@
             span.TeX, span.MathML, span.InlineEquation, p.Equation { font-family: "Times New Roman", serif; color: purple; mso-no-proof: yes; } 
             p.Equation { font-size: 9pt; text-align: center;  }
             p.RawXML { font-size: 9pt; font-family: "Courier New", monospace; color: red; mso-no-proof: yes; } 
-            p.ProgramListing { margin: 0pt; margin-left: 1cm; font-family: "Ubuntu Mono", monospace; mso-no-proof: yes; } 
+            p.ProgramListing, p.ComputerDisplay { margin: 0pt; margin-left: 1cm; font-family: "Ubuntu Mono", monospace; mso-no-proof: yes; } 
             
             p.Figure { mso-style-next: FigureSrc; color: grey; } 
             p.FigureSrc { mso-style-next: Caption; font-style: italic; color: blue; } 
